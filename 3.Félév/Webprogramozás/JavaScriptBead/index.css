@@ -1,0 +1,155 @@
+@import 'https://fonts.googleapis.com/css2?family=Thasadith&display=swap';
+
+body{
+    text-align: center;
+    font-family: 'Thasadith', Arial,Verdana,sans-serif;
+    background-color: #daa189;
+}
+
+h3 {
+    font-weight: bolder;
+}
+
+#stage {
+    margin: auto 0;
+}
+
+#kanyar {
+    width: 100px;
+    height: 100px;
+}
+
+#rulesButton {
+    margin-bottom: 15px;
+}
+
+#game {
+    display: flex;
+    width: 95%;
+    height: 95%;
+    padding-bottom: 50px;
+    padding-top: 40px;
+}
+
+#data {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.grid-container {
+    display: inline-grid;
+    justify-content: start;
+    border: 10px solid gray;
+    margin-left: 100px;
+    margin-right: auto;
+    grid-template-columns: 100px 100px 100px 100px 100px 100px 100px 100px 100px;
+}
+  
+.grid-item {
+    position: relative;
+    top: 0;
+    left: 0;
+    text-align: center;
+    height: 100px;
+}
+
+#kep1 {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 95px;
+    height: 95px;
+}
+
+#kep2{
+    position: relative;
+    width: 95px;
+    height: 95px;
+    top: 0;
+    left: 0;
+    transform: rotate(90deg);
+}
+
+#kep3{
+    position: relative;
+    width: 95px;
+    height: 95px;
+    top: 0;
+    left: 0;
+    transform: rotate(180deg);
+}
+
+#kep4{
+    position: relative;
+    width: 95px;
+    height: 95px;
+    top: 0;
+    left: 0;
+    transform: rotate(270deg);
+}
+
+#kep5 {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 50px;
+    height: 50px;
+}
+
+#kep6 {
+    position: absolute;
+    top: 5px;
+    left: 45px;
+    width: 50px;
+    height: 50px;
+}
+
+#kep7 {
+    position: absolute;
+    top: 45px;
+    left: 5px;
+    width: 50px;
+    height: 50px;
+}
+
+#kep8 {
+    position: absolute;
+    top: 45px;
+    left: 45px;
+    width: 50px;
+    height: 50px;
+}
+
+#kep9 {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    width: 50px;
+    height: 50px;
+}
+
+#kep10 {
+    position: relative;
+    top: -25px;
+    left:  -75px;
+    width: 50px;
+    height: 50px;
+}
+
+.selected {
+    border: 2.5px solid orange;
+}
+
+.unselected{
+    border: 2.5px solid white;
+}
+
+#target-pic{
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+#restart {
+    margin-top: 100px;
+}

@@ -1,0 +1,21 @@
+table.preview, table.edit {
+  border-collapse: collapse;
+}
+table.preview td {
+   border: none;
+   width: 13px;
+   height: 13px;
+   padding: 0;
+}
+table.previous td {
+   border: none;
+   width: 5px;
+   height: 5px;
+   padding: 0;
+}
+table.edit td {
+   border: 1px solid lightgray;
+   width: 20px;
+   height: 20px;
+   padding: 0;
+}

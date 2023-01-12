@@ -1,0 +1,18 @@
+@import url('https://cdn.jsdelivr.net/gh/elte-fi/www-assets@19.10.16/styles/mdss.min.css');
+
+input[type=range] {
+    width: 400px;
+}
+
+span {
+    display: inline-block;
+    width: 3em;
+    text-align: center;
+}
+
+canvas {
+    border: 1px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}

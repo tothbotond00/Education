@@ -1,0 +1,16 @@
+table, td, th {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+td, th {
+    width: 150px;
+    text-align: center;
+    vertical-align: center;
+}
+
+.scale {
+    display: block;
+    height: 20px;
+    background-color: red;
+    width: 100%;
+}

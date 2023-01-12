@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel-art</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <form>
+    Width: <input type="number" id="width" value="5"> <br>
+    Height: <input type="number" id="height" value="4"> <br>
+    <button type="button" id="generate-button">Generate</button>
+  </form>
+  Actual color : <button id="actualColor" disabled>#ffffff</button>
+  <br>
+  Select color : <input type="color" id="colorChanger">
+  <br>
+  Used colors:
+  <div id="used"></div>
+  <hr>
+  Previous works:
+  <div id="previous"><br></div>
+  <hr>
+  <div id="editor"></div>
+  <script src="index.js"></script>
+</body>
+</html>

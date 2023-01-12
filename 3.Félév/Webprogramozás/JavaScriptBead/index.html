@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./assets/player1.png">
+    <link rel="stylesheet" href="index.css">
+    <title>Magical Catacomb</title>
+</head>
+<body>
+    <h2>Game settings</h2>
+    Number of players: <input type="number" id="players" value="2" min="1" max="4" maxlength="1" minlength="1"><br>
+    Number of trasures: <input type="number" id="treasures" value="2" min ="1" max ="24" maxlength="2" minlength="1"><br>
+    <button id="start">Start</button>
+    <button id="rulesButton">Show rules</button>
+    <div id="rulesDiv" hidden>
+        <h3>Story</h3>
+        <p>
+            In the kingdom of NO NAME, one eye of King NO NAME cries, the other laughs. He laughs because his fairy-beautiful daughter has a beggar and cries because there is not one but several of the excellent suitor.
+            So now how do you decide which one to give your daughter’s hand and half her kingdom to? Think about seeking the advice of your court counselor, Furfang.
+            He comes up with an idea that matches the name of the court counselor: put the petitioners to the test, and whoever proves most fit will win the hands of the beautiful princess. 
+            There is an enchanted catacomb of the castle, where the location of the rooms can be constantly changed. Treasures are hidden in this, and the requester who collects the treasures entrusted to him as soon as possible wins the hand of the princess.
+        </p>
+        <h3>Rules</h3>
+        <p>
+            The rooms of the catacomb are represented by the cells of a 7x7 square grid.
+            In each room he gave how many walls had doors. If there is a door on the contact wall of two adjacent rooms, you can move from one room to another.
+            The even rows and columns of the square grid can be shifted, the other rooms are fixed throughout the game.
+            With the shifts, paths open through the doors between the rooms so you can get to the treasures.
+            Each petitioner strives to reach the treasures by imaginatively shifting the rooms of the catacomb. The first person to find all of them and successfully return to their starting point is the winner.
+        </p>
+    </div>
+    <div id="game">
+        <div  id="stage" class="grid-container"></div>
+        <div  id="data" hidden>
+            <h1 id="current"></h1>
+            <h2>Current Scores:</h2>
+            <div id="scores"></div>
+            <h2>Action: </h2>
+            <div id="action"></div>
+            <button id="skip" hidden>Skip Action</button>
+            <h2>Treasure:</h2>
+            <div id="target"></div>
+            <h2>Usable elemenet:</h2><br>
+            <div id ="unused"> </div>
+            <button id="restart">New game with new parameters</button>
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>

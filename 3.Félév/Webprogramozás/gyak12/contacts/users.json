@@ -1,0 +1,20 @@
+{
+    "61a77771cc8bf": {
+        "username": "q",
+        "password": "$2y$10$4Sij8rhuUTwQVObqTJev3OPQ4Sx95EaSoQzNlmY2IYnok5rjaWNm2",
+        "fullname": "q",
+        "roles": [
+            "user"
+        ],
+        "id": "61a77771cc8bf"
+    },
+    "61a77cbe3f0a0": {
+        "username": "w",
+        "password": "$2y$10$3OvKgOYRMUmB6RqOPJyoe.bsUskvmccoAKsS2v4ghCns8pOfE\/VTG",
+        "fullname": "w",
+        "roles": [
+            "user"
+        ],
+        "id": "61a77cbe3f0a0"
+    }
+}

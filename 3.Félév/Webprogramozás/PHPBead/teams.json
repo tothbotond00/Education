@@ -1,0 +1,32 @@
+{
+    "1": {
+        "name": "Miskolci Bivalyok",
+        "city": "Miskolc",
+        "id": "1"
+    },
+    "2": {
+        "name": "Debreceni Solymok",
+        "city": "Debrecen",
+        "id": "2"
+    },
+    "3": {
+        "name": "Gy\u0151ri Farkasok",
+        "city": "Gy\u0151r",
+        "id": "3"
+    },
+    "4": {
+        "name": "Szolnoki Szarvasok",
+        "city": "Szolnok",
+        "id": "4"
+    },
+    "5": {
+        "name": "Budapesti Oroszl\u00e1nok",
+        "city": "Budapest",
+        "id": "5"
+    },
+    "6": {
+        "name": "Szombathelyi Lajh\u00e1rok",
+        "city": "Szombathely",
+        "id": "6"
+    }
+}

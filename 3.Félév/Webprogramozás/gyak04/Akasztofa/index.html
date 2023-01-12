@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="index.css" />
+    <title>Hangman</title>
+  </head>
+  <body>
+    <h1>Hangman game</h1>
+
+    <!-- <div id="the-word" class="won"> -->
+    <div id="the-word">
+    </div>
+
+    <div id="end-of-game" hidden>
+      <span>You win! / You lose!</span>
+      <button>Play again!</button>
+    </div>
+
+    <div id="letters">
+      <button>a</button>
+      <button disabled>b</button>
+      <button>c</button>
+      <button>d</button>
+    </div>
+
+    <div id="score">Bad attempts: 0/9</div>
+
+    <!-- <svg width="200px" height="200px" stroke="black" class="revealed"> -->
+    <svg width="200px" height="200px" stroke="black">
+      <line x1="0" y1="99%" x2="100%" y2="99%" />
+      <line x1="20%" y1="99%" x2="20%" y2="5%" />
+      <line x1="20%" y1="5%" x2="60%" y2="5%" />
+      <!-- <line x1="20%" y1="5%" x2="60%" y2="5%" class="show" /> -->
+      <line x1="60%" y1="5%" x2="60%" y2="20%" />
+      <circle cx="60%" cy="30%" r="10%" />
+      <line x1="60%" y1="30%" x2="60%" y2="70%" />
+      <line x1="40%" y1="50%" x2="80%" y2="50%" />
+      <line x1="60%" y1="70%" x2="50%" y2="90%" />
+      <line x1="60%" y1="70%" x2="70%" y2="90%" />
+    </svg>
+    <script src="index.js"></script>
+  </body>
+</html>

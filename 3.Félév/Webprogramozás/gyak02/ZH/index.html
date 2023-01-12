@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>HSL szerkesztő</h1>
+    <form>
+        Hue: <input type="range" min="0" max="360" value="0" id="hue"> <br>
+        Saturation: <input type="range" min="0" max="100" value="50" id="sat"> <br>
+        Lightness: <input type="range" min="0" max="100" value="50" id="light" > <br>
+        <button type="button">Set background color</button> <br>
+        HSL string: <input type="text" readonly id="output">
+      </form>
+      <script src="index.js"></script>
+</body>
+</html>

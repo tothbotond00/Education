@@ -1,0 +1,57 @@
+{
+    "1": {
+        "id": "1",
+        "name": "Horv\u00e1th Gy\u0151z\u0151",
+        "maxcount": "2",
+        "practices": [
+            "Practice1",
+            "Practice2",
+            "Practice3",
+            "Practice4"
+        ]
+    },
+    "2": {
+        "id": "2",
+        "name": "T\u0171ri Erik",
+        "maxcount": 3,
+        "practices": [
+            "Practice1",
+            "Practice3"
+        ]
+    },
+    "3": {
+        "id": "3",
+        "name": "Visnovitz M\u00e1rton",
+        "maxcount": 0,
+        "practices": [
+            "Practice1",
+            "Practice2"
+        ]
+    },
+    "4": {
+        "id": "4",
+        "name": "Gerely Viktor",
+        "maxcount": 2,
+        "practices": [
+            "Practice1",
+            "Practice3"
+        ]
+    },
+    "5": {
+        "id": "5",
+        "name": "M\u00f3ger Tibor",
+        "maxcount": 1,
+        "practices": [
+            "Practice3"
+        ]
+    },
+    "6": {
+        "id": "6",
+        "name": "Bucs\u00e1nszki Tam\u00e1s",
+        "maxcount": 3,
+        "practices": [
+            "Practice1",
+            "Practice3"
+        ]
+    }
+}

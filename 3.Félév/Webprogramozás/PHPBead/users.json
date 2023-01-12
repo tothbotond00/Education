@@ -1,0 +1,26 @@
+{
+    "61be0e72a6949": {
+        "username": "tothbotond00",
+        "password": "$2y$10$zvy9NjMWD.jrHUNHzzD4XuQrtIuSwDhdAMmr6sVUFEk84JoBit9Ka",
+        "roles": [
+            "user"
+        ],
+        "id": "61be0e72a6949"
+    },
+    "61bf08a69e075": {
+        "username": "admin",
+        "password": "$2y$10$NlEfMctma0JKpNmIhveI5.djH1sbTQLmMIlzxNMV8LfZF3BowRZeG",
+        "roles": [
+            "admin"
+        ],
+        "id": "61bf08a69e075"
+    },
+    "61d18513c21b6": {
+        "username": "LinDucii",
+        "password": "$2y$10$tBJ\/G61b\/nJED3bPgymMnuc4e4Rshfg3tv\/wwPsmWL6ydq7ShzKf2",
+        "roles": [
+            "user"
+        ],
+        "id": "61d18513c21b6"
+    }
+}

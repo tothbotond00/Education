@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>Oszlopdiagram</title>
+</head>
+<body>
+    <h1>Oszlopdiagram</h1>
+    <table id="table">
+        <th id=""></th>
+        <tr style="background-color: #FFBCAE;">
+            <td>Piros:</td>
+            <td><input type="range" id="red" min="0" max="400" value="0" step="1">
+            <span id="redSpan">0</span>
+            </td>
+            <td rowspan="3" style="background-color: #faffb5;">
+                <input type="checkbox" id="animate"> <label for="animate">Animáció</label><br>
+            </td>
+        </tr>
+        <tr style="background-color: #99fc92;">
+            <td>Zöld:</td>
+            <td><input type="range" id="green" min="0" max="400" value="0" step="1">
+            <span id="greenSpan">0</span></td>
+        </tr>
+        <tr style="background-color: #aef3fc;">
+            <td>Kék:</td>
+            <td><input type="range" id="blue" min="0" max="400" value="0" step="1">
+            <span id="blueSpan">0</span></td>
+        </tr>
+    </table>
+    <canvas width="300" height="400" id="canvas"></canvas><br>
+
+    <script src="index.js"></script>
+</body>
+</html>

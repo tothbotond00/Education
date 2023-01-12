@@ -1,0 +1,63 @@
+{
+    "619508e118de1": {
+        "name": "James Cameron",
+        "email": [
+            "james@cameron.com"
+        ],
+        "phone": "+3456789\u00f6",
+        "address": "Hawaii",
+        "notes": "Good director",
+        "sex": "male",
+        "user_id": "61a77771cc8bf",
+        "id": "619508e118de1"
+    },
+    "61950f19580e3": {
+        "name": "sdfghjk",
+        "email": [
+            "qdwqefrv",
+            ""
+        ],
+        "phone": "",
+        "address": "",
+        "notes": "",
+        "sex": "male",
+        "user_id": "61a77771cc8bf",
+        "id": "61950f19580e3"
+    },
+    "619510bebe3f6": {
+        "name": "Zendaya",
+        "email": [
+            "",
+            ""
+        ],
+        "phone": "",
+        "address": "",
+        "notes": "",
+        "user_id": "61a77cbe3f0a0",
+        "id": "619510bebe3f6"
+    },
+    "61a774c0281bf": {
+        "name": "Tom Holland",
+        "email": [
+            "asd@asd.hu"
+        ],
+        "phone": "",
+        "address": "",
+        "notes": "",
+        "sex": "male",
+        "user_id": "61a77cbe3f0a0",
+        "id": "61a774c0281bf"
+    },
+    "61a77eb091d71": {
+        "name": "q",
+        "email": [
+            "q@q.hu"
+        ],
+        "phone": "",
+        "address": "",
+        "notes": "",
+        "sex": "male",
+        "user_id": "61a77cbe3f0a0",
+        "id": "61a77eb091d71"
+    }
+}

@@ -1,0 +1,16 @@
+body {
+  perspective-origin: center;
+  perspective: 1000px;
+  background-color: black;
+  color: wheat;
+}
+#main {
+  width: 50%;
+  margin: 0 auto;
+  transform-origin: top;
+  transform: rotateX(0deg);
+  transition: all 1s;
+  background-color: white;
+  color: black;
+  padding: 10px;
+}

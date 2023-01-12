@@ -1,0 +1,39 @@
+@import 'https://fonts.googleapis.com/css2?family=Thasadith&display=swap';
+
+.error {
+    color : red;
+}
+
+.winner {
+    color: #71f76a ;
+}
+
+.loser {
+    color: #f56e6e ;
+}
+
+.draw {
+    color : #eef56c;
+}
+
+body {
+    font-family: 'Thasadith', Arial,Verdana,sans-serif;
+    background-color: #639cd9;
+    font-weight:bold;
+}
+
+table, th, td{
+    border: 1px solid black;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+h1,h2 {
+    color: #220e24;
+}
+
+th {
+    background-color: #5454c5;
+}

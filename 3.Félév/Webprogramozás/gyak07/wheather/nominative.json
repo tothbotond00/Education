@@ -1,0 +1,22 @@
+[
+    {
+        "place_id": 1286434,
+        "licence": "Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "osm_type": "node",
+        "osm_id": 317179427,
+        "boundingbox": [
+            "52.5460441",
+            "52.5461441",
+            "13.35913",
+            "13.35923"
+        ],
+        "lat": "52.5460941",
+        "lon": "13.35918",
+        "display_name": "Kamps, Müllerstraße, Sprengelkiez, Wedding, Mitte, Berlin, 13353, Németország",
+        "class": "shop",
+        "type": "bakery",
+        "importance": 0.30100000000000005,
+        "icon": "https://nominatim.openstreetmap.org/ui/mapicons//shopping_bakery.p.20.png"
+    }
+]
+
