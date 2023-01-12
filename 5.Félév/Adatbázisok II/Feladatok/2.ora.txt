@@ -1,0 +1,194 @@
+Házi.
+Írják meg az alábbi 14. feladatban szereplő procedúrát.
+Azt, hogy az output helyes-e ellenőrizni tudják a feladat után megadott 'CHECK_PLSQL'
+procedúra futtatásával.
+A feladat célja, hogy átismételjék a PL/SQL nyelv legfontosabb konstrukciót.
+
+----
+Trigger és szekvencia gyakorlás
+
+CREATE SEQUENCE gyak2_seq 
+INCREMENT BY 10 START WITH 10;
+
+create table gyak2_dolgozok as
+select * from NIKOVITS.dolgozo;
+
+CREATE OR REPLACE TRIGGER gyak2_trigger 
+BEFORE INSERT ON gyak2_dolgozok 
+FOR EACH ROW 
+WHEN (new.dkod is null) 
+BEGIN
+  :new.dkod := gyak2_seq.nextval;
+END;
+/
+
+select * from gyak2_dolgozok;
+
+Adattárolással kapcsolatos fogalmak
+-----------------------------------
+(DBA_TABLES, DBA_DATA_FILES, DBA_TEMP_FILES, DBA_TABLESPACES, DBA_SEGMENTS, DBA_EXTENTS, DBA_FREE_SPACE)
+
+1.
+Adjuk meg az adatbázishoz tartozó adatfile-ok (és temporális fájlok) nevét és méretét
+méret szerint csökkenő sorrendben. (név, méret)
+
+select file_name, bytes
+from dba_temp_files
+ORDER BY bytes desc;
+
+2.
+Adjuk meg, hogy milyen táblaterek vannak létrehozva az adatbazisban,
+az egyes táblaterek hány adatfájlbol állnak, és mekkora az összméretük.
+(tablater_nev, fajlok_szama, osszmeret)
+!!! Vigyázat, van temporális táblatér is.
+
+select tablespace_name, count(file_id), sum(bytes)
+from dba_data_files
+group by tablespace_name;
+
+3.
+Mekkora az adatblokkok merete a USERS táblatéren?
+
+select block_size from dba_tablespaces where tablespace_name = 'USERS';
+
+4.
+Van-e olyan táblatér, amelynek nincs DBA_DATA_FILES-beli adatfájlja?
+Ennek adatai hol tárolódnak? -> DBA_TEMP_FILES
+
+select * 
+from dba_tablespaces
+where tablespace_name not in 
+(select tablespace_name 
+from dba_data_files);
+
+5.
+Melyik a legnagyobb méretű tábla szegmens az adatbázisban és hány extensből áll? 
+(tulajdonos, szegmens_név, darab)
+(A particionált táblákat most ne vegyük figyelembe.)
+
+select se.segment_name, se.bytes, count(ex.extent_id)
+from dba_segments se
+left join dba_extents ex on ex.segment_name = se.segment_name
+where se.bytes in (select max(bytes) from dba_segments)
+group by se.segment_name, se.bytes;
+
+6.
+Melyik a legnagyobb meretű index szegmens az adatbázisban és hány blokkból áll?
+(tulajdonos, szegmens_név, darab)
+(A particionalt indexeket most ne vegyuk figyelembe.)
+
+select se.segment_name, se.bytes, sum(ex.blocks)
+from dba_segments se
+left join dba_extents ex on ex.segment_name = se.segment_name
+where se.bytes in (select max(bytes) from dba_segments where segment_type = 'INDEX')
+and se.segment_type = 'INDEX'
+group by se.segment_name, se.bytes;
+
+7.
+Adjuk meg adatfájlonkent, hogy az egyes adatfájlokban mennyi a foglalt 
+hely osszesen. (fájlnév, fájl_méret, foglalt_hely)
+
+select file_name, maxbytes ,bytes 
+from dba_data_files;
+
+8.
+Melyik két felhasznalo objektumai foglalnak osszesen a legtobb helyet az adatbazisban?
+Vagyis ki foglal a legtöbb helyet, és ki a második legtöbbet?
+
+select owner,sum(bytes) from DBA_SEGMENTS 
+        where owner<> 'SYS' 
+            GROUP BY owner
+                order by sum(bytes) desc
+                    FETCH FIRST 2 ROWS ONLY;
+
+9.
+Hány extens van a 'users02.dbf' adatfájlban? Mekkora ezek összmérete? (darab, össz)
+
+select count(ex.extent_id), sum(ex.bytes)
+from dba_data_files fi
+left join dba_extents ex on fi.file_id = ex.file_id
+where fi.file_name like '%/users02.dbf';
+
+Hány összefüggő szabad terület van a 'users02.dbf' adatfájlban? Mekkora ezek összmérete? (darab, össz)
+
+select sum(bytes) 
+from dba_free_space
+where file_id = (select file_id from dba_data_files where file_name like '%/users02.dbf' );
+
+Hány százalékban foglalt a 'users02.dbf' adatfájl?
+
+WITH total(bytes) as
+     (select sum(ex.bytes)
+      from dba_data_files fi
+      left join dba_extents ex on fi.file_id = ex.file_id
+      where fi.file_name like '%/users02.dbf'),
+     free(bytes) as
+     (select sum(bytes) 
+      from dba_free_space
+      where file_id = (select file_id from dba_data_files where file_name like '%/users02.dbf'))
+      select (t.bytes/(t.bytes + f.bytes)) * 100
+      from total t, free f;
+
+10.
+Van-e a NIKOVITS felhasználónak olyan táblája, amelyik több adatfájlban is foglal helyet? (Aramis)
+
+select segment_name
+from dba_extents
+where owner = 'NIKOVITS'
+and segment_type = 'TABLE'
+group by segment_name
+having count(distinct(file_id)) >= 2;
+
+11.
+Válasszunk ki a fenti táblákból egyet (pl. tabla_123) és adjuk meg, hogy ez a 
+tábla mely adatfájlokban foglal helyet.
+
+select df.file_name
+from dba_extents e
+left join dba_data_files df on e.file_id = df.file_id
+where e.owner = 'NIKOVITS'
+and e.segment_type = 'TABLE'
+and e.segment_name = 'TABLA_123'
+group by e.segment_name, e.file_id, df.file_name;
+
+12.
+Melyik táblatéren van az ORAUSER felhasználó DOLGOZO táblája? (táblatér)
+
+select tablespace_name 
+from dba_tables
+where owner = 'ORAUSER'
+and table_name = 'DOLGOZO';
+
+13.
+Melyik táblatéren van a NIKOVITS felhasználó ELADASOK táblája? (táblatér)
+(Miért lesz null?)
+
+select tablespace_name 
+from dba_tables
+where owner = 'NIKOVITS'
+and table_name = 'ELADASOK';
+
+-----------------------------------------------------------------------
+14.
+Írjunk meg egy PLSQL procedúrát, amelyik a paraméterül kapott felhasználónévre kiírja 
+a felhasználó legutoljára létrehozott tábláját, annak méretét byte-okban, valamint a létrehozás
+dátumát. Az output formátuma a következő legyen:
+
+Table_name: NNNNNN   Size: SSSSSS bytes   Created: yyyy.mm.dd.hh:mi
+
+CREATE OR REPLACE PROCEDURE newest_table(p_user VARCHAR2) IS 
+...
+Teszt:
+SET SERVEROUTPUT ON
+EXECUTE newest_table('NIKOVITS');
+
+Ellenőrzés:
+----------
+EXECUTE check_plsql('newest_table(''nikovits'')');
+
+Megjegyzés!
+Próbáljuk ki a procedúrát saját magunkra az alábbi tábla létrehozása után:
+  CREATE TABLE t_without_segment(o INT) SEGMENT CREATION DEFERRED;
+Majd szúrjunk be 1 sort és próbáljuk ki újra.
+  INSERT INTO t_without_segment VALUES(100);
+-----------------------------------------------------------------------

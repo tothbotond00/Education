@@ -1,0 +1,235 @@
+Házi:
+create table gyak01 as select table_name from dba_tables
+where owner = 'NIKOVITS'
+and table_name like '%B%';
+
+1.
+Kinek a tulajdonában van a DBA_TABLES nevű nézet, illetve a DUAL nevű tábla? [owner, object_name, object_type]
+
+select distinct(owner)
+from dba_objects 
+where (object_name = 'DUAL' AND object_type = 'TABLE' )
+Intersect 
+select distinct(owner)
+from dba_objects 
+where (object_name = 'DBA_TABLES' AND object_type = 'VIEW');
+
+2.
+Kinek a tulajdonában van a DBA_TABLES nevű, illetve a DUAL nevű szinonima? [owner, object_name, object_type]
+  Az iménti két lekérdezés megmagyarázza, hogy miért tudjuk elérni a DUAL táblát, illetve a DBA_TABLES
+  nézetet anélkül, hogy minősítenénk őket a tulajdonos nevével így -> tulajdonos.objektum.
+
+select distinct(owner)
+from dba_objects 
+where (object_name = 'DUAL' AND object_type = 'SYNONYM' )
+and (object_name = 'DBA_TABLES' AND object_type = 'SYNONYM');
+
+3.
+Milyen típusú objektumai vannak az orauser nevű felhasználónak az adatbázisban? [object_type]
+
+select DISTINCT(object_type)
+from dba_objects 
+where owner='ORAUSER';
+
+4.
+Hány különböző típusú objektum van nyilvántartva az adatbázisban? [darab]
+
+select COUNT(DISTINCT(object_type))
+from dba_objects;
+
+5.
+Melyek ezek a típusok? [object_type]
+
+select DISTINCT(object_type)
+from dba_objects;
+
+6.
+Kik azok a felhasználók, akiknek több mint 10 féle objektumuk van? [owner]
+
+select owner
+from dba_objects
+group by owner
+having count(distinct(object_type)) > 10;
+
+7.
+Kik azok a felhasználók, akiknek van triggere és nézete is? [owner]
+
+(select distinct(owner)
+from dba_objects
+where object_type = 'VIEW')
+INTERSECT
+(select distinct(owner)
+from dba_objects
+where object_type = 'TRIGGER');
+
+8.
+Kik azok a felhasználók, akiknek van nézete, de nincs triggere? [owner]
+
+(select distinct(owner)
+from dba_objects
+where object_type = 'VIEW')
+MINUS
+(select distinct(owner)
+from dba_objects
+where object_type = 'TRIGGER')
+
+9.
+Kik azok a felhasználók, akiknek több mint n táblájuk, de maximum m indexük van? [owner]
+(n és m értékét adjuk meg úgy, hogy kb. 1-15 között legyen a sorok száma, pl. n=20, m=15)
+
+(select owner
+from dba_objects
+where object_type = 'TABLE'
+group by owner
+having count(object_type) > 20)
+INTERSECT
+(select owner
+from dba_objects
+where object_type = 'INDEX'
+group by owner
+having count(object_type) < 15);
+
+10.
+Melyek azok az objektum típusok, amelyek tényleges tárolást igényelnek, vagyis
+tartoznak hozzájuk adatblokkok? [object_type]
+ (Az olyan objektumoknak, amik nem igényelnek tényleges tárolást, pl. nézet, szinonima,
+  csak a definíciója tárolódik az adatszótárban. A megoldáshoz a data_object_id oszlopot
+  vizsgáljuk meg.)
+
+select DISTINCT(object_type)
+from dba_objects
+where data_object_id is not null;
+
+11.
+Melyek azok az objektum típusok, amelyek nem igényelnek tényleges tárolást, vagyis nem
+tartoznak hozzájuk adatblokkok? [object_type]
+ Az utóbbi két lekérdezés metszete nem üres. Vajon miért? -> lásd majd partícionálás
+
+select DISTINCT(object_type)
+from dba_objects
+where data_object_id is null;
+
+12.
+Keressük meg az utóbbi két lekérdezés metszetét. [object_type]
+ (Ezek olyan objektum típusok, amelyekből előfordul adatblokkokal rendelkező
+ és adatblokkokal nem rendelkező is.)
+
+(select DISTINCT(object_type)
+from dba_objects
+where data_object_id is not null)
+INTERSECT
+(select DISTINCT(object_type)
+from dba_objects
+where data_object_id is null);
+
+
+Táblák oszlopai (DBA_TAB_COLUMNS)
+---------------------------------
+Az alábbi kérdésekkel egy tábla oszlopait vizsgálhatjuk meg részletesen, vagyis
+az oszlop nevét, sorszámát (hányadik oszlop), típusát, azt hogy elfogadja-e a NULL
+értéket, van-e alapértelmezett értéke, stb.
+--------------------------------------------------------------------------------
+
+13.
+Hány oszlopa van a nikovits.emp táblának? [darab]
+
+select COUNT(column_name) 
+from dba_tab_columns
+where owner = 'NIKOVITS'
+AND table_name = 'EMP';
+
+14.
+Milyen típusú a nikovits.emp tábla 6. oszlopa? [data_type]
+
+select data_type
+from dba_tab_columns
+where owner = 'NIKOVITS'
+AND table_name = 'EMP'
+AND column_id = 6;
+
+15.
+Adjuk meg azoknak a tábláknak a tulajdonosát és nevét, amelyeknek van 'Z' betűvel 
+kezdődő oszlopa. [owner, table_name]
+
+select owner, table_name
+from dba_tab_columns
+where column_name LIKE 'Z%';
+
+16.
+Adjuk meg azoknak a tábláknak a tulajdonosát és nevét, amelyeknek legalább 8 
+darab dátum tipusú oszlopa van. [owner, table_name]
+
+select owner, table_name
+from dba_tab_columns
+where data_type = 'DATE'
+group by owner, table_name
+having COUNT(data_type) >= 8;
+
+
+17.
+Adjuk meg azoknak a tábláknak a tulajdonosát és nevét, amelyeknek 1. es 4. oszlopa is
+VARCHAR2 tipusú, az oszlop hossza mindegy. [owner, table_name]
+
+(select owner, table_name
+from dba_tab_columns
+where column_id = 1 and data_type = 'VARCHAR2')
+INTERSECT
+(select owner, table_name
+from dba_tab_columns
+where column_id = 4 and data_type = 'VARCHAR2');
+
+-----------------------------------------------------------------------
+18.
+Írjunk meg egy PLSQL procedúrát, amelyik a paraméterül kapott karakterlánc alapján 
+kiírja azoknak a tábláknak a nevét és tulajdonosát, amelyek az adott karakterlánccal 
+kezdődnek. (Ha a paraméter kisbetűs, akkor is működjön a procedúra!)
+A fenti procedúra segítségével írjuk ki a Z betűvel kezdődő táblák nevét és tulajdonosát.
+CREATE OR REPLACE PROCEDURE table_print(p_kar VARCHAR2) IS 
+...
+SET SERVEROUTPUT ON
+EXECUTE table_print('Z');
+
+CREATE OR REPLACE PROCEDURE table_print(p_kar VARCHAR2) IS
+    n_kar VARCHAR2(255);
+BEGIN        
+    n_kar := CONCAT(UPPER(p_kar),'%');
+    Select owner, table_name
+    from dba_tables
+    where table_name LIKE n_kar;
+END;
+/ !!!! kell into még
+
+
+
+-----------------------------------------------------------------------
+
+Példa
+=======================================================================
+Futtassuk le az alábbi SQL és PL/SQL utasításokat és nézzük meg, hogy
+mi kerül a táblába.
+=======================================================================
+CREATE TABLE test1(col1 INTEGER PRIMARY KEY, col2 VARCHAR2(20));
+
+CREATE SEQUENCE seq1 
+MINVALUE 1 MAXVALUE 100 INCREMENT BY 5 START WITH 50 CYCLE;
+
+CREATE OR REPLACE TRIGGER test1_bir -- before insert row
+BEFORE INSERT ON test1 
+FOR EACH ROW 
+WHEN (new.col1 is null) 
+BEGIN
+  :new.col1 := seq1.nextval;
+END;
+/
+BEGIN
+ FOR i IN 1..14 LOOP 
+  INSERT INTO test1 VALUES(null, 'trigger'||to_char(i,'FM09'));
+ END LOOP;
+ INSERT INTO test1 VALUES(seq1.currval + 1, 'sequence + 1'); 
+ COMMIT;
+END;
+/
+SELECT * FROM test1 ORDER BY col2;
+
+DROP TABLE test1;    -- a trigger is törlődni fog
+DROP sequence seq1;  -- a szekvencia nincs a táblához kötve

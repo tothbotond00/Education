@@ -1,0 +1,62 @@
+<Pig#0,20kg>: Beware world, for I'm here now!
+<Pig#1,20kg>: Beware world, for I'm here now!
+<Pig#2,20kg>: Beware world, for I'm here now!
+<Pig#1,30kg>: Bless me, Father, for I have sinned.
+<Pig#1,47kg>: Holy crap, I just ate light!
+<Pig#0,20kg>: I have endured unspeakable horrors. Farewell, world!
+<Pig#2,38kg>: Holy crap, I just ate light!
+<Pig#1,66kg>: Bless me, Father, for I have sinned.
+<Pig#2,38kg>: I have endured unspeakable horrors. Farewell, world!
+<Pig#1,80kg>: Holy crap, I just ate light!
+<Pig#1,92kg>: Holy crap, I just ate light!
+<Pig#1,103kg>: Holy crap, I just ate light!
+<Pig#1,113kg>: Holy crap, I just ate light!
+<Pig#1,56kg>: This vessel can no longer hold the both of us!
+<Pig#3,56kg>: Beware world, for I'm here now!
+<Pig#3,84kg>: Bless me, Father, for I have sinned.
+<Pig#3,96kg>: Holy crap, I just ate light!
+<Pig#1,56kg>: I have endured unspeakable horrors. Farewell, world!
+<Pig#3,107kg>: Holy crap, I just ate light!
+<Pig#3,117kg>: Holy crap, I just ate light!
+<Pig#3,58kg>: This vessel can no longer hold the both of us!
+<Pig#4,58kg>: Beware world, for I'm here now!
+<Pig#4,87kg>: Bless me, Father, for I have sinned.
+<Pig#3,58kg>: I have endured unspeakable horrors. Farewell, world!
+<Pig#4,99kg>: Holy crap, I just ate light!
+<Pig#4,110kg>: Holy crap, I just ate light!
+<Pig#4,55kg>: This vessel can no longer hold the both of us!
+<Pig#5,55kg>: Beware world, for I'm here now!
+<Pig#5,82kg>: Bless me, Father, for I have sinned.
+<Pig#4,55kg>: I have endured unspeakable horrors. Farewell, world!
+<Pig#5,94kg>: Holy crap, I just ate light!
+<Pig#5,105kg>: Holy crap, I just ate light!
+<Pig#5,115kg>: Holy crap, I just ate light!
+<Pig#5,57kg>: This vessel can no longer hold the both of us!
+<Pig#6,57kg>: Beware world, for I'm here now!
+<Pig#6,85kg>: Bless me, Father, for I have sinned.
+<Pig#5,57kg>: I have endured unspeakable horrors. Farewell, world!
+<Pig#6,97kg>: Holy crap, I just ate light!
+<Pig#6,108kg>: Holy crap, I just ate light!
+<Pig#6,118kg>: Holy crap, I just ate light!
+<Pig#6,59kg>: This vessel can no longer hold the both of us!
+<Pig#7,59kg>: Beware world, for I'm here now!
+<Pig#7,88kg>: Bless me, Father, for I have sinned.
+<Pig#6,59kg>: I have endured unspeakable horrors. Farewell, world!
+<Pig#7,100kg>: Holy crap, I just ate light!
+<Pig#7,110kg>: Holy crap, I just ate light!
+<Pig#7,55kg>: This vessel can no longer hold the both of us!
+<Pig#8,55kg>: Beware world, for I'm here now!
+<Pig#8,82kg>: Bless me, Father, for I have sinned.
+<Pig#7,55kg>: I have endured unspeakable horrors. Farewell, world!
+<Pig#8,94kg>: Holy crap, I just ate light!
+<Pig#8,105kg>: Holy crap, I just ate light!
+<Pig#8,115kg>: Holy crap, I just ate light!
+<Pig#8,57kg>: This vessel can no longer hold the both of us!
+<Pig#9,57kg>: Beware world, for I'm here now!
+<Pig#9,85kg>: Bless me, Father, for I have sinned.
+<Pig#9,97kg>: Holy crap, I just ate light!
+<Pig#8,57kg>: I have endured unspeakable horrors. Farewell, world!
+<Pig#9,108kg>: Holy crap, I just ate light!
+<Pig#9,118kg>: Holy crap, I just ate light!
+<Pig#9,59kg>: This vessel can no longer hold the both of us!
+<Pig#9,59kg>: Look on my works, ye Mighty, and despair!

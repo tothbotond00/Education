@@ -1,0 +1,99 @@
+<hr class="solid" style="border-top: 5px solid grey;" />
+<h1 style="text-align: center;">Tudnivalók</h1>
+<hr class="solid" style="border-top: 5px solid grey;" />
+
+<h4>Segédfájlok</h4>
+<p style="text-align: justify; color:red">skeleton + example output placeholder</p>
+
+<hr class="solid" style="border-top: 1px solid grey;" />
+<h4>Feladatok és értékelés</h4>
+<p style="text-align: justify;">A beadandó három egymásra épülő feladatból áll. A megoldást kezd az alapfeladat elkészítésével, majd ha ezzel készen vagy kiegészítheted a programodat a második, kiegészítő feladatban foglaltakkal. A harmadik, szorgalmi feladatot nem szükséges megoldanod a maximálisan adható 15 pontért.</p>
+<p style="text-align: justify;">Az alapfeladatot mindenképp meg kell oldanod. Az alapfeladatnak vannak részfeladatai melyek kihagyásával (vagy lebutításával) a programod még működni fog. Részlegesen megoldott alapfeladatért részpontokat lehet kapni. A sikeres beadandó feltétele, hogy az alaprogramod működjön, azaz fordítható és futtatható legyen.</p>
+<p style="text-align: justify;">Újabb feladat rossz megoldásával elronthatod a meglévő, részlegesen kész, de működőképes programodat. Ha már van egy működőképes programod, akkor a további részfeladatokat érdemes új fájlba készítened.</p>
+<p style="text-align: justify;">A feladat szövege azért ennyire hosszú, mert olvasmányos. Maga a program, amit el kell készítened kifejezetten rövid. A teljes feladatsor megoldható egyetlen fájlból álló, kommentek és üres sorok nélkül 100 sor körüli programmal.</p>
+
+<hr class="solid" style="border-top: 1px solid grey;" />
+<h4>Beadás</h4>
+<p style="text-align: justify;">Beadáskor az alapfeladathoz és a kiegészítő feladathoz is legfeljebb 1-1 fájlt adhatsz be. Természetesen a kiegészítő feladat tartalmazza az alapfeladatot is, de értékelésnél külön kapsz pontot a két feladatra. Tehát ha pl van 5 biztonsági mentésed az alapfeladathoz és 3 a kiegészítő feladathoz, akkor kiválasztod a legjobbra sikerült alapfeladat és legjobbra sikerült kiegészítő feladat megoldásodat.</p>
+<p style="text-align: justify;">A megoldásaidat zippelve add be. Az állomány neve legyen a neptun kódod. Az állományon belül Task1 és Task2 mappában legyen elhelyezve az alapfeladat és kiegészítő feladat megoldásod. Egy megoldás egyetlen <code>PigMent.java</code> fájlból kell hogy álljon. Szorgalmi esetén hasonlóan kell eljárni, legyen Task3 mappád is!</p>
+
+<hr class="solid" style="border-top: 1px solid grey;" />
+<h4>Segédeszközök</h4>
+<p style="text-align: justify;">A feladat könnyebb nyomonkövetése érdekében az osztályok, metódusok és változók nevei meg vannak adva az egyes feladatleírásokban. A csak ezen neveket tartalmazó <code>PigMent.java</code> kezdőfájlból indulj ki, így nem telik idő azzal, hogy a feladatból egyesével kibogarászod és átmásolod a változóneveket. A kiindulófájl elején az egyes <code>String</code> értékeket is láthatod, melyeket a program egyes pontjain képernyőre kell kiírni. Ez hasonlóan azt a célt szolgálja, hogy kódolás közben ne kelljen abbahagynod a munkádat, és elkezdened keresgélni a feladat szövegében. </p>
+<p>A csupa nagybetűs nevek konstansokat jelölnek. Ezek megtalálhatók már beállított értékkel a kiindulófájlban.</p>
+<p>A feladatleírásban a "tömeg", "méret" és "súly" szinonimák. Ebben a kitalált világban a gravitációs mező uniform. Sűrűségkülönbségekkel nem foglalkozunk.</p>
+
+<br>
+
+<hr class="solid" style="border-top: 5px solid green;" />
+<h1 style="text-align: center;">Alapfeladat (9p)</h1>
+<h3 style="text-align: center;">Executor, Runnable, synchronized, AtomicInteger, wait-notify</h3>
+<h4 style="text-align: center; color: gray"><i>Difficulty: I can do this!</i></h4>
+<hr class="solid" style="border-top: 5px solid green;" />
+
+<h4>Story Time</h4>
+<p style="text-align: justify;">A <i>PigMent</i> nevű bolygón az élővilág a föld alá bújt a forró nap elől. Kivételt képez ez alól egy furcsa disznófaj, mely adaptálódott a kegyetlen környezethez. Egy furcsa mutáció következtében megjelent a bőrükben egy lila pigment, mely segítségével a káros ultraibolya sugárzás nagyrészét visszaverik, az elnyelt fényből pedig fotoszintézissel energiát fejlesztenek. A disznók gendersemlegesek, így ha elérnek egy bizonyos méretet, akkor a baktériumokhoz hasonlóan osztódással szaporodnak. Minden egyes disznó önálló akarattal és döntéshozói képességgel rendelkezik, így minden egyes disznót külön, a többi disznóval párhuzamosan kell kezelned a program során.</p>
+
+<hr class="solid" style="border-top: 1px solid green;" />
+<h4>pigSleep - 1 pont</h4>
+<p style="text-align: justify;">Nem minden azonnal történik. A nagy dolgokra várni kell.. vagy aludni..</p>
+<p style="text-align: justify;">Ez itt sincs másként, a disznók társadalmában is van néha üresjárat. Ehhez írd meg a <code>pigSleep()</code> metódust, mely <code>TICK_MIN</code> és <code>TICK_MAX</code> milliszekundum közötti ideig blokkolja a hívó szálat.</p>
+
+<hr class="solid" style="border-top: 1px solid green;" />
+<h4>PhotoPig - 1 pont</h4>
+<p style="text-align: justify;">A disznófajt egy <code>PhotoPig</code> névre hallgató osztály írja le. Ahhoz, hogy nyomon tudjuk követni az egyes disznókat, minden egyes példánynak egyedi azonosítója van (<code>id</code>). Továbbá születéskor parametrikusan állítható a tömegük (<code>mass</code>), melyet szintén tárol az osztály.</p>
+<p style="text-align: justify;">Gondoskodj róla, hogy a konstruktorban a tömeg a paraméterként kapott érték legyen, valamint egy globálisan elérhető <code>AtomicInteger</code> segítségével old meg (ezt is nevezheted <code>id</code>-nek), hogy minden disznó példány azt a számot kapja azonosítónak ahányadikként született.</p>
+
+<hr class="solid" style="border-top: 1px solid green;" />
+<h4>pigSay - 1 pont</h4>
+<p style="text-align: justify;"> A malacok bár jól tűrik az időjárás viszontagságait, a nagy hőségben kissé megfőtt az agyuk. Emiatt hajlamosak rendszeresen ostobaságokat kiabálni.</p>
+<p style="text-align: justify;">A <code>pigSay(String msg)</code> metódus megírásával adj hangot a röfiknek. A metódus konzolra írjon ki, valamint a <code>msg</code> elé írja ki azt is, hogy ki szólalt épp meg. Ehhez az azonosítót és a tömeget is írd az üzenet elé.</p>
+<p style="text-align: justify;">Egyszerre csak egy disznó beszélhessen! Máskülönben csak hangzavar lenne.</p>
+
+<hr class="solid" style="border-top: 1px solid green;" />
+<h4>eatLight() és run() - 4 pont</h4>
+<p style="text-align: justify;">A disznók az anyagcseréjük során folyamatosan veszítenek a tömegükből. A katabolikus (lebontó) anyagcserefolyamatokat az anabolikus (építő) anyagcserefolyamatok kompenzálják. Ehhez viszont építőanyagra van szükség. Emiatt szoktak az emberek enni. Itt viszont fotoszintetizáló disznók vannak, ezért náluk ez picit máshogy történik. Ők evés helyett kifekszenek a napra aludni. Ha megszívták magukat fénnyel elindulnak hazafele. A hazafele vezető úton az építő folyamatok lezajlanak a szervezetükben, ezért izmosabbak, zsírosabbak, tehát nagyobbak lesznek, mint ezelőtt. Ha elérnek egy bizonyos kritikus tömeget, akkor osztódással kettéválnak. Az eredeti disznó is megmarad, viszont a tömegének fele öntudatra ébred és leválik az anyatestről.</p>
+<p style="text-align: justify;">A <code>PhotoPig</code> osztály egy <code>Runnable</code> implementáció legyen, így egy <code>ExecutorService</code> objektumba (<code>pigPool</code>) bedobálhatók az egyes disznók. Biztosítsd, hogy mindegyik disznó a többi disznóval párhuzamosan élhessen!</p>
+<p style="text-align: justify;">A disznók életének kezdete a <code>"Beware world, for I'm here now!"</code> kiáltással kezdődjön és az <code>"I have endured unspeakable horrors. Farewell, world!"</code> sóhajjal végződjön. A kettő között újra és újra kifekszenek sütkérezni. A napozást és következményét (osztódás) tedd az <code>eatLight()</code> metódusba. Visszatérési értéke azt jelezze, hogy napozás közben elérte-e a röfit a végzete. A metódus térjen vissza <code>true</code> értékkel, ha a disznó még életben van. Addig legyen újra és újra meghívva az <code>eatLight()</code> metódus amíg <code>false</code> érték nem jön. Az alapfeladatban még nem tudnak az állatok elpusztulni, ezért itt egy végtelen ciklus alakul ki. Ez teljesen normális, ez nem hiba!</p>
+<p style="text-align: justify;">Az <code>eatLight()</code> metódus kezeli az anabolikus (tömegnövelő) és katabolikus (tömegcsökkentő) folyamatokat is. Miután a disznó egy <code>pigSleep()</code> erejére kifeküdt a napra elkezdhetjük összeszámolni a változásokat. A napozásból kapott tömeget a belső szervek kapacitása szabja meg, ezért ez a disznó tömegétől független. Kapjon fixen <code>FEED</code> értékben extra tömeget. Az elvesztett tömeg már függ a disznó súlyától, veszítsen <code>mass / BMR</code> értékben tömeget. Vegyük észre, hogy minél magasabb a disznó súlya, annál rosszabb a kapott, illetve elvesztett tömeg aránya. Ha ez az arányszám 50%-nál kedvezőtlenebb, akkor a disznó osztódjon ketté! Segítségként itt a képlet: <code>mass / BMR > FEED / 2</code>, ha ez teljesül, akkor még az <code>eatLight()</code> metódus végén menjen végbe az osztódás. Az eredeti disznó megmarad fele tömeggel. A tömeg másik felével új disznót hozzon létre, mely az <code>ExecutorService pigPool</code> segítségével életre kelti önmagát. Ha elértük a <code>MAX_POP</code> érték által jelzett születésszámot, akkor az újszülött véletlen se keljen életre!</p>
+<p style="text-align: justify;">Fény evést követően a disznók örömükben a <code>"Holy crap, I just ate light!"</code>, osztódáskor pedig a <code>"This vessel can no longer hold the both of us!"</code> butaságot harsogják.</p>
+
+<hr class="solid" style="border-top: 1px solid green;" />
+<h4>main() - 2 pont</h4>
+<p style="text-align: justify;">A szimuláció kezdetben indítson útnak <code>INIT_POP</code> darabszámú disznót. Mindegyik tömege kezdetben <code>INIT_MASS</code> értékű legyen.</p>
+<p style="text-align: justify;">Ha a globális disznó számláló elérte a <code>MAX_POP</code> értéket, akkor az újonnan születő disznó adjon le jelzést, mely hatására a szimuláció fejeződjön be. Elméletben a szimuláció végtelen ideig futhat, gyakorlatban viszont szeretnénk egy bizonyos disznó születésszám után megszakítani. Mivel megszakítjuk a szimulációt, nem pedig megvárjuk a befejeződését, ezért nem kell finomkodni "szép" leállással. Teljesen rendben van, ha a <code>pigPool.shutdownNow()</code> segítségével azonnal terminálod az összes futó szálat.</p>
+
+<hr class="solid" style="border-top: 5px solid orange;" />
+<h1 style="text-align: center;">Kiegészítő feladat (6p)</h1>
+<h3 style="text-align: center;">BlockingQueue, ReentrantLock, Condition</h3>
+<h4 style="text-align: center;; color: gray"><i>Difficulty: I mean.. I like a challange, right? Right?!</i></h4>
+<hr class="solid" style="border-top: 5px solid orange;" />
+
+<h4>Story Time</h4>
+<p style="text-align: justify;">A disznók a sok napkitörés okozta gammasugárzástól olyannyira megőrültek, hogy nem vetik már meg a kannibalizmust sem. Ez - ők szerintük - csupán egy hatékonyabb, gyorsabb formája a táplálkozásnak. A disznók immáron nem csupán napozni jönnek elő rejtekhelyükről, hanem vadászni is.</p>
+<p style="text-align: justify;">Először sétálgatnak a forgalmasabb helyeken préda után nézelődve. Ha találnak náluk nem nagyobb disznót, akkor azt kinézik eleségnek. Nézelődés közben megeshet viszont, hogy egy másik disznó őt nézi ki uzsonnának. Miután megvan a célpont a disznó elrejtőzik, ekkor már őt sem látja a többi éhes disznó. Ha eddig őt sem ették meg, akkor ezen vadászat során már nem is fogják.</p>
+<p style="text-align: justify;">Ha nem talált zsákmányt, vagy miközben ő elrejtőzködött más már elejtette a zsákmányát, esetleg a préda meglógott, akkor a vadászat sikertelen. Egyéb esetben a vadászat sikeres és a préda súlyának felével fog gazdagodni a disznó. Az elejtett disznó élete véget ér.</p>
+<p style="text-align: justify;"></p>A vadászat sikerességtől függetlenül fárasztó, ezért hazaindulás előtt a disznók még kifekszenek a napra pihenni. Ekkor újból láthatóvá válnak a többi vadász számára. Cserébe viszont a fotoszintézis után is megkapják az extra tömeget. Ha addigra, mire felébred még nem ették meg, akkor ezen napozás közben már nem is fogják. Hazafelé menve a metabolizmusból eredő súlyvesztés, valamint osztódás hasonlóan zajlik, mint az alapfeladatban.</p>
+
+<hr class="solid" style="border-top: 1px solid orange;" />
+<h4>openArea és aTerribleThingToDO() - 4 pont</h4>
+<p style="text-align: justify;">Egy <code>PriorityBlockingQueue</code> segítségével (<code>openArea</code>) tegyük lehetővé, hogy a disznók tudjanak regisztrálni mikor láthatók és mikor nem láthatók a vadászok előtt. Egy ilyen objektum hasonlóan működik, mint bármelyik <code>BlockingQueue</code>. Egyedüli érdekessége, hogy példányosításkor a méreten felül megadhatunk egy rendezést is. Elem kivétele esetén nem a legrégebben betett objektumot fogja visszaadni, hanem a legkisebbet. Segítség a példányosításhoz: <code>new PriorityBlockingQueue<>(MAX_POP, (a,b) -> a.mass - b.mass);</code>. A második argumentum egy lambdakifejezés, ami azt mondja, hogy két <code>PhotoPig</code> objektumot a tömegük különbsége által lehet rendezni.</p>
+<p style="text-align: justify;">Vadászat alatt miután kinéztek egy prédát <code>pigSleep()</code> időbe telik mire jól elbújnak a rajtakapáshoz. A disznók vadászatkor és napozáskor is legyenek a <code>pigSleep()</code> alatt elérhetőek, azaz előtte adják hozzá magukat az <code>openArea</code> sorhoz, majd az <code>openArea.remove(this)</code> utasítással vegyék magukat ki. Vadászat esetén még a várakozás előtt a <code>peek()</code> segítségével nézzenek ki zsákmányt. Ez azt jelenti, hogy miközben ők elbújnak (ami <code>pigSleep()</code> idő), a prédának van némi esélye meglógni.</p>
+<p style="text-align: justify;">Ha nem tudják magukat kivenni, akkor valaki már kivette, azaz megette őket. Ellenkező esetben minden rendben és megpróbálhatják kivenni a saját prédájukat. Ha nem tudják, akkor az vagy azért van mert ők voltak a legkisebbek és magukat választották ki prédának, vagy időközben már megszökött (hazament) vagy más megette az elejteni kívánt disznót.</p>
+<p style="text-align: justify;">A vadászat mechanizmusa kerüljön a <code>aTerribleThingToDO()</code> törzsébe. Az <code>eatLight()</code> metódushoz hasonlóan adjon vissza <code>true</code> értéket ha túlélte, azaz vadászat közben őt nem ette meg egy másik vadász, egyéb esetben a visszatérési érték <code>false</code> legyen. A <code>run()</code> immáron a vadászat és fotoszintézis metódusokat hívja folyamatosan, míg egyik hamis értéket nem ad.</p>
+<p style="text-align: justify;">Sikeres vadászat esetén a disznó gyónjon meg azáltal, hogy a <code>"Bless me, Father, for I have sinned."</code> üzenetet közvetíti.</p>
+
+<hr class="solid" style="border-top: 1px solid orange;" />
+<h4>Javított párhuzamosítási modell - 2 pont</h4>
+<p style="text-align: justify;">Vegyük észre, hogy az <code>openArea</code> fel- és leregisztrációval egy kritikus szakaszt hozunk létre, ugyanis ezen belül van módjuk a disznóknak arra, hogy egymást is láthatssák, egymás állapotát is befolyásolhassák. Ezen szakaszokban azonban semmilyen író művelet nem történik, hiszen csak nézelődnek, alszanak. Vadászatkor az elejtés már később, elrejtőzve zajlik. Hasonlóan a fotoszintézis eredménye is a haza vezető úton megy végbe. Emiatt, ha megfelelő sorrendben hívod meg a metódusokat, akkor nincs szükség hatalmas kölcsönös kizárást megvalósító blokkokra.</p>
+<p style="text-align: justify;">Ha minden kötél szakad, és nem tudod zár nélkül implementálni az adott funkciót, használjál explicit zárakat a <code>ReentrantLock</code> osztály használatával! Az ehhez tartozó <code>Condition</code> jelzőrendszert használjad, amennyiben szükséges!</p>
+<p style="text-align: justify;">Segítség: beszéd esetén a <code>gimmeTheMike</code>, születésnél a <code>labourWard</code> névre hallgató zárat használjad. Utóbbi esetén használj feltételt <code>birthControl</code> néven. Ennek segítségével jelezd megfelelő születésszám után a szimuláció végét!</p>
+<p style="text-align: justify;">Leállásnál ne omoljon össze a programod és ne dobjon kivételt. Ne használj saját flag változót se, ez felesleges. Helyette a <code>pigPool.shutDownNow()</code> által átbillentett interrupt flag segítségével álljanak le a még életben lévő malacok. Ekkor hagyják abba bármit is csinálnak és legyenek büszkék magukra. Ezt kommunikálják a világ felé a <code>"Look on my works, ye Mighty, and despair!"</code> kiáltással.</p>
+
+<hr class="solid" style="border-top: 5px solid red;" />
+<h1 style="text-align: center;">Szorgalmi feladat (+3p)</h1>
+<h3 style="text-align: center;">CyclicBarrier</h3>
+<h4 style="text-align: center;; color: gray"><i>Difficulty: I WANT MY MOMMY!!!</i></h4>
+<hr class="solid" style="border-top: 5px solid red;" />
+
+<p><i>Soon...</i></p>

@@ -1,0 +1,421 @@
+---
+title: "Harmadik gyak"
+author: "Monos Attila"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Leíró statisztika
+
+A való életben szinte sose ismerjük a valódi paramétereit egy eloszlásnak -- ez főleg abszolút folytonos eloszlásoknál fordulhat elő, pl. normális, exponenciális, Gamma eloszlások.
+
+Emiatt sokszor mért adatok vizsgálatára szorítkozunk. A háttérben levő folyamatot, ami a minta elemeit adta, egy véletlen folyamatnak fogjuk fel, így van eloszlása -- ám ezt nem ismerjük. Ennek első eleme a leíró statisztika, mely a mintának (vagyis az adathalmaznak) az eloszlását nem próbálja megtalálni, csak leírja egyes tulajdonságait, pl.:
+\begin{itemize}
+  \item
+    Mintaátlag:
+    $$
+      \overline{X} = \frac{1}{n} \cdot \sum\limits_{i = 1}^{n} X_{i}
+    $$
+  \item
+    Tapasztalati szórás:
+    $$
+      S_{n} =  \sqrt{ \frac{1}{n} \cdot \sum\limits_{i = 1}^{n} (X_{i} - \overline{X})^{2}}
+    $$
+  \item
+    Korrigált tapasztalati szórás:
+    $$
+      S_{n}^{*} =  \sqrt{ \frac{1}{n - 1} \cdot \sum\limits_{i = 1}^{n} (X_{i} -
+      \overline{X})^{2}}
+    $$
+  \item
+    Szórási együttható (százalékként is szokták írni):
+    $$
+      V = \frac{S_{n}}{\overline{X}}
+    $$
+  \item
+    Korrigált szórási együttható (százalékként is szokták írni):
+    $$
+      V = \frac{S_{n}^{*}}{\overline{X}}
+    $$
+  \item
+    $k$. tapasztalati momentun:
+    $$
+      m_{k} = \sum\limits_{i = 1}^{n} X_{i}^{k}
+    $$
+\end{itemize}
+
+\textbf{1. Feladat}
+
+Egy szabályos dobókockával négyszer dobtunk, és a következő eredményeket kaptuk: $1, 3, 6, 1$. Számoljuk ki a mintaátlagot, a tapasztalati szórást, a korrigált tapasztalati szórást, a korrigált szórási együtthatót és a második tapasztalati momentumot!
+
+Mintaátlag:
+```{r}
+x <- c(1, 3, 6, 1);
+mean(x)
+```
+
+Tapasztalati szórásnégyzet:
+```{r}
+sqrt(mean((x - mean(x))^2))
+```
+
+Korrigált tapasztalati szórásnégyzet:
+```{r}
+sqrt(1/3 * sum((x - mean(x))^2))
+sd(x)
+```
+
+Szórási együttható:
+```{r}
+sd(x)/mean(x)
+round(sd(x)/mean(x), 4)*100
+```
+
+Második tapasztalati momentum:
+```{r}
+mean(x^2)
+```
+
+Mindez összefoglalva:
+```{r}
+cat("Átlag:", mean(x),
+    "\nSzórás:", sqrt(mean((x - mean(x))^2)),
+    "\nKorrigált szórás:", sd(x),
+    "\nSzórási együttható:", sd(x)/mean(x),
+    "\nTapasztalati második momentum:", mean(x^2), '\n')
+```
+
+Toljuk el $100$-al az előző adatokat! Hogyan változik a mintaátlag és a korrigált tapasztalati szórás?
+```{r}
+x_new <- x + 100
+cat("Átlag:", mean(x_new),
+    "\nRégi átlag:", mean(x),
+    "\nKorrigált szórás:", sd(x_new),
+    "\nRégi korrigált szórás:", sd(x), '\n')
+```
+
+Most szorozzuk meg $-3$-al az eredeti adatokat! Ekkor hogyan változik a mintaátlag és a korrigált tapasztalati szórás?
+```{r}
+x_new <- -3*x
+cat("Átlag:", mean(x_new),
+    "\nRégi átlag:", mean(x),
+    "\nKorrigált szórás:", sd(x_new),
+    "\nRégi korrigált szórás:", sd(x_new), '\n')
+```
+
+\textbf{Extra Feladat}
+Magyarázzuk meg a fenti változásokat! A többi adat változik-e?
+
+\textbf{2. Feladat}
+Egy csoportban a hallgatók magassága cm-ben:
+$$
+  180, 163, 1500, 157, 165, 174, 191, 172, 165, 1-68, 186
+$$
+Ezek reális adatok? Az esetleges adathibákat javítsuk! Ezt nem lehet csak úgy random tenni, attól, hogy egy adat "csúnya", még meg kell nézni, hogy tényleg hibás-e.
+```{r}
+raw_data <- c(180, 163, 1500, 157, 165, 174, 191, 172, 165, 1-68, 186)
+n <- length(raw_data)
+plot(raw_data)
+summary(raw_data)
+data.entry(raw_data)
+```
+
+Látjuk, hogy két adat van, ami hibás: $1500$ és $1-68$, ezeket javítjuk kézzel:
+```{r}
+full_data <- raw_data
+full_data[3] <- 150 #corrected from 1500, extra zero
+full_data[10] <- 168 #corrected from 1-68, extra -
+plot(full_data)
+summary(full_data)
+```
+
+Most elemezzük az adatokat az alapstatisztikákkal:
+\begin{itemize}
+  \item
+    Átlag,
+  \item
+    korrigált tapasztalati szórás,
+  \item
+    szórási együttható (korrigált tapasztalati szórásból),
+  \item
+    kvartilisek,
+  \item
+    terjeledem,
+  \item
+    interkvartilis terjedelem!
+\end{itemize}
+```{r}
+mean(full_data)
+sd(full_data)
+sd(full_data)/mean(full_data)
+min(full_data)
+max(full_data)
+max(full_data) - min(full_data)
+quarts = quantile(full_data, probs = c(1/4, 1/2, 3/4), type = 6)
+quarts[3] - quarts[1]
+```
+
+Adjuk meg a rendezett mintát!
+```{r}
+x <- sort(full_data); x
+```
+Rajzoljuk fel a tapasztalati eloszlásfüggvényt, és olvassuk le az értékét a $180$ helyen! Szövegesen mit jelent ez?
+```{r}
+Fn <- ecdf(full_data)
+plot(Fn, do.points = FALSE, ylab = 'Fn(x)', main = "Tapasztalati eloszlas fuggveny")
+points(unique(x), unique(c(0, Fn(x)))[1:length(unique(x))], pch = 21)
+points(unique(x), unique(Fn(x)), pch = 19)
+Fn(180)
+```
+
+A tapasztalati eloszlásfüggvény jobbról folytonos. Átalakítható úgy, hogy balról folytonos legyen:
+```{r}
+Fn_lc <- function(x) {mean(full_data<x)}
+Fn_lc(180)
+```
+
+```{r}
+plot(Fn, do.points = FALSE, ylab = "Fn(x)", main = "Tapasztalati eloszlas fuggveny")
+points(unique(x), unique(c(0, Fn(x)))[1:length(unique(x))], pch = 19)
+points(unique(x), unique(Fn(x)), pch = 21)
+abline(v = 180, lty = 3)
+abline(h = Fn_lc(180), lty = 3)
+```
+
+Rajzoljuk le az adatok boxplot ábráját!
+
+```{r}
+boxplot(full_data)
+boxplot(full_data, horizontal = TRUE)
+```
+
+```{r}
+#install.packages("ggplot2")
+library(ggplot2) #Needs rlang 1.0.6. Close down all .rmd's, restart RStudio, then                     #install the rlang package. That'll help. If not, sacrifice a goat.
+```
+
+```{r}
+df <- data.frame(full_data)
+ggplot(data = df, aes(x = "", y = full_data)) + 
+  geom_boxplot(fill="cyan") + coord_cartesian(ylim = c(150, 195)) 
+```
+
+Készítsünk hisztogramot az adatokról!
+```{r}
+ggplot(data = df, aes(x = full_data)) + 
+       geom_histogram(breaks = seq(150, 200, by = 10),
+                       col="blue",
+                       fill="cyan",
+                       alpha = .2) + 
+       labs(title = "Magassagi adatok hisztogramja (ggplot)", x = "Magassag",
+            y = "Gyakorisag")
+```
+```{r}
+histo <- hist(full_data,
+              breaks = 5,
+              xlab = "Magassag",
+              ylab = "Gyakorisag",
+              main = "Magassagi adatok hisztogramja (hist)",
+              col = "cyan",
+              border = "blue")
+
+histo$counts
+```
+```{r}
+hist(full_data, breaks = c(min(full_data), 160, 170, 180, max(full_data)),
+     xlab = "Magassag",
+     ylab = "Gyakorisag",
+     main = "Magassagi adatok hisztogramja (hist, breaks)",
+     col = "cyan",
+     border = "blue")
+```
+Az R-nek vannak beépített adathalmazai [itt.](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html)
+
+```{r}
+boxplot(Temp ~ Month,
+        data = airquality,
+        main = "Boxplotok havonta",
+        xlab = "Honap",
+        ylab = "Homerseklet (Fahrenheit)",
+        col = "orange",
+        border = "brown")
+```
+
+```{r}
+head(airquality)
+h <- hist(airquality$Temp,
+          breaks = seq(50, 100, 2),
+          #breaks = seq(50, 100, 10),
+          col = "red",
+          xlab = "Homerseklet (F)",
+          ylab = "Gyakorisag",
+          main = "Homerseklet hisztogram (airquality)")
+h$breaks
+h$counts
+```
+
+```{r}
+hist(airquality$Temp, freq = FALSE,
+     col = "red",
+     xlab = "Homerseklet (F)",
+     ylab = "Suruseg",
+     main = "Homerseklet hisztogram (airquality)")
+lines(density(airquality$Temp), lwd = 2, col = "blue")
+```
+Ez már közelíthető normális eloszlással (ennek megsejtésére van a statisztika)
+
+```{r}
+hist(airquality$Temp, freq = FALSE,
+     col = "red",
+     xlab = "Homerseklet (F)",
+     ylab = "Suruseg",
+     main = "Homerseklet hisztogram (airquality)")
+lines(density(airquality$Temp), lwd = 2, col = "blue")
+x <- seq(55, 100, 1)
+dn <- dnorm(x, mean = mean(airquality$Temp), sd = sd(airquality$Temp))
+lines(x, dn, type = "l", lwd = 2, col = "green")
+```
+\textbf{Extra feladatok}
+
+Ezeket érdemes megcsinálni, mert sokat fog mesélni arról, hogyan működik az R. Ha bármelyikkel kapcsolatban van kérdésetek, keressetek!
+
+```{r}
+adat = c(2,0,1,0,8,3,5,7,8,2,3,5,1,7,8,3,5,3,2,8)
+```
+
+Mit számolnak az alábbi R programok?
+
+\textbf{1.}
+```{r}
+  sum(adat < 3)
+```
+
+\textbf{2.}
+```{r}
+  t_adat <- table(adat)
+  names(t_adat)[t_adat == max(t_adat)]
+```
+
+\textbf{3.}
+```{r}
+  rep <- rep(c("A", "B"), c(10, 10))
+  df <- data.frame(adat, rep = rep)
+  ggplot(df, aes(x = rep, y = adat)) + 
+    geom_boxplot(fill = "gold") + 
+    scale_x_discrete(name = "A es B csoport")
+```
+Az alábbi érték TRUE, vagy FALSE? Ha FALSE, akkor hogyan javítható?
+```{r, eval = FALSE}
+  sd(adat) == sqrt(sum((adat-mean(adat))^2)/length(adat))
+```
+
+# Tapasztalati eloszlásfüggvény
+
+Adott egy mintánk, azaz egy $X_{1}, \ldots, X_{n}$ valószínűségi változósorozat. Feltesszük, hogy ezek függetlenek, és azonos eloszlásúak. Ezek egy realizációja az $x_{1}, \ldots, x_{n}$ sorozat.
+
+Statisztikának nevezzük a minta bármely függvényét, ilyen pl. az átlag, a tapasztalati szórásnégyzet, vagy a tapasztalati eloszlásfüggvény:
+$$
+  F_{n}(x) = \frac{1}{n} \cdot \sum\limits_{i = 1}^{n} \mathbb{I}(X_{i} < x),
+$$
+ahol $\mathbb{I}(X_{i} < x)$ értéke $1$, ha $X_{i} > x$, különben $0$ -- ez az indikátorfüggvény (emlékezzünk vissza az indikátoreloszlásra!)
+
+Glivenko-Cantelli tétel:
+
+$|F_{n}(x) - F(x)| \rightarrow 0$ egyenletesen, $1$ valószínűséggel. Vagyis ha a minta elemszáma elég nagy, akkor (szinte) minden $x$-re $F_{n}(x)$ értéke közel van $F(x)$ értékéhez -- azaz a tapasztalati eloszlásfüggvény tekinthető a valós eloszlásfüggvénynek.
+
+\textbf{3. Feladat}
+
+Generáljunk $100$ kockadobást, és ábrázoljuk annak tapasztalati eloszlásfüggvényét!
+
+```{r}
+num_values <- 100
+x_sample <- sample(1:6, size = num_values, replace = TRUE)
+table(x_sample)
+
+barplot(table(x_sample),
+        col = "red",
+        xlab = "Ertek",
+        ylab = "Gyakorisag",
+        main = "Dobokocka dobasok")
+
+plot(ecdf(x_sample),
+     do.points = FALSE,
+     col = "red",
+     lwd = 2,
+     xlim = c(1, 6),
+     main = "Tapasztalati eloszlasfuggveny")
+```
+
+Szimuláljunk egy kicsit, és nézzük meg, hogy egy eloszlás elméleti és tapasztalati eloszlásfüggvénye hogyan viszonyul egymáshoz!
+
+```{r}
+x <- 1:6
+trueF <- ecdf(x)
+n_values <- 100
+x_sample <- sample(1:6, size = n_values, replace = TRUE)
+```
+```{r}
+floor(runif(n_values, min = 1, max = 7))
+```
+Hasonlítsuk most ezeket össze:
+```{r}
+plot(trueF,
+     do.points = FALSE,
+     ylab = "F(x)",
+     main = "Elmeleti es tapasztalati eloszlasfuggveny \n (diszkret egyenletes    {1,2,3,4,5,6}-on)")
+plot(ecdf(x_sample), add = TRUE,
+     do.points = FALSE,
+     xlim = c(1, 6),
+     col = "red",
+     lwd = 2)
+legend(x = 'topleft',
+       bty = 'n',
+       legend = c("elmeleti", "tapasztalati"),
+       col = c("black", "red"),
+       lwd = 2)
+#points(unique(x), unique(c(0, trueF(x)))[1:length(unique(x))], pch = 19)
+#points(unique(x), unique(trueF(x), pch = 21))
+
+```
+
+Több szimulációt is meg tudunk nézni egy ábrán:
+```{r}
+n_values <- c(10, 100, 1000)
+cols <- c("black", "green", "orange", "red2")
+#colorspace::diverge_hsv(length(n_values) + 1)
+
+i <- 0
+plot(trueF,
+     do.points = FALSE,
+     col = cols[i <- i + 1],
+     lwd = 3,
+     main = "Tapasztalati es elmeleti eloszlasfuggveny")
+for (n in n_values)
+{
+  x_sample <- sample(1:6, size = n, replace = TRUE)
+  plot(ecdf(x_sample),
+       add = TRUE,
+       do.points = FALSE,
+       col = cols[i <- i + 1],
+       lwd = 2)
+}
+legend(x = 'topleft',
+       bty = 'n',
+       col = cols,
+       lwd = 2,
+       legend = c('elmeleti', paste('n', n_values, sep="=")))
+```
+
+\textbf{4. Feladat}
+
+Szimuláljuk ugyanezt a (standard) normális eloszlásra is!
+```{r}
+elso <- c(0.5852, -2.0298, -3.2404, 0.1743, 0.8672, -0.8892, -1.8298, 0.8699, 0.3274, -1.7766, -1.3279, -0.6389, -1.8521, -1.1468, -1.8226, -4.8373, -1.5621, 0.2306, -3.0354, -0.2885, -0.7539, 0.7441, -1.2256, -0.1403, 0.2852, 1.1286, 0.2193, -1.0736, 1.0304, -3.5928, 0.5852, -2.0298, -3.2404, 0.1743, 0.8672, -0.8892, -1.8298, 0.8699, 0.3274, -1.7766, -1.3279, -0.6389, -1.8521, -1.1468, -1.8226, -4.8373, -1.5621, 0.2306, -3.0354, -0.2885, -0.7539, 0.7441, -1.2256, -0.1403, 0.2852, 1.1286, 0.2193, -1.0736, 1.0304, -3.5928)
+
+
+```
+

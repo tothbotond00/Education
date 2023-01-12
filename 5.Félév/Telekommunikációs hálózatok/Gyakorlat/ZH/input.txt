@@ -1,0 +1,6 @@
+homero1 26.34
+homero2 7.441
+homero4 98.31
+termosz 983.1
+homero1 0.00
+homero7 712.0

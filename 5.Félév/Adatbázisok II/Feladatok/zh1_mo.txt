@@ -1,0 +1,163 @@
+Tisztelt Hallgatók!
+
+A zh feladatokra kapott pontszámaikat és a jegyet megtekinthetik az ULLMAN 
+adatbázisban az alábbi lekérdezés futtatásával:
+  
+           SELECT * FROM nikovits.AB2_jegyek;
+
+Az alábbiakban láthatják a zh feladatok megoldásait. A gépes feladatok esetén
+csak az elvárt végeredményt adtam meg, hogy tudjanak még gyakorolni, és addig
+alakítani a lekérdezésüket/programjukat, amíg az helyes eredményt nem ad. 
+Ez azért lenne hasznos az önök számára, mert a javító zh-n is hasonló feladatok lesznek.
+****************************************************************************************
+
+Adatbázisok 2. zh1, 2022.10.25. 10.15
+Név:
+Neptun kód:
+
+A megoldásokat kérem, ebbe az állományba a feladatok után írják bele, majd
+csatolva küldjék el a nikovits@inf.elte.hu email címre.
+
+A papíros részbõl és a számítógépes részbõl is minimum 8 pont megszerzése
+minimális követlemény az 1-estõl különbözõ jegyhez.
+A ponthatárok a következõk lesznek: 21, 30, 39, 48.
+
+"Papíron" megoldandó feladatok
+========================================================================
+1. feladat (6 pont)
+Adott az alábbi B+ fa.
+Tegyük fel, hogy egy B+ fa blokkjaiba 3 kulcs fér el plusz 4 mutató. A kulcsok 
+különbözõek. Szúrjuk be a B+ fába az alábbi kulcsértékeket a megadott sorrendben:
+22, 75, 42 
+Adjuk meg a B+ fa minden olyan állapotát, amikor egy csomópont kettéosztására volt szükség.
+
+                           71
+               41|59                      81
+   15|32|36   41|44|52   59|68    71|74|78   81|87  
+------------------------------------------------------------------------
+Megoldás:
+                            71
+              32|41|59                      81
+   15|22   32|36   41|44|52   59|68    71|74|78   81|87 
+
+                            71
+              32|41|59                         75|81
+   15|22   32|36   41|44|52   59|68    71|74   75|78   81|87 
+
+                              44|71
+              32|41             59                  75|81
+   15|22   32|36   41|42   44|52   59|68    71|74   75|78   81|87 
+========================================================================
+2. feladat (6 pont)
+a) Tömörítsük a következõ bitvektort a szakaszhossz kódolással.
+   000000000000001000000000011
+
+b) Fejtsük vissza a következõ, szakaszhossz kódolással tömörített bitvektort:
+   001110101101110111
+------------------------------------------------------------------------
+Megoldás:
+a) tömörítve ->  11101110 11101010 00
+                     ----     ---- --  
+                      14       10   0   
+
+b)  001110101101110111
+     -    ---- -   ---
+     0     11  1    7
+visszafejtve -> 10000000000010100000001
+========================================================================
+3. feladat (8 pont)
+Lineáris hasító index felépítése
+Tegyük fel, hogy egy blokkba 2 rekord fér el és a kosarak az alábbi rekordokat tartalmazzák:
+
+1000                 1111 
+----                 ----
+1100   0001   1010   1011
+0000   1001   0010   0011 
+----   ----   ----   ----
+ 00     01     10     11
+
+Az elõre megadott küszöbszám (rekordok száma/kosarak száma) legyen 2,9.
+Jelenleg n = 4 (a kosarak száma), i = 2 (bitek száma).
+Szúrjuk be az alábbi hasító értékkel rendelkezõ sorokat egymás után, és minden újabb 
+kosár létrehozása után rajzoljuk le az adatszerkezetet.
+
+0100, 1110, 0111, 0110
+------------------------------------------------------------------------
+Megoldás: (az elsõ elem beszúrásakor még nem kell új kosarat létrehozni)
+
+0100
+1000                 1111 
+----                 ----
+1100   0001   1010   1011
+0000   1001   0010   0011 
+----   ----   ----   ----
+ 00     01     10     11
+
+              0110   0111
+              1110   1111 
+              ----   ----
+1000   0001   1010   1011   1100
+0000   1001   0010   0011   0100
+----   ----   ----   ----   ----
+ 000    001    010    011    100
+========================================================================
+4. feladat (10 pont)
+Tekintsük a következõ paraméterekkel rendelkezõ relációt:
+T(R) = 1200000, V(R,A) = 100, V(R,B) = 500, bf(R)=50
+a) Számoljuk ki T(W)-t az egyenletességi feltételezéssel élve, ha W a következõ lekérdezés eredménye:
+   W <-- SELECT * FROM R WHERE A=x OR B=y; (ki kell számolni, a képlet nem elég)
+b) Számoljuk ki B(I)-t, ha I egy R-re létrehozott B+ fa index, amelyre bf(I) = 80?
+------------------------------------------------------------------------
+Megoldás:
+a) T(W) = T(R)/V(R,A) + T(R)/V(R,B) - T(R)/[V(R,A)*V(R,B)] = 12000+2400-24 = 14376
+b) levél szint: T(R)/bf(I) = 15000 blokk
+   2. szint: 15000/80 = 188 blokk
+   3. szint: 188/80 = 3 blokk
+   4. szint: 1 blokk
+összesen: B(I) = 15192 blokk
+========================================================================
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+========================================================================
+Számítógépes, SQL, illetve PL/SQL-ben megoldandó feladatok.
+Ezeknél a feladatoknál a futtatás eredményét is kérem bemásolni a fájlba.
+
+------------------------------------------------------------------------
+5. feladat (10 pont)
+Adjuk meg a NIKOVITS felhasználó tulajdonában levõ hash clusterek nevét és méretét bájtban. (Név, Méret)
+------------------------------------------------------------------------
+Megoldás: (Ullman)
+CIKK_HCL	589824
+CIKK_HCL2	327680
+CIKK_HCL3	327680
+========================================================================
+6. feladat (10 pont)
+Írjunk meg egy PL/SQL függvényt, amelyik egy karakterláncban visszaadja a NIKOVITS felhasználó olyan tábláinak
+nevét (ábécé sorrendben, vesszõvel elválasztva), amelyeknek a 2. és 5. oszlopa ugyanolyan típusú. 
+A hossz és pontosság nem számít, az alaptípus legyen azonos.
+
+CREATE OR REPLACE FUNCTION tab_2_5 RETURN VARCHAR2 IS
+...
+SELECT tab_2_5() from dual;
+
+Ellenõrzési lehetõség:
+set serveroutput on
+EXECUTE check_plsql('tab_2_5()');
+------------------------------------------------------------------------
+Megoldás: (Ullman)
+AB1_ZH,AB2_ZH,EMPLOYEES,HALLGATOK,HALLG2021,HALLG2022,HIVAS,HIVAS_V2,LAPTOP,LOCATIONS
+========================================================================
+7. feladat (10 pont)
+Írjunk meg egy PL/SQL procedúrát, amelyik kiírja, hogy a NIKOVITS.CUSTOMERS táblának átlagosan hány sora 
+van egy blokkban, vagyis a (sorok száma)/(nemüres blokkok száma) értéket egy tizedesre kerekítve. (Átlag)
+
+CREATE OR REPLACE PROCEDURE bl_factor IS
+...
+set serveroutput on
+EXECUTE bl_factor();
+
+Ellenõrzési lehetõség:
+EXECUTE check_plsql('bl_factor()');
+------------------------------------------------------------------------
+Megoldás:
+38.2
+========================================================================

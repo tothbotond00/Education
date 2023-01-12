@@ -1,0 +1,301 @@
+Kötelező feladat az 5. gyakorlathoz
+------------------------------------------
+Készítsék el az alábbi (Pratícionált tábláknál szereplő) 8. feladatban megadott EMPTY_BLOCKS nevű procedúrát.
+Azt, hogy az output helyes-e ellenőrizni tudják a feladat után megadott 'CHECK_PLSQL' procedúra futtatásával.
+===========================================================================
+
+Index-szervezett tábla
+----------------------
+1.
+Adjuk meg a NIKOVITS felhasználó tulajdonában levő index-szervezett táblák nevét.
+(Melyik táblatéren vannak ezek a táblák? -> miért nem látható?)
+
+SELECT *
+FROM DBA_TABLES
+WHERE IOT_TYPE = 'IOT'
+AND OWNER = 'NIKOVITS';
+
+2.
+Adjuk meg a fenti táblák index részét, és azt, hogy ezek az index részek (szegmensek) 
+melyik táblatéren vannak?
+
+SELECT ins.index_name
+FROM DBA_TABLES TBS
+LEFT JOIN DBA_INDEXES INS ON tbs.table_name = ins.table_name
+WHERE TBS.IOT_TYPE = 'IOT'
+AND TBS.OWNER = 'NIKOVITS'; 
+
+3.
+Keressük meg a szegmensek között az előző táblákat illetve indexeket, és adjuk
+meg a méretüket.
+
+SELECT segment_name, bytes
+FROM dba_segments
+where owner = 'NIKOVITS' AND (segment_name in (SELECT ins.index_name
+FROM DBA_TABLES TBS
+LEFT JOIN DBA_INDEXES INS ON tbs.table_name = ins.table_name
+WHERE TBS.IOT_TYPE = 'IOT'
+AND TBS.OWNER = 'NIKOVITS') OR segment_name in (SELECT table_name
+FROM DBA_TABLES
+WHERE IOT_TYPE = 'IOT'
+AND OWNER = 'NIKOVITS' ));
+
+4.
+Keressük meg az adatbázis objektumok között a fenti táblákat és indexeket, és adjuk
+meg az objektum azonosítójukat és adatobjektum azonosítójukat (DATA_OBJECT_ID).
+
+SELECT object_id
+FROM DBA_OBJECTS
+where owner = 'NIKOVITS' AND (object_name in (SELECT ins.index_name
+FROM DBA_TABLES TBS
+LEFT JOIN DBA_INDEXES INS ON tbs.table_name = ins.table_name
+WHERE TBS.IOT_TYPE = 'IOT'
+AND TBS.OWNER = 'NIKOVITS') OR object_name in (SELECT table_name
+FROM DBA_TABLES
+WHERE IOT_TYPE = 'IOT'
+AND OWNER = 'NIKOVITS' ));
+
+5.
+Adjuk meg a fenti táblák túlcsordulási részeit (ha van).
+
+SELECT *
+FROM DBA_TABLES
+WHERE IOT_TYPE = 'IOT_OVERFLOW'
+AND OWNER = 'NIKOVITS'; 
+
+6.
+Keressük meg a túlcsordulási részeket a szegmensek között és adjuk meg a méretüket.
+
+SELECT segment_name, bytes
+FROM dba_segments
+where owner = 'NIKOVITS' AND segment_name in (SELECT dba_tables.table_name
+FROM DBA_TABLES
+WHERE IOT_TYPE = 'IOT_OVERFLOW'
+AND OWNER = 'NIKOVITS');
+
+7.
+Keressük meg a NIKOVITS.CIK_IOT index szervezett tábla részeit 
+(tábla szegmens, túlcsordulási szegmens, a tábla indexei), adjuk meg az
+objektum azonosítóikat és az adatobjektum azonosítóikat.
+(object_name, object_type, object_id, data_object_id)
+
+SELECT segment_name, bytes
+FROM dba_segments
+where owner = 'NIKOVITS' AND (segment_name in (SELECT ins.index_name
+FROM DBA_TABLES TBS
+LEFT JOIN DBA_INDEXES INS ON tbs.table_name = ins.table_name
+WHERE TBS.IOT_TYPE = 'IOT'
+AND TBS.OWNER = 'NIKOVITS'
+AND TBS.table_name = 'CIKK_IOT') OR segment_name in (SELECT table_name
+FROM DBA_TABLES
+WHERE IOT_TYPE = 'IOT_OVERFLOW'
+AND OWNER = 'NIKOVITS'
+AND IOT_NAME = 'CIKK_IOT'));
+
+8.
+Adjuk meg azokat az index szervezett táblákat, amelyeknek pontosan 
+1 dátum típusú oszlopa van. (owner, table_name)
+
+SELECT TABS.TABLE_NAME
+FROM DBA_TABLES TABS
+JOIN dba_tab_columns COLS ON tabs.table_name = cols.table_name 
+WHERE TABS.IOT_TYPE = 'IOT'
+AND cols.data_type = 'DATE'
+GROUP BY TABS.TABLE_NAME
+HAVING COUNT(cols.column_name) = 1;
+
+9.
+
+CREATE OR REPLACE PROCEDURE iot_size(p_owner VARCHAR2, p_table VARCHAR2) IS
+    tabSize integer;
+begin
+select sum(bytes) into tabSize from dba_segments 
+    where segment_name in (select index_name from dba_indexes 
+    where ( table_name in upper(p_table) and owner = upper(p_owner)) or
+    segment_name in (select index_name from dba_indexes 
+    where table_name in (select iot_name from dba_tables 
+    where iot_type = 'IOT' and owner = upper(p_owner) and table_name = upper(p_table)) and owner = upper(p_owner)) )
+    and 
+    owner = upper(p_owner);
+    dbms_output.put_line('size:'||tabsize);
+end;
+/
+
+Partícionálás
+-------------
+(DBA_PART_TABLES, DBA_PART_INDEXES, DBA_TAB_PARTITIONS, DBA_IND_PARTITIONS, 
+DBA_TAB_SUBPARTITIONS, DBA_IND_SUBPARTITIONS, DBA_PART_KEY_COLUMNS)
+
+1.
+Adjuk meg a NIKOVITS felhasználó tulajdonában levő partícionált táblák nevét és a 
+particionálás típusát. (táblanév, típus)
+
+SELECT TABLE_NAME, partitioning_type
+FROM dba_part_tables
+WHERE OWNER = 'NIKOVITS';
+
+2.
+Soroljuk fel a NIKOVITS.ELADASOK tábla partícióit valamint, hogy hány blokkot foglalnak
+az egyes partíciók. (név, blokkok)
+(Vigyázat! Egyes adatszótárak csak becsült méretet tartalmaznak.
+A pontos méreteket az extenseknél és szegmenseknél keressük.)
+
+SELECT  partition_name, SUM(blocks)
+FROM dba_segments
+WHERE partition_name IN (SELECT a.partition_name
+FROM dba_tab_partitions a
+WHERE a.TABLE_NAME = 'ELADASOK'
+AND a.TABLE_OWNER = 'NIKOVITS')
+GROUP BY partition_name;
+
+3.
+Adjuk meg, hogy a NIKOVITS.ELADASOK tábla mely oszlop(ok) szerint van particionálva, valamint 
+adjuk meg az oszlopok sorrendjét a partícionáló oszlopokon belül. (oszlop, sorrend)
+
+select partition_name, partition_position from DBA_TAB_PARTITIONS where table_owner = 'NIKOVITS' and table_name='ELADASOK';
+
+4.
+Adjuk meg, hogy a NIKOVITS.ELADASOK3 tábla második partíciójában milyen értékek szerepelhetnek. (érték)
+
+select * from DBA_TAB_PARTITIONS 
+    where table_owner = 'NIKOVITS' and table_name='ELADASOK3' and partition_position = 2;
+
+5.
+Adjuk meg egy partícionált tábla (pl. NIKOVITS.ELADASOK) logikai és fizikai részeit.
+   (object_name, object_type, subobject_name, object_id, data_object_id) 
+Maga a tábla most is logikai objektum, a partíciói vannak fizikailag tárolva.
+Nézzük meg az objektumok és a szegmensek között is.
+
+SELECT object_name, object_type, subobject_name, object_id, data_object_id FROM dba_objects 
+    where object_name = 'ELADASOK' and owner = 'NIKOVITS';
+
+select * from dba_objects where OBJECT_NAME = UPPER('eladasok') and owner ='NIKOVITS';
+select * from dba_segments where segment_name = UPPER('eladasok') and owner ='NIKOVITS';
+
+
+6.
+Illetve ha alpartíciói is vannak (pl. nikovits.eladasok4), akkor csak az alpartíciók 
+vannak tárolva. (object_name, object_type, subobject_name, object_id, data_object_id)
+Nézzük meg az objektumok és a szegmensek között is.
+(segment_name, segment_type, bytes)
+
+select object_name, object_type, subobject_name, object_id, data_object_id from dba_objects 
+    where subOBJECT_NAME in (select subpartition_name from DBA_TAB_SUBPARTITIONS 
+    where table_owner='NIKOVITS' and table_name=upper('eladasok4'));
+
+7.
+Melyik a legnagyobb méretű partícionált tábla az adatbázisban a partíciók 
+összméretét tekintve? Az alpartícióval rendelkező táblákat is vegyük figyelembe.
+(tulajdonos, táblanév, méret)
+
+select owner, segment_name, sum(bytes) from dba_segments GROUP by owner, segment_name order by sum(bytes) desc fetch First 1 rows only;    
+
+
+Dinamikus SQL utasítások PL/SQL programban
+------------------------------------------
+8.
+Írjunk meg egy PLSQL procedúrát, amelyik kiírja a paraméterül kapott táblára,
+hogy annak hány üres blokkja van. A procedúrát úgy írjuk meg, hogy az partícionált táblára
+is működjön. (Output formátum -> Empty Blocks: nnn)
+
+CREATE OR REPLACE PROCEDURE empty_blocks(p_owner VARCHAR2, p_table VARCHAR2) IS
+...
+SET SERVEROUTPUT ON
+EXECUTE empty_blocks('nikovits','customers');
+EXECUTE empty_blocks('nikovits','eladasok');
+
+Ellenőrzés:
+----------
+EXECUTE check_plsql('empty_blocks(''nikovits'', ''customers'')');
+EXECUTE check_plsql('empty_blocks(''nikovits'', ''eladasok'')');
+
+Vigyázat!
+Ha olyan módon oldják meg a feladatot, ahogy a 3. feladatsor 5. feladatában szereplő num_of_rows()
+megoldásában látták, az nagy táblák esetén kivárhatatlanul lassú lesz, mert ott minden egyes
+blokkra megszámoltuk, hogy hány sor van benne.
+
+Tipp: 
+Nézzük meg, hogy összesen hány blokkot tartalmaz(nak) a tábla szegmense(i). (partícionált is lehet !)
+Számoljuk meg az olyan blokkok számát, amelyek nem üresek. A fenti kettő különbsége adja a végeredményt.
+Mivel a tábla nevét csak futásidőben fogjuk megtudni, ezért úgynevezett dinamikus SQL utasítást
+kell használnunk. Ehhez lásd: pl_dinamikusSQL.txt
+--------------------------------------------------------------------------------
+
+create or replace PROCEDURE empty_blocks(p_owner VARCHAR2, p_table VARCHAR2) IS
+    v_sql VARCHAR(1000);
+    num1 integer;
+    num2 integer;
+    intersection integer;
+begin
+    select sum(blocks) into num1 from dba_segments where segment_name=upper(p_table) and owner = upper(p_owner);
+    v_sql := 'select count(DISTINCT dbms_rowid.rowid_block_number(ROWID)) blokk from '||p_owner||'.'||p_table;
+    EXECUTE IMMEDIATE v_sql INTO num2;
+    intersection := num1-num2;
+    dbms_output.put_line('Empty Blocks: '||intersection);
+end;
+/
+
+Klaszter (CLUSTER)
+------------------
+(DBA_CLUSTERS, DBA_CLU_COLUMNS, DBA_TABLES, DBA_CLUSTER_HASH_EXPRESSIONS)
+
+1.
+Adjunk meg egy olyan clustert az adatbázisban (ha van ilyen), amelyen még nincs
+egy tábla sem. (tulajdonos, klaszternév)
+
+select DISTINCT cluster_name from DBA_CLUSTERS
+minus
+select DISTINCT cluster_name from DBA_CLU_COLUMNS;
+
+2.
+Adjunk meg egy olyant, amelyiken pontosan 2 tábla van. (tulajdonos, klaszternév)
+
+select owner,cluster_name from DBA_CLU_COLUMNS GROUP by owner,cluster_name having COUNT(table_name) = 2;
+
+3.
+Adjunk meg egy olyan clustert, amelynek a cluster kulcsa 3 oszlopból áll.
+Vigyázat, több tábla is lehet rajta!!! (tulajdonos, klaszternév)
+
+select DISTINCT owner,cluster_name from DBA_CLU_COLUMNS 
+    GROUP by owner,cluster_name,table_name 
+        having COUNT(DISTINCT tab_column_name) = 3;
+
+4.
+HASH CLUSTER
+Hány olyan hash cluster van az adatbázisban, amely nem az oracle alapértelmezés 
+szerinti hash függvényén alapul? (darab)
+
+select count(*) from dba_clusters where cluster_type='HASH' and function not like 'DEFAULT%';
+
+6.
+Írjunk meg egy PL/SQL procedúrát, amely kiírja egy tábla tárolási módját (HEAP, PARTITION, IOT, CLUSTER) 
+Az output formája: Clustered: NO Partitioned: YES IOT: NO
+
+SELECT owner, table_name, cluster_name, partitioned, iot_type 
+FROM dba_tables WHERE owner='NIKOVITS' 
+AND table_name IN ('EMP', 'ELADASOK5', 'CIKK_IOT', 'EMP_CLT');
+
+create or replace PROCEDURE print_type(p_owner VARCHAR2, p_table VARCHAR2) IS
+    isClustered varchar(100);
+    isParitioned varchar(100);
+    isIOT_TYPED varchar(100);
+
+begin
+    SELECT cluster_name, partitioned, iot_type into isClustered,isParitioned,isIOT_TYPED
+    FROM dba_tables WHERE owner= upper(p_owner) 
+    AND table_name = upper(p_table);
+
+    if isClustered is not null
+    then
+        dbms_output.put_line('Clustered: '||isClustered||' Partitioned: NO IOT: NO');
+    elsif isParitioned = 'YES'
+    then
+        dbms_output.put_line('Clustered: NO Partitioned: '||isParitioned||' IOT: NO');
+    elsif isIOT_TYPED is not null
+    then
+        dbms_output.put_line('Clustered: NO Partitioned: NO IOT: '|| isIOT_TYPED);
+    else
+        dbms_output.put_line('Clustered: NO Partitioned: NO IOT: NO');
+    end if;
+end;
+/

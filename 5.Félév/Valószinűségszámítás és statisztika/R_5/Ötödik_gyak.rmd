@@ -1,0 +1,441 @@
+##########################################
+###   5. Laboros gyakorlat (10-11 hét)  ###
+##########################################
+
+
+#############################################
+# Hipotézisvizsgálat:                       # 
+# nemparaméteres próbák: khí-négyzet próbák #
+#############################################
+
+########################
+# Illeszkedésvizsgálat #
+########################
+
+### Táblás gyakorlat 6.1 Feladat ###
+
+# Egy gyárban egy termék minőségét 4 elemű mintákat véve ellenőrzik, havonta 
+# 300 mintavétellel. Megszámolták, hogy a legutóbbi hónapban hányszor volt 
+# selejtes a minta, melynek eredményiet az alábbi táblázat tartalmazza:
+#   Selejtesek száma:   0   1  2  3 4
+#   Darabszám:         80 113 77 27 3
+
+selejt <- c(0, 1, 2, 3, 4)
+darab <- c(80, 113, 77, 27, 3)
+
+### Modellezhető a mintákban levő selejtesek száma
+### (a) (4; 0,25) paraméterű binomiális eloszlással?
+
+# Tiszta illeszkedésvizsgálat
+
+# H_0: X_i ~ Bin(4; 0,25)         <=> H_0: P(X_i = x_j) = p_j  j = 1,...,5
+# H_1: X_i nem ilyen eloszlású        H_1: létezik legalább egy j melyre P(X_i = x_j) nem= p_j
+
+# Határozzuk meg az egyes selejtes termékekre 
+# vonatkozó valószínűségeket (elméleti valószínűségek: p_j), 
+# illetve ezek alapján gyakoriságokat:
+
+p <- dbinom(selejt, size = 4, p = 0.25); p
+
+# feltételek ellenőrzése:
+  n <- sum(darab)
+  n*p
+
+  # de nem kell külön ellenőrizni a feltételt, ha nem teljesül, akkor a 
+  # chisq utasítás kiír egy "Warning message"-et
+  ell <- chisq.test(darab, p = p)
+  ell$expected    # elméleti gyakoriság 
+
+# utolsó két oszlopot össze kell vonni:
+darabv <- c(darab[1:3], sum(darab[4:5]))
+pv <- c(p[1:3], sum(p[4:5]))
+pv
+n*pv
+
+
+chisq.test(darabv, p = pv)
+
+# Döntés: Elutasítjuk H0-t, azaz mondhatjuk, hogy a selejtes termékek
+# száma nem Bin(4; 0,25) eloszlást követ.
+
+
+  # ki lehet számolni így is (táblás gyakorlaton):
+  np <- sum(darabv)*pv
+  r <- length(darabv)
+  probastat <- sum( (darabv - np)^2 / np )
+  kritertek <- qchisq(0.95, r- 1 )
+  pertek <- 1-pchisq(probastat, r - 1 )
+  
+  cat('\nPróbastatisztika:', probastat,
+      '\nKritikus érték', kritertek,
+      '\np-érték:', pertek,
+      '\nDöntés:', "Elutasítjuk H0-t, azaz mondhatjuk, hogy a selejtes termékek
+  száma nem Bin(4; 0,25) eloszlást követ.")
+
+  
+### Modellezhető a mintákban levő selejtesek száma
+### (b) (4; p) paraméterű binomiális eloszlással (valamilyen p-re)?
+
+### Becsléses illeszkedésvizsgálat
+
+# H_0: X_i ~ Bin(4; p) vlamilyen p-re
+# H_1: X_i nem ilyen eloszlású
+
+# Először meg kell becsülni az ismeretlen p paramétert ML-módszerrel. 
+# (Egy paramétert becslünk, így s = 1.) 
+# A táblás gyakorlat 4.4 a) feladata alapján tudjuk, hogy Bin(m; p) 
+# eloszlású minta esetén (m ismert) a p ML-becslése p_kalap = X_átlag/m. 
+
+m <- 4
+phat <- ( sum(selejt*darab) / sum(darab) ) / m; phat
+s <- 1 # 1 paramétert becslünk
+
+p <- dbinom(selejt, size = 4, p = phat); p
+
+  # feltételek ellenőrzése:
+  n <- sum(darab)
+  n*p
+
+# utolsó két oszlopot össze kell vonni:
+darabv <- c(darab[1:3], sum(darab[4:5]))
+pv <- c(p[1:3], sum(p[4:5]))
+pv
+n*pv
+
+
+# chisq.test(darabv, p = pv) # szabadsági fok - 1 kell a becslés miatt
+np <- sum(darabv)*pv
+r <- length(darabv)
+probastat <- sum( (darabv - np)^2 / np )
+kritertek <- qchisq(0.95, r - s - 1 )
+pertek <- 1-pchisq(probastat, r - s - 1 )
+
+cat('\nPróbastatisztika:', probastat,
+    '\nKritikus érték', kritertek,
+    '\np-érték:', pertek,
+    '\nDöntés: Nem utasítjuk el H0-t, tehát tekinthetjük a selejtes termékek 
+               számát Bin(4; p) eloszlásúnak.')
+
+
+
+#########################
+# Függetlenségvizsgálat #
+#########################
+
+### Táblás gyakorlat 6.2 Feladat ###
+
+# Az alábbi kontingencia-táblázat mutatja, hogy egy 100 éves időszakban egy adott 
+# napon a csapadék mennyisége és az átlaghőmérséklet hogyan alakult:
+#       Csapadék  kevés átlagos sok
+# Hőmérséklet
+#       hüvös        15      10   5
+#     átlagos        10      10  20
+#       meleg         5      20   5
+# A cellákban az egyes esetek gyakoriságai találhatóak. alpha = 0,05 mellett 
+# tekinthető-e a csapadékmennyiség és a hőmérséklet függetlennek?
+
+# H_0: a csapadék és a hőmérséklet függetlenek
+# H_1: nem függetlenek
+
+ido <- matrix(c(15, 10, 5, 10, 10, 20, 5, 20, 5), ncol=3, byrow=TRUE)
+colnames(ido) <- c("kevés", "átlagos", "sok")
+rownames(ido) <- c("hüvös", "átlagos", "meleg")
+ido <- as.table(ido)
+ido
+
+chisq.test(ido)
+
+# Döntés: Elutasítjuk H_0-t, a hőmérséklet és csapadék nem függetlenek.
+
+
+########################
+# Homogenitásvizsgálat #
+########################
+
+### Táblás gyakorlat 6.3 Feladat ###
+
+# Két dobókockával dobva az alábbi gyakoriságokat figyeltük meg:
+#   Dobások 1  2  3  4  5  6
+# 1. kocka 27 24 26 23 18 32
+# 2. kocka 18 12 15 21 14 20
+# Alpha = 0,05 mellett döntsünk arról, hogy tekinthető-e a két eloszlás azonosnak!
+
+# H_0 a két eloszlás megegyezik
+# H_1 a két eloszlás nem egyezik meg
+
+kocka <- matrix(c(27, 24, 26, 23, 18, 32, 18, 12, 15, 21, 14, 20), 
+                ncol=6, byrow=TRUE)
+colnames(kocka) <- rep(1:6)
+rownames(kocka) <- c("1. kocka", "2. kocka")
+kocka <- as.table(kocka)
+kocka
+
+chisq.test(kocka)
+
+# Döntés: nem utasítjuk el / elfogadjuk H_0-t, a két eloszlás azonosnak tekinthető
+
+
+
+## További feladatok:
+
+#  1.  A MASS csomag "survey" adatain ellenőrizzük, hogy a dohányzás és az
+# edzés összefügg-e!
+
+library(MASS)
+# https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/survey.html 
+str(survey)
+
+# Smoke: how much the student smokes. ("Heavy", "Regul", "Occas", "Never".)
+# Exer: how often the student exercises. ("Freq", "Some", "None".)
+
+# H_0: a dohányzás és a edzés függetlenek
+# H_1: nem függetlenek
+
+tbl <- table(survey$Smoke, survey$Exer); tbl 
+
+############# MEGOLDÁS #############
+proba <- chisq.test(tbl)  # u.az: chisq.test(survey$Smoke, survey$Exer)
+proba$expected
+
+ctbl <- cbind(tbl[,"Freq"], tbl[,"None"] + tbl[,"Some"])
+colnames(ctbl) <- c("Freq", "None+Some")
+ctbl
+chisq.test(ctbl)
+###################################
+
+# 2.  Az 1. feladatban szereplő adatsoron teszteljünk más összefüggéseket is!
+
+# W.Hnd: writing hand of student. ("Left" and "Right".)
+# Clap: 'Clap your hands! Which hand is on top?' ("Right", "Left", "Neither".)
+
+tbl2 <- table(survey$W.Hnd, survey$Clap)
+tbl2
+proba2 <- chisq.test(tbl2)
+proba2$expected
+
+ctbl2 <-  cbind(tbl2[,"Left"] + tbl2[,"Neither"], tbl2[,"Right"])
+colnames(ctbl2) <- c("Left", "Neither+Right")
+ctbl2
+proba2 <- chisq.test(ctbl2)
+proba2$expected
+proba2
+
+
+# Clap: 'Clap your hands! Which hand is on top?' ("Right", "Left", "Neither".)
+# Exer: how often the student exercises. ("Freq", "Some", "None".)
+
+############# MEGOLDÁS #############
+tbl3 <- table(survey$Clap, survey$Exer)
+tbl3
+proba3 <- chisq.test(tbl3)
+proba3
+proba3$expected
+
+ctbl3 <- cbind(tbl3[,"Freq"], tbl3[,"None"] + tbl3[,"Some"]); ctbl3
+proba3 <- chisq.test(ctbl3); proba3
+###################################
+
+# W.Hnd: writing hand of student. ("Left" and "Right".)
+# Exer: how often the student exercises. ("Freq", "Some", "None".)
+
+############# MEGOLDÁS #############
+tbl4 <- table(survey$W.Hnd, survey$Exer)
+tbl4
+chisq.test(tbl4)
+
+survey$Pulse2="alacsony"
+survey$Pulse2[survey$Pulse>64]="közepes"
+survey$Pulse2[survey$Pulse>79]="magas"
+tbl5 = table(survey$Clap, survey$Pulse2)
+tbl5
+chisq.test(tbl5)
+####################################
+
+################################################################################
+### Csak érdekesség, nem kell a gyakorlatra:
+
+# University of California, Berkeley 1973. hallgatók felvétele nem szerint 
+# az egyetem hat legnagyobb tanszékére
+# https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/UCBAdmissions.html
+
+require(graphics)
+## Data aggregated over departments
+UCBA2 <- apply(UCBAdmissions, c(1, 2), sum); UCBA2
+mosaicplot(apply(UCBAdmissions, c(1, 2), sum),
+           main = "Student admissions at UC Berkeley")
+chisq.test(UCBA2)
+
+## Data for individual departments
+opar <- par(mfrow = c(2, 3), oma = c(0, 0, 2, 0))
+for(i in 1:6)
+  mosaicplot(UCBAdmissions[,,i],
+             xlab = "Admit", ylab = "Sex",
+             main = paste("Department", LETTERS[i]))
+mtext(expression(bold("Student admissions at UC Berkeley")),
+      outer = TRUE, cex = 1.5)
+par(opar)
+chisq.test(UCBAdmissions[,,Dept= "A"])
+chisq.test(UCBAdmissions[,,Dept= "B"])
+chisq.test(UCBAdmissions[,,Dept= "C"])
+chisq.test(UCBAdmissions[,,Dept= "D"])
+chisq.test(UCBAdmissions[,,Dept= "E"])
+chisq.test(UCBAdmissions[,,Dept= "F"])
+################################################################################
+
+
+################
+## Korreláció ##
+################
+
+# változók közötti lineáris kapcsolat erősségét mérő mennyiség
+
+# built-in datasets
+# https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html
+
+## cars
+
+plot(cars$dist, cars$speed)
+cor(cars$dist, cars$speed)
+
+
+## mtcars
+
+# library(ggplot2)
+qplot(x = hp, y = mpg, data = mtcars) # +
+#   geom_smooth(method = "lm", se = FALSE) +
+#   ggtitle("Negatív korreláció")
+
+cor(mtcars$hp, mtcars$mpg)
+
+
+## anscombe
+
+par(mfrow=c(2,2))
+plot(anscombe$x1, anscombe$y1)
+plot(anscombe$x2, anscombe$y2)
+plot(anscombe$x3, anscombe$y3)
+plot(anscombe$x4, anscombe$y4)
+par(mfrow=c(1,1))
+
+summary(anscombe)
+sapply(1:8, function(x) var(anscombe[, x]))
+sapply(1:4, function(x) cor(anscombe[, x], anscombe[, x+4]))
+
+## ábrák (R program az adathalmazok honlapjáról)
+ff <- y ~ x
+mods <- setNames(as.list(1:4), paste0("lm", 1:4))
+for(i in 1:4) {
+  ff[2:3] <- lapply(paste0(c("y","x"), i), as.name)
+  ## or   ff[[2]] <- as.name(paste0("y", i))
+  ##      ff[[3]] <- as.name(paste0("x", i))
+  mods[[i]] <- lmi <- lm(ff, data = anscombe)
+  print(anova(lmi))
+}
+op <- par(mfrow = c(2, 2), mar = 0.1+c(4,4,1,1), oma =  c(0, 0, 2, 0))
+for(i in 1:4) {
+  ff[2:3] <- lapply(paste0(c("y","x"), i), as.name)
+  plot(ff, data = anscombe, col = "red", pch = 21, bg = "orange", cex = 1.2,
+       xlim = c(3, 19), ylim = c(3, 13))
+  abline(mods[[i]], col = "blue")
+}
+mtext("Anscombe's 4 Regression data sets", outer = TRUE, cex = 1.5)
+par(op)
+
+
+########################
+# Lineáris regresszió: #
+########################
+
+#  1. Feladat 
+
+# Legyenek adottak a következő (x,y) párok:
+# xi 0 1 6 5 3
+# yi 4 3 0 1 2
+# (a) Határozza meg és ábrázolja is az a + bx alakú regessziós egyenest!
+# (b) Számolja ki a reziduálisokat és becsülje meg a hiba szórásnégyzetét!
+# (c) Adjon elorejelzést x = 2-re a regressziós egyenes alapján!
+
+x <- c(0, 1, 6, 5, 3)
+y <- c(4, 3, 0, 1, 2)
+
+# Volt: korreláció, változók közötti lineáris kapcsolat erősségét mérő mennyiség
+
+plot(x,y)
+cor(x,y)    # sum( (x-mean(x))*(y-mean(y)) ) / ( (length(x)-1)*sd(x)*sd(y) )
+
+reg <- lm(y ~ x)
+plot(x, y)
+lines(x, reg$fitted.values, col="green")
+summary(reg)
+
+  d <- cbind(as.data.frame(x),as.data.frame(y))
+  d$predicted <- predict(reg)
+  d$residuals <- residuals(reg)
+  library(ggplot2)
+  ggplot(d, aes(x = x, y = y)) +
+    geom_smooth(method = "lm", se = FALSE, color = "green") +
+    geom_segment(aes(xend = x, yend = predicted), size=2, alpha = 1, color="red") + 
+    geom_point() +
+    geom_point(aes(y = predicted), shape = 1) +
+    theme_bw()  +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+
+# hiba szórásnégyzetének becslése:
+mse <- sum(residuals(reg)^2) / (length(x)-2)
+# hiba szórásának becslése:
+sqrt(mse)     # Residual standard error
+
+cor(x,y)^2    # Multiple R-squared (egyszerű lineáris regresszió esetén)
+
+# reziduálisok vs. előrejelzett értékek:  (fontos, de nem fogjuk nézni)
+plot(predict(reg) , residuals(reg))
+
+# elorejelzés x=2 esetén
+reg$coefficients[1] + 2*reg$coefficients[2]
+
+
+#  2. feladat
+
+# Egy darabológép 100 cm-es rudak vágására van beállítva. A következo táblázat 
+# hat véletlenszerűen kiválasztott rúd hosszát és súlyát tartalmazza:
+# xi (cm) 101,3 103,7 98,6 99,9 97,2 100,1
+# yi (dkg) 609 626 586 594 579 605
+# (a) Határozza meg és ábrázolja is az aX + b alakú regressziós egyenest!
+# (b) Számolja ki a reziduálisokat és becsülje meg a hiba szórásnégyzetét!
+# (c) Adjon előrejelzést x = 100 cm-re a regressziós egyenes alapján!
+  
+  
+x <- c(101.3, 103.7, 98.6, 99.9, 97.2, 100.1)
+y <- c(609,   626,  586,  594,  579,   605)
+
+############# MEGOLDÁS #############
+reg <- lm(y ~ x)
+summary(reg)
+
+plot(x, y)
+lines(x, reg$fitted.values, col="green")
+
+# hiba szórásnégyzetének becslése
+mse <- sum(residuals(reg)^2) / (length(x)-2); sqrt(mse)
+
+# elorejelzés x=100 esetén
+reg$coefficients[1] + 100*reg$coefficients[2]
+####################################
+
+
+# 3. feladat
+#Vizsgáljuk meg az autók fogyasztásának kapcsolatát
+#a rendelkezésre álló magyarázó változókkal (mtcars adatokon)
+
+# https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html
+# library(datasets)
+# library(help = "datasets")
+
+plot(mpg ~ wt, data=mtcars)
+plot(mpg ~ qsec, data=mtcars)
+
+reg <- lm(mpg ~ wt + qsec + gear, data = mtcars); summary(reg)
+reg <- lm(mpg ~ wt + qsec, data = mtcars); summary(reg)
+
+# előrejelzés wt=3, qsec=20 esetén:
+reg$coefficients[1] + 3*reg$coefficients[2] + 20*reg$coefficients[3]

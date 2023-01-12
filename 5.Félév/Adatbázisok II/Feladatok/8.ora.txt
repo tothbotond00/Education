@@ -1,0 +1,157 @@
+Kötelező feladat a 7. gyakorlaton
+Az alábbi 1. feladatot együtt megoldjuk a gyakorlat alatt, a megoldásukat egy 
+szöveges állományban el kell küldeniük a következő email címre:
+  nikovits@inf.elte.hu
+A feladatot a gyakorlaton kell megoldaniuk, de a megoldást elfogadom még a nap végéig.
+A második zh-ban hasonló feladatok fognak szerepelni, a megoldást is hasonló formában
+kell majd beadniuk. A megoldás formájára vonatkozóan segítséget találnak ennek az állománynak a végén.
+===========================================================================
+
+Előkészítő feladat: végrehajtási tervek előállítása
+---------------------------------------------------
+
+Hozzuk létre a PLAN_TABLE nevű táblát, majd készítsük el az alábbi utasítások 
+végrehajtási tervét a fenti táblába.
+Ezután tegyük is láthatóvá a tervek fa struktúráját a megfelelő lekérdezéssel. 
+Mindehhez segítség az expl.txt állományban található.
+
+
+1. Feladat
+----------
+Az NIKOVITS felhasználó Dolgozo, Osztaly es Fiz_kategoria (fizetési kategóriák) tábláiból 
+hozzunk létre saját példányokat (CREATE TABLE dolgozo AS SELECT * FROM nikovits.dolgozo; ... stb.), 
+és a saját táblákra vonatkozóan adjuk meg az alábbi lekérdezést.
+------------------------------------------------------------------------------------------
+NIKOVITS.DOLGOZO       (dkod, dnev, foglalkozas, fonoke, belepes, fizetes, jutalek, oazon)
+NIKOVITS.OSZTALY       (oazon, onev, telephely)
+NIKOVITS.Fiz_kategoria (kategoria, also, felso)
+------------------------------------------------------------------------------------------
+Lekérdezés:
+Adjuk meg azoknak az osztályoknak a neveit, amelyeknek van olyan dolgozója,
+aki az 1-es fizetési kategóriába esik.
+
+Hozzunk létre indexet valamelyik táblához, majd adjuk meg a rendszer által
+létrehozott új végrehajtási tervet. Olyan indexet hozzunk létre, amit
+a lekérdezésben használni tud a rendszer és ez legyen is látható az új tervből.
+
+Az ilyen feladatok esetén kérem elküldeni:
+1.  a SELECT utasítást, az esetleges hintekkel együtt (+ az indexet létrehozó utasítást),
+2.  a lekérdezés végeredményét, 
+3.  és a végrehajtási tervet.
+------------------------------------------------------------------------------
+
+2. Feladat
+----------
+Hasonlítsuk össze a futas_tesztek.txt állomány két lekérdezésének végrehajtási tervét,
+és állapítsuk meg a különbséget. Miért gyorsabb lényegesen az egyik verzió?
+
+Costok és a tervek alapján egyik tábla elérése gyorsabb a másiknál :)
+
+Végrehajtási tervek megváltoztatása tippek (hint) segítségével
+--------------------------------------------------------------
+
+A NIKOVITS felhasználó tulajdonában vannak a következő táblák:
+--------------------------------------------
+CIKK(ckod, cnev, szin, suly)
+SZALLITO(szkod, sznev, statusz, telephely)
+PROJEKT(pkod, pnev, helyszin)
+SZALLIT(szkod, ckod, pkod, mennyiseg, datum)
+--------------------------------------------
+A táblákban tárolt adatok jelentése a következő: 
+A szállítók cikkeket szállítanak a projektekhez, különböző időpontokban, különböző mennyiségben.
+A szállításokra vonatkozó információk a SZALLIT táblában találhatók. 
+
+A táblákhoz indexek is vannak létrehozva, ezek tulajdonságait
+a katalógusból nézhetik meg, ha szükség van rá.
+
+Adjuk meg a következő lekérdezéseket és a hozzájuk tartozó végrehajtási
+tervek fa struktúráját. Minden esetben lehet hinteket használni.
+
+3. Feladat
+----------
+Adjuk meg a piros cikkekre vonatkozó szállitások összmennyiségét.
+(vagyis a szallit táblabeli mennyiségek összegét adjuk meg)
+
+select /*+ */ sum(sz.mennyiseg)
+from nikovits.cikk c, nikovits.szallit sz
+where szin = 'piros'
+and c.ckod = sz.ckod;
+
+a) Adjuk meg úgy a lekérdezést, hogy egyik táblára se használjon indexet az oracle. 
+NO_INDEX(c,sz)
+b) Adjuk meg úgy a lekérdezést, hogy csak az egyik táblára használjon indexet az oracle.
+INDEX(c)
+c) Adjuk meg úgy a lekérdezést, hogy mindkét táblára használjon indexet az oracle. 
+INDEX(c) INDEX(sz)
+d) Adjuk meg úgy a lekérdezést, hogy a két táblát SORT-MERGE módszerrel kapcsolja össze.
+USE_MERGE(c,sz) 
+e) Adjuk meg úgy a lekérdezést, hogy a két táblát NESTED-LOOPS módszerrel kapcsolja össze.
+USE_NL(c,sz)
+f) Adjuk meg úgy a lekérdezést, hogy a két táblát HASH-JOIN módszerrel kapcsolja össze. 
+USE_HASH(c,sz)
+g) Adjuk meg úgy a lekérdezést, hogy a két táblát NESTED-LOOPS módszerrel kapcsolja össze,
+   és ne használjon indexet. 
+USE_NL(c,sz) NO_INDEX(c,sz)
+
+
+=========================================================================================
+Kérem, hogy az alábbi 3 sort figyelmesen olvassák el.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Az ilyen feladatok esetén, és így az 1. feladat esetén is kérem elküldeni:
+1.  a SELECT utasítást, az esetleges hintekkel együtt (+ az indexet létrehozó utasítást),
+2.  a lekérdezés végeredményét, 
+3.  és a végrehajtási tervet.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Segítség és péda arra vonatkozóan, hogy hogyan kellene elküldeni az 1. feladat megoldását.
+Az alábbi példán bemutatom egy index létrehozását, és annak megjelenését a végrehajtási
+tervben. Az alábbi csupán egy példa, amelyben bemutatom az egyes lépéseket.
+
+Először létrehozok egy átmeneti táblát csak a példa kedvéért:
+  CREATE TABLE cikk_tmp AS SELECT * FROM nikovits.cikk;
+
+Lekérdezés (ebben még nincsenek hintek, még nem fogja a megfelelő végrehajtási tervet eredményezni)
+----------
+Adjuk meg a piros színű cikkek átlagos súlyát (cnev, atlag) sémában:
+  SELECT cnev, ROUND(AVG(suly)) atlag FROM cikk_tmp WHERE szin='piros' GROUP BY cnev;
+
+A lekérdezés eredménye: (ezt el kell küldeni)
+-----------------------
+taska     14
+toll      10
+nyomtato  19
+kabat     14
+gep       21
+kalap     14
+papir     18
+munkaruha 12
+szek      13
+PC        13
+asztal    16
+kasza     11
+kapa      20
+
+A lekérdezés végrehajtási terve:  (ez a terv még nem használ indexet, ez még nem jó)
+--------------------------------
+SELECT STATEMENT +  + 
+  HASH + GROUP BY + 
+    TABLE ACCESS + FULL + CIKK_TMP
+
+Létrehozunk egy indexet a táblára:
+  CREATE INDEX szin_idx ON cikk_tmp(szin);
+
+A lekérdezés, amiben hint is van, hogy mindenképpen használja az indexet: (ez a végleges SELECT)
+-------------------------------------------------------------------------
+  SELECT /*+ index(cikk_tmp) */ cnev, ROUND(AVG(suly)) FROM cikk_tmp WHERE szin='piros' GROUP BY cnev;
+
+Az új végrehajtási terv, amiben már látható az index: (ezt kell elküldeni, ebben már van index)
+-----------------------------------------------------
+SELECT STATEMENT +  + 
+  HASH + GROUP BY + 
+    TABLE ACCESS + BY INDEX ROWID BATCHED + CIKK_TMP
+      INDEX + RANGE SCAN + SZIN_IDX
+
+
+A fenti csak egy példa volt, a hasonló feladatok esetén a megfelelő, hinteket is tartalmazó
+SELECT utasítást, annak futtatásával kapott végeredményt és a végrehajtási tervet kell elküldeni.

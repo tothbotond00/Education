@@ -1,0 +1,87 @@
+Végrehajtási tervek megváltoztatása tippek (hint) segítségével
+--------------------------------------------------------------
+
+3. Feladat
+----------
+Adjuk meg a piros cikkekre vonatkozó szállitások összmennyiségét.
+(vagyis a szallit táblabeli mennyiségek összegét adjuk meg)
+
+a) Adjuk meg úgy a lekérdezést, hogy egyik táblára se használjon indexet az oracle. 
+SELECT /*+ full(c) full(s) */ SUM(mennyiseg) FROM nikovits.cikk c, nikovits.szallit s
+WHERE c.ckod=s.ckod and szin='piros';
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    HASH JOIN +  + 
+      TABLE ACCESS + FULL + NIKOVITS.CIKK
+      TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+--------------------------------------------------------------
+b) Adjuk meg úgy a lekérdezést, hogy csak az egyik táblára használjon indexet az oracle. 
+SELECT /*+ index(c) full(s) */ SUM(mennyiseg) FROM nikovits.cikk c, nikovits.szallit s
+WHERE c.ckod=s.ckod and szin='piros';
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    HASH JOIN +  + 
+      TABLE ACCESS + BY INDEX ROWID BATCHED + NIKOVITS.CIKK
+        INDEX + RANGE SCAN + NIKOVITS.C_SZIN
+      TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+--------------------------------------------------------------
+c) Adjuk meg úgy a lekérdezést, hogy mindkét táblára használjon indexet az oracle. 
+SELECT /*+ index(c) index(s) */ SUM(mennyiseg) FROM nikovits.cikk c, nikovits.szallit s
+WHERE c.ckod=s.ckod and szin='piros';
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    NESTED LOOPS +  + 
+      NESTED LOOPS +  + 
+        TABLE ACCESS + BY INDEX ROWID BATCHED + NIKOVITS.CIKK
+          INDEX + RANGE SCAN + NIKOVITS.C_SZIN
+        INDEX + RANGE SCAN + NIKOVITS.SZT_CKOD
+      TABLE ACCESS + BY INDEX ROWID + NIKOVITS.SZALLIT
+--------------------------------------------------------------
+d) Adjuk meg úgy a lekérdezést, hogy a két táblát SORT-MERGE módszerrel kapcsolja össze. 
+SELECT /*+ use_merge(c s) */ SUM(mennyiseg) FROM nikovits.cikk c, nikovits.szallit s
+WHERE c.ckod=s.ckod and szin='piros';
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    MERGE JOIN +  + 
+      SORT + JOIN + 
+        TABLE ACCESS + FULL + NIKOVITS.CIKK
+      SORT + JOIN + 
+        TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+--------------------------------------------------------------
+e) Adjuk meg úgy a lekérdezést, hogy a két táblát NESTED-LOOPS módszerrel kapcsolja össze. 
+SELECT /*+ use_nl(c, s) */ SUM(mennyiseg) FROM nikovits.cikk c, nikovits.szallit s
+WHERE c.ckod=s.ckod and szin='piros';
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    NESTED LOOPS +  + 
+      NESTED LOOPS +  + 
+        TABLE ACCESS + FULL + NIKOVITS.CIKK
+        INDEX + RANGE SCAN + NIKOVITS.SZT_CKOD
+      TABLE ACCESS + BY INDEX ROWID + NIKOVITS.SZALLIT
+--------------------------------------------------------------
+f) Adjuk meg úgy a lekérdezést, hogy a két táblát HASH-JOIN módszerrel kapcsolja össze. 
+SELECT /*+ use_hash(c, s) */ SUM(mennyiseg) FROM nikovits.cikk c, nikovits.szallit s
+WHERE c.ckod=s.ckod and szin='piros';
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    HASH JOIN +  + 
+      TABLE ACCESS + FULL + NIKOVITS.CIKK
+      TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+--------------------------------------------------------------
+g) Adjuk meg úgy a lekérdezést, hogy a két táblát NESTED-LOOPS módszerrel kapcsolja össze,
+   és ne használjon indexet. 
+SELECT /*+ use_nl(c, s) no_index(s) no_index(c) */ SUM(mennyiseg) 
+FROM nikovits.cikk c, nikovits.szallit s
+WHERE c.ckod=s.ckod and szin='piros';
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    NESTED LOOPS +  + 
+      TABLE ACCESS + FULL + NIKOVITS.CIKK
+      TABLE ACCESS + FULL + NIKOVITS.SZALLIT

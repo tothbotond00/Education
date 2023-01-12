@@ -1,0 +1,72 @@
+create or replace PROCEDURE print_histogram(p_owner VARCHAR, p_table VARCHAR, p_col VARCHAR) IS
+    dynam_curs   SYs_REFCURSOR;
+    table_exist integer := 0;
+    col_exist integer := 0;
+    number_of_rows integer := 0;
+    maximum integer := 0;
+    divider integer := 5;
+    v_sql VARCHAR(1000) := 'select rpad(to_char(' || p_col  ||'),24) , count(*) from ' || p_owner ||'.' ||p_table|| ' where ' || p_col ||' is not null group by '|| p_col || ' order by ' || p_col ;
+    w_sql VARCHAR(1000) := 'select count(distinct(to_char('|| p_col ||'))) from ' || p_owner ||'.' ||p_table;
+    x_sql VARCHAR(1000) := 'select max(count('|| p_col ||')) from '|| p_owner ||'.' ||p_table||' group by '|| p_col;
+    v_name varchar(1000);
+    v_count integer;
+BEGIN
+    select count(*)
+    into table_exist
+    from dba_tables
+    where table_name = upper(p_table)
+    and owner = upper(p_owner);
+    
+    select count(*)
+    into col_exist
+    from dba_tab_columns
+    where table_name = upper(p_table)
+    and owner = upper(p_owner)
+    and column_name = upper(p_col);
+    
+    if table_exist = 0 
+    then
+        dbms_output.put_line('Non-existing table or column');
+    else
+        EXECUTE IMMEDIATE w_sql INTO number_of_rows;
+        if number_of_rows > 100 or number_of_rows < 3
+        then
+            dbms_output.put_line('Few or too many distinct values in column');
+        else
+            EXECUTE IMMEDIATE x_sql INTO maximum;
+            while maximum / divider > 100
+            loop
+                divider := divider * 10;
+            end loop;
+            OPEN dynam_curs FOR v_sql;
+            LOOP
+                FETCH dynam_curs INTO v_name, v_count;
+                EXIT WHEN dynam_curs%NOTFOUND;
+                DBMS_OUTPUT.PUT_LINE(v_name ||' ---> ' || rpad('*', CEIL(v_count/divider), '*'));
+            END LOOP;
+            CLOSE dynam_curs;
+        end if;          
+    end if;        
+END;
+
+--OUTPUT
+1971                     ---> *******************
+1972                     ---> *******************
+1973                     ---> *******************
+1974                     ---> *******************
+1975                     ---> ********************
+1976                     ---> *******************
+1977                     ---> *******************
+1978                     ---> *******************
+1979                     ---> *******************
+1980                     ---> ******************
+1981                     ---> ******************
+1982                     ---> ****************
+1983                     ---> ***************
+1984                     ---> ************
+1985                     ---> ********
+1986                     ---> ******
+1987                     ---> ****
+1988                     ---> **
+1989                     ---> **
+1990                     ---> *

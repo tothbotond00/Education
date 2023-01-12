@@ -1,0 +1,271 @@
+---
+title: "Első gyak"
+author: "Monos Attila"
+date: "2022-09-19"
+output:
+  pdf_document: default
+  word_document: default
+editor_options: 
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## *Valószínűség becslése, kísérletek*
+
+*Dobjunk fel egy szabályos érmét néhányszor. Tegyük fel, hogy ez lett az
+eredmény:* $$
+  F\quad I\quad I\quad F\quad I\quad F\quad F\quad F
+$$ *Az érme természetesen véletlenszerűen működik; szeretnénk tudni,
+mekkora az esélye annak, hogy fejet dobunk, és mekkora az esélye annak,
+hogy írást dobunk. A dobások számától függően az alábbira juthatunk:*
+
+```{=latex}
+\begin{center}
+  \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+    \hline
+    Dobások száma & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$
+    \\[4pt] \hline\hline
+    Fej valószínűsége & $1$ & $\tfrac{1}{2}$ & $\tfrac{1}{3}$ & $\tfrac{1}{2}$ & $\tfrac{2}{5}$ & $\tfrac{1}{2}$ & $\tfrac{4}{7}$ & $\tfrac{5}{8}$
+    \\[4pt] \hline
+    Írás valószínűsége & $1$ & $\tfrac{1}{2}$ & $\tfrac{2}{3}$ & $\tfrac{1}{2}$ & $\tfrac{3}{5}$ & $\tfrac{1}{2}$ & $\tfrac{3}{7}$ & $\tfrac{3}{8}$
+    \\ \hline
+  \end{tabular}
+\end{center}
+```
+*A következőképp számítottuk ki ezeket: legyen* $k$ *a sikeres
+kísérletek száma (pl. az, hogy fejet dobtunk), és* $n$ *az összes
+kísérlet száma. Ekkor a sikeres kísérletek*
+\textit{relatív gyakorisága}$\tfrac{k}{n}$*.*
+
+*Mint tudjuk, mind a fej, mind az írás valószínűsége* $\tfrac{1}{2}$*.
+Buffon* $4040$ *dobásból* $2048$ *fejet kapott
+(*$\tfrac{k}{n} = 0{,}5069$*). Pearson* $24000$ *dobásból*
+$0{,}5005$*-ös relatív gyakoriságot kapott. Pongyolán mondva: ahogy*
+$n \rightarrow \infty$*, úgy tart a relatív gyakoriság a
+valószínűséghez.*
+
+```{r}
+n <- 100
+erme <- c('F', 'I')
+dobasok <- sample(erme, size = n, replace = TRUE, prob = c(1,1))
+
+freqs <- table(dobasok)
+freqs
+```
+
+```{r}
+fejgyak <- cumsum(dobasok == "F") / 1:n
+plot( fejgyak,
+      type = 'l', lwd = 2, col = 'red',
+      ylim = c(0,1),
+      ylab = "fej dobások relatív gyakorisága",
+      xlab = "dobások",
+      main = paste(n, "szabályos érme feldobása"))
+abline(h = 1/2, col = 'blue')
+```
+
+## *Diszkrét valószínűségi változók*
+
+*Valószínűségi változókról beszéltünk már -- változók, amiknek az értéke
+a kísérlet kimenete. Egy valószínűségi változó diszkrét, ha véges sok,
+vagy megszámlálható végtelen sok értéket vehet fel.*
+
+### *Binomiális eloszlás*
+
+*Dobjunk fel egyszerre négy egyforma érmét! A lehetséges kimenetelek:*
+
+```{=tex}
+\begin{center}
+  \begin{tabular}{ccccccccc}
+    $4$ fej && $3$ fej && $2$ fej && $1$ fej && $0$ fej
+    \\
+    $0$ írás && $1$ írás && $2$ írás && $3$ írás && $4$ írás
+  \end{tabular}
+\end{center}
+```
+\textbf{Feladat:} *Mi a valószínűsége az egyes kimeneteleknek?*
+
+```{r}
+dbinom(0:5, size = 5, prob = 0.5)
+dbinom(3, 5, 0.5)
+```
+
+*Ezt a fajta jelenséget Bernoulli általánosította, ez a
+Bernoulli-kísérlet: két lehetséges kimenetel van, ezek valószínűsége*
+$p$ *és* $1 - p$ *(ahol* $p \in (0,1)$ *természetesen). Ezt a kísérletet
+egymástól függetlenül végrehajtjuk* $n$ *alkalommal. Ekkor a lehetséges
+kimenetelek:* $0, 1, \ldots, n$*, vagyis ha* $X$ *az a valószínűségi
+változó, mely leírja a sikeres kísérletek számát, akkor* $X$ *diszkrét.
+Eloszlását vizsgálva:* $$
+  P(X = k) = \binom{n}{k} \cdot p^{k} \cdot (1 - p)^{n - k}, \quad k = 0, 1, \ldots, n
+$$ *Kaptunk egy eseményteret, melynek* $n + 1$ *eleme (eseménye) van, a
+fenti valószínűségekkel. Ez a* \textit{binomiális eloszlás}*:*
+$X \sim \text{Bin}(n,p)$*.*
+
+*Példaként nézzük meg az* $n = 3$*,* $p = 0{,}3$ *esetet.*
+
+```{r}
+dbinom(0, 3, 0.3)
+dbinom(1, 3, 0.3)
+dbinom(2, 3, 0.3)
+dbinom(3, 3, 0.3)
+
+```
+
+```{r}
+plot(0:5, dbinom(0:5, 5, 0.3),
+     type = "h", col = 2, lwd = 3,
+     xlab = "Érték",
+     ylab = "Valószínűség",
+     main = paste("Binomiális eloszlás, n = 5, p = 0,3"))
+```
+
+```{r}
+barplot(dbinom(0:5, 5, 0.3),
+        col = 'red',
+        xlab = "Érték",
+        ylab = "Valószínűség",
+        main = "Binomiális eloszlás, n = 5, p = 0,3",
+        names.arg = 0:5)
+```
+
+*Eddig* $P = (X = k)$ *értékeket tudunk számolni. Mi van, ha mondjuk azt
+szeretnénk kiszámolni, hogy* $P(2 < X < 5)$*? Ebben hogyan segíthet a*
+\texttt{dbinom} *parancs?*
+
+```{r}
+sum(dbinom(c(3,4), 5, 0.3))
+```
+
+*Az eloszlásfüggvényt úgy definiáltuk, hogy* $P(X \leq k)$ *(Vagy*
+$P(X < k)$*, a két definíció lényegében ugyanaz). Ennek az értéke*
+$k = 0, 1, \ldots, n$ *esetén érdekes és fontos. Legyen most az
+egyszerűség kedvéért* $n = 5$*.*
+
+```{r}
+pbinom(3, 5, 0.3)
+sum(dbinom(0:3,5,0.3))
+```
+
+*Ha ismerünk egy eloszlást, akkor abból könnyen tudunk értékeket
+generálni. Kísérletezgetéseknél ez hasznos lehet. Pl. úgy is meg lehet
+sejteni, hogy egy valószínűségi változó eloszlása pont binomiális, hogy
+"jól tudjuk szimulálni binomiális eloszlás szerint véletlen generált
+értékekkel". Persze ezután jön a matematika, hogy ez biztosan így van-e,
+de ez ettől még jó kiindulást adhat.*
+
+```{r}
+rbinom (10, 5, 0.3)
+```
+
+```{r}
+n = 200
+p = 0.3
+barplot(dbinom(0:n, n, p), 
+        col="red",
+        xlab="Érték",
+        ylab="Valószínűség",
+        main= paste("Binomiális eloszlás ( n = ", n,", p =", p, ")"),
+        names.arg = 0:n)
+abline(h = 0, col = 3)
+```
+
+### *Indikátor eloszlás*
+
+*Tekintsünk egy binomiális eloszlást, ahol a sikeres kísérlet
+valószínűsége* $p$*, és* $n = 1$*. Ekkor a binomiális eloszlás egy
+speciális esetét kapjuk, ami az* \textit{indikátor eloszlás}*. Ezzel
+bináris eseményeket tudunk nagyon jól jellemezni; továbbá az indikátorok
+összegére való felbontás egy nagyon erős feladatmegoldó eszköz lehet, ha
+pl. várható értéket kell számolni. Az indikátor eloszlás egyszerűen
+leírható:* $$
+  P(X = 1) = p, \quad P(X = 0) = 1 - p
+$$ *\### Poisson eloszlás*
+
+*Ha* $X$\textit{Poisson-eloszlású} *(*$X \sim \text{Pois}(\lambda)$*),
+akkor* $X = 0, 1, 2, \ldots$*. Ne feledjük, ez még diszkrét! A
+Poisson-eloszlás egyetlen paramétere* $\lambda$*, mely bármilyen pozitív
+szám lehet. Ábrázoljuk a Poisson-eloszlást egy adott határig (hisz
+végtelen sok oszlopok nehéz rajzolni)!*
+
+```{r}
+lambda = 1
+n = 10
+barplot(dpois(0:n, lambda),
+        col = "blue",
+        xlab = "Érték",
+        ylab = "Valószínűség",
+        main = "Poisson eloszlás",
+        names.arg = 0:n)
+```
+
+### *Binomiális és Poisson eloszlások kapcsolata*
+
+*Matematikailag megmutatható (sok-sok munkával, ettől eltekintünk), hogy
+ha* $n$ *elég nagy, akkor a* $\text{Pois}(\lambda)$ *és*
+$\text{Bin}(n, \tfrac{\lambda}{n})$ *eloszlások "szinte ugyanolyanok".
+Ellenőrizzük ezt le!*
+
+```{r}
+lim = 10
+lambda = 2
+n = 100
+p = lambda/n
+
+ranbin = dbinom(0:lim, n, p)
+ranpoi = dpois(0:lim, lambda)
+
+together = rbind(ranbin[1:(lim + 1)], ranpoi)
+rownames(together) = c("Binomiális", "Poisson")
+
+barplot(together,
+        col = c("red", "blue"),
+        xlab = "Érték",
+        ylab = "Valószínűség",
+        main = "Binomiális és Poisson eloszlások kapcsolata",
+        legend = rownames(together),
+        beside = TRUE,
+        names.arg = 0:lim)
+```
+
+### *Hipergeometriai eloszlás*
+
+*A probléma a következő: van* $N$ *db számítógépünk. Ebből* $M$ *db-nak
+elég erős a processzora, de nem tudjuk, melyek azok. Így véletlenszerűen
+vásárolunk belőlük* $n$ *darabot. A kérdés az, hogy mekkora eséllyel
+veszünk* $0, 1, \ldots, n$ *olyan gépet, mely elég erős?*
+
+*Általánosabban: van* $N$ *golyónk, ebből* $M$ *jelölt, és* $n$ *darabot
+húzunk ki visszatevés nélkül. Jelölje* $X$ *a kihúzott jelölt golyók
+számát. Ekkor* $X = \text{HipGeo}(M, N, n)$
+
+```{r}
+N = 30
+M = 25
+n = 10
+
+dhyper(0:n, M, N - M, n)
+
+barplot(dhyper(0:n, M, N - M, n),
+        col = "green",
+        xlab = "Érték",
+        ylab = "Valószínűség",
+        main = "Hipergeometriai eloszlás",
+        names.arg = 0:n)
+```
+
+## *Feladatok*
+
+```{=tex}
+\begin{enumerate}
+  \item
+    Tegyük fel, hogy az új internet-előfizetők véletelenszerűen válaszott $20\%$-a speciális kedvezményt kap. Mi a valószínűsége, hogy a $10$ ismerősünk közül, akik most fizettek elő, legalább négyen részesülnek a kedvezményben?
+```
+```{r}
+sum(dbinom(4:10,10,0.2))
+```

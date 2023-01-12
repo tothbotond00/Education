@@ -1,0 +1,168 @@
+Kötelező feladat a 4. gyakorlathoz
+------------------------------------------
+Írják meg az alábbi, 6. feladatban szereplő procedúrát (list_indexes).
+Azt, hogy az output helyes-e ellenőrizni tudják a feladat után megadott 'CHECK_PLSQL'
+procedúra futtatásával.
+
+Határidő: a következő gyakorlat kezdete.
+===========================================================================
+
+B+ fa index
+-----------
+Az alábbi feladatban a tankönyben leírt és az előadáson is bemutatott algoritmussal 
+építsünk fel egy B+ fát!
+
+Tegyük fel, hogy egy B+ fa blokkjaiba 3 kulcs fér el plusz 4 mutató. A kulcsok 
+különbözőek. Szúrjuk be a B+ fába az alábbi kulcsértékeket a megadott sorrendben:
+39,15,50,70,79,83,72,43,75,45,60,80
+Adjuk meg a B+ fa minden olyan állapotát, amikor egy csomópont kettéosztására volt szükség.
+Például, az első kettéosztás utáni állapot:
+                          50
+                    15|39    50|70
+
+Egy kis segítség:
+----------------
+
+Levél csúcs kettéosztásakor minden kulcsot megőrzünk a régi és az új (szomszédos) csúcsban.
+1 új kulcs-mutató párt küldünk felfelé a szülő csúcsba, amit ott kell elhelyezni.
+
+Belső csúcs kettéosztásakor (N,M csúcsra) a mutatók első fele az N-be kerül, a második az M-be.
+A kulcsok első fele az N-be kerül a második fele az M-be, de középen kimarad egy kulcs,
+ami az M-en keresztül (első gyermekén keresztül) elérhető legkisebb kulcsot tartalmazza. 
+Ez nem kerül sem N-be, sem M-be, hanem ez megy fölfelé N és M közös szülőjébe az M-re mutató
+mutatóval együtt.
+
+
+Bitmap index
+------------
+
+DKOD DNEV   FIZETES  FOGLALKOZAS  BELEPES  OAZON
+---------------------------------------------------
+1    SMITH     800   CLERK        1980     20   
+2    ALLEN    1600   SALESMAN     1981     30	   
+3    WARD     1250   SALESMAN     1981     30	   
+4    JONES    2975   MANAGER      1981     20	   
+5    MARTIN   1250   SALESMAN     1981     30	   
+6    BLAKE    2850   MANAGER      1981     30	   
+7    CLARK    2450   MANAGER      1981     10	   
+8    SCOTT    3000   ANALYST      1982     20	   
+9    KING     5000   PRESIDENT    1981     10	   
+10   TURNER   1500   SALESMAN     1981     30	   
+11   ADAMS    1100   CLERK        1983     20	   
+12   JAMES     950   CLERK        1981     30	   
+13   FORD     3000   ANALYST      1981     20	   
+14   MILLER   1300   CLERK        1982     10	 
+
+
+Készítsen bitmap indexet a dolgozó tábla OAZON oszlopára és adja meg a bitvektorokat.
+
+Tegyük fel, hogy a FOGLALKOZAS, a BELEPES és az OAZON oszlopokra létezik bitmap index (3 index).
+Készítsük el az alábbi lekérdezésekhez szükséges bitvektorokat, majd végezzük el rajtuk a szükséges 
+műveleteket, és adjuk meg azt az előállt bitvektort, ami alapján a végeredmény sorok megkaphatók.
+Ellenőrzésképpen adjuk meg a lekérdezést SQL-ben is.
+ 
+- Adjuk meg azoknak a dolgozóknak a nevét, akik 1981-ben léptek be és a foglalkozásuk hivatalnok (CLERK),
+  vagy a 20-as osztályon dolgoznak és a foglalkozásuk MANAGER.
+
+- Adjuk meg azoknak a dolgozóknak a nevét, akik nem 1981-ben léptek be és a 10-es vagy a 30-as 
+  osztályon dolgoznak.
+
+Tömörítsük a következő bitvektort a szakaszhossz kódolással. (lásd UW_szakaszhossz_kodolas.doc)
+0000000000000000000000010000000101
+23 -> 10111
+7  -> 111
+1  -> 1
+111101011111011101
+
+Fejtsük vissza a következő, szakaszhossz kódolással tömörített bitvektort:
+1111010101001011
+
+5 hossz -> 10101 1 + 4 + 16 => 21 ,
+0 hossz -> 1 -> 0
+2 hossz > 11 -> 3
+
+000000000000000000000110001
+
+Oracle indexek  
+--------------
+(DBA_INDEXES, DBA_IND_COLUMNS, DBA_IND_EXPRESSIONS)
+
+Hozzunk létre egy vagy több táblához több különböző indexet, legyen köztük több oszlopos,
+csökkenő sorrendű, bitmap, függvény alapú stb. (Ehhez használhatók az ab2_oracle.docx
+állományban szereplő példák, vagy a cr_index.txt-ben szereplők.)
+Az alábbi lekérdezésekkel megállapítjuk az iménti indexeknek mindenféle tulajdonságait a 
+katalógusokból.
+
+1.
+Adjuk meg azoknak a tábláknak a nevét, amelyeknek van csökkenő sorrendben indexelt oszlopa.
+
+Miért ilyen furcsa az oszlopnév?
+-> lásd DBA_IND_EXPRESSIONS
+
+select distinct table_name from DBA_IND_COLUMNS
+    where descend = 'DESC';
+
+2.
+Adjuk meg azoknak az indexeknek a nevét, amelyek legalább 9 oszloposak.
+(Vagyis a táblának legalább 9 oszlopát vagy egyéb kifejezését indexelik.)
+
+select index_name from DBA_IND_COLUMNS
+    GROUP BY index_name
+            having count(index_name)>=9;
+
+3.
+Adjuk meg a NIKOVITS.CUSTOMERS táblára létrehozott bitmap indexek nevét.
+
+select index_name from dba_indexes 
+    where owner = 'NIKOVITS' and table_name = 'CUSTOMERS'  and INDEX_TYPE = 'BITMAP';
+
+4.
+Adjuk meg azon kétoszlopos indexek nevét és tulajdonosát, amelyeknek legalább 
+az egyik kifejezése függvény alapú.
+
+select * from dba_indexes where (index_name,owner) in (select  index_name, index_owner from  dba_ind_columns 
+        group by index_owner, index_name
+            having count(column_name) = 2) and INDEX_TYPE = 'FUNCTION-BASED NORMAL';
+
+5.
+Adjuk meg az egyikükre, pl. a NIKOVITS felhasználó tulajdonában lévőre, hogy milyen kifejezések szerint 
+vannak indexelve a soraik. (Vagyis mi a függveny, ami alapján a bejegyzések készülnek.)
+
+select COLUMN_EXPRESSION from DBA_IND_EXPRESSIONS
+    where (INDEX_OWNER,INDEX_NAME) = (select owner,index_name from dba_indexes where (index_name,owner) in (select  index_name, index_owner from  dba_ind_columns 
+        group by index_owner, index_name
+            having count(column_name) = 2) and INDEX_TYPE = 'FUNCTION-BASED NORMAL' and owner = 'NIKOVITS' FETCH FIRST 1 ROWS ONLY); 
+
+6.
+Írjunk meg egy plsql procedúrát, amelyik a paraméterül kapott táblára vonatkozóan 
+kiírja a tábla indexeit és azok méretét bájtban. Az indexeket abc sorrendben, külön sorokban
+kell kiírni, a méretet szóközzel elválasztva az index nevétől így:
+INDEX1: 1234  
+INDEX2: 5678
+(az index neve után van egy kettőspont)
+
+create or replace PROCEDURE list_indexes(p_owner VARCHAR2, p_table VARCHAR2) IS
+    CURSOR curs1 IS select INDEX_NAME indName,COLUMN_length colLength from DBA_IND_COLUMNS where table_owner = upper(p_owner) and table_name=upper(p_table) order by INDEX_NAME ASC;
+    rec1 curs1%ROWTYPE;
+    indSize integer;
+begin 
+    open curs1;
+        loop
+            FETCH curs1 INTO rec1;
+            exit WHEN curs1%NOTFOUND;
+                select distinct bytes into indSize from dba_segments 
+                    where segment_name = rec1.indName and segment_type='INDEX' and owner = upper(p_owner);
+                dbms_output.put_line(rec1.indName||': '||indSize);
+        end loop;
+end;
+/
+
+CREATE OR REPLACE PROCEDURE list_indexes(p_owner VARCHAR2, p_table VARCHAR2) IS
+...
+SET SERVEROUTPUT ON
+EXECUTE list_indexes('nikovits', 'customers');
+
+Ellenőrzés:
+----------
+EXECUTE check_plsql('list_indexes(''nikovits'', ''customers'')');
+EXECUTE check_plsql('list_indexes(''nikovits'', ''cikk_iot'')');

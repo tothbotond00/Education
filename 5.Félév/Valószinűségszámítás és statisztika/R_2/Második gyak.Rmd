@@ -1,0 +1,560 @@
+---
+title: "Második gyak"
+author: "Monos Attila"
+date: "2022-10-03"
+output:
+  pdf_document: default
+  html_document: default
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Nevezetes abszolút folytonos eloszlások
+
+Egy $X$ valószínűségi változó eloszlása (nagyjából) akkor abszolút folytonos, ha $X$ több, mint megszámlálhatóan végtelen sok értéket vehet fel. Rendszerint ez azt jelenti, hogy $X$ egy intervallumból veszi fel az értékeit, vagy bármilyen valós szám lehet.
+
+Mi csak a nevezetes abszolút folytonos eloszlásokkal fogunk foglalkozni, hiszen ezeknek van gyakorlati hasznuk. Egy abszolút folytonos eloszlást a sűrűségfüggvényével (vagy az eloszlásfüggvényével) adunk meg. A sűrűségfüggvény és az eloszlásfüggvény között az alábbi kapcsolatok fontosak:
+\begin{gather*}
+  F(x) = P(X < x) = \int\limits_{-\infty}^{x} f(t) \mathrm{d}t
+  \\
+  f'(x) = F(x)
+  \\
+  f, F \colon \mathbb{R} \rightarrow \mathbb{R},
+\end{gather*}
+vagyis mind a sűrűségfüggvényt, mind az eloszlásfüggvényt a teljes valós számegyenesen értelmezzük (természetesen ha $X$ valamilyen értéket nem is vehet fel, akkor ott a sűrűségfüggvény $0$, az eloszlásfüggvény viselkedését pedig ismerjük).
+
+## Egyenletes eloszlás
+
+Legyen $a < b \in \mathbb{R}$, és válasszunk ki véletlenszerűen egy $x$ pontot az $[a,b]$ intervallumból. Ekkor -- a gimnáziumban megismert geometriai valószínűséghez hasonlóan -- annak a valószínűsége, hogy a kiválasztott pont az $E \subseteq [a,b]$ halmazba esik:
+$$
+  P(x \in E) = \frac{|E|}{\Big|[a,b]
+  \Big|},
+$$
+ahol a $|.|$ jelzés az adott halmaz hosszát jelöli (ha van). Alternatívan a sűrűségfüggvénnyel is megadhatjuk ezt a valószínűséget:
+$$
+  f(x) = \begin{cases}
+           \frac{1}{b - a}, & \text{ ha } x \in [a,b]
+           \\
+           0, & \text{ ha } x \notin [a,b]
+         \end{cases}
+$$  
+Ekkor $P(x \in E) = \int_{E} f(x) \mathrm{d}x$ (vegyük észre, hogy ha $E$ egy intervallum, akkor ez egy sima Riemann-integrál. Ha $E$ intervallumokra bomlik, akkor több Riemann-integrál összege). A fentiek alapján (akár integrálva is) megkapható az egyenletes eloszlás, $E(a,b)$ eloszlásfüggvénye is:
+$$
+  F(X) = P(X < x) = \begin{cases}
+                      0, & \text{ ha } x < a
+                      \\
+                      \frac{x - a}{b - a}, & \text{ ha } x \in [a, b]
+                      \\
+                      1, & \text{ ha } x > b
+                    \end{cases}
+$$
+Abszolút folytonos valószínűségi változók esetén az eloszlásfüggvényt a következő paranccsal hívhatjuk meg: \texttt{p} + a valószínűségi változó neve, pl:
+\begin{itemize}
+  \item
+    \texttt{punif}
+  \item
+    \texttt{pnorm}
+  \item
+    \texttt{pt}
+\end{itemize}
+Természetesen ugyanígy vannak \texttt{dunif}\ldots, \texttt{runif}\ldots parancsok is.
+
+Legyen mostantól $X \sim E[1,6]$.
+
+Eloszlásfüggvénye:
+```{r}
+x_unif <- seq(0, 7, by = 1)
+y_unif <- punif(x_unif, min = 1, max = 6)
+plot(y_unif, type = "l", lwd = 2, col = "red", xaxt = "n", xlab = "x", ylab = "F(x)",
+     main = "Egyenletes[1,6] eloszlásfüggvénye")
+axis(1, at=1:8, labels=c(0:7))
+abline(h = 0, col = "grey", lty = 2); abline(h = 1, col = "grey", lty = 2)
+```
+Sűrűséfüggvénye:
+```{r}
+x <- seq(0, 7, length = 200)
+y <- dunif(x, min = 1, max = 6)
+plot(x, y, lwd = 2, col = "blue", ylim = c(0, 0.4), ylab = "f(x)",
+     main = "Egyenletes[1,6] sűrűségfüggvénye")
+```
+Ugyanez szebb grafikával:
+```{r}
+x <- seq(1, 6, length = 200)
+y <- dunif(x, min = 1, max = 6)
+plot(x, y, type = "l", lwd = 2, col = "blue", xlim = c(0,7), ylim = c(0, 0.4),
+     ylab = "f(x)", main = "Egyenletes[1,6] sűrűségfüggvénye")
+
+x_e <- c(seq(0, 1, length = 100))
+y_e <- seq(0, 0, length = 100)
+lines(x_e, y_e, type = "l", lwd = 2, col = "blue")
+
+x_e <- c(seq(6, 7, length = 100))
+y_e <- seq(0, 0, length = 100)
+lines(x_e, y_e, type = "l", lwd = 2, col = "blue")
+```
+Egy függvényről úgy lehet ellenőrizni, hogy lehet-e sűrűségfüggvény, hogy megnézzük, hogy a függvény alatti terület $1$ egység-e (azaz integrálunk). A függvény alatti terület ebben az esetben:
+```{r}
+polygon(c(1,x,6),c(0,y,0),col = "lightgray", border = NA)
+lines(x, y, type = "l", lwd = 2, col = "blue")
+```
+Ha $P(1 < x < 3)$-at szeretnénk kiszámolni, az is $f(x)$ integrálja, azaz egy függvény alatti terület:
+```{r}
+polygon(c(1,x,6),c(0,y,0),col = "white", border = NA)
+lines(x, y, type = "l", lwd = 2, col = "blue")
+x_prob <- seq(1, 3, length = 100)
+y_prob <- dunif(x_prob, min = 1, max = 6)
+polygon(c(1, x_prob, 3), c(0, y_prob, 0), col = "lightgray", border = NA)
+lines(x_prob, y_prob, type = "l", lwd = 2, col = "blue")
+```
+A szürke terület:
+```{r}
+punif(3, min = 1, max = 6)
+```
+
+\textbf{1. Feladat:}
+
+A fenti kód alapján ábrázold a $P(3 < X < 4{,}5)$ valószínűségnek megfelelő területet, és a \texttt{punif} parancs segítségével számoljuk is ki!
+```{r}
+#Insert R code here
+```
+
+A \texttt{polygon} parancs sajnos nem teljesen működik PDF-be generálásnál, ahhoz egy alternatíva, ami nem olyan szép (\textit{plusz $\mathbf{2}$ pont azoknak, akik adnak rá ugyanolyan szép megoldást, mint ami konzolban ki lett rajzolva!})
+```{r}
+xy_unif <- cbind(
+  c(1, x, 6), c(0, y, 0)
+  )
+par(bg = "white", mar = c(2, 2, 0.5, 0.5))
+plot(xy_unif)
+polygon(xy_unif, col = "white", border = NA)
+lines(x, y, type = "l", lwd = 2, col = "blue")
+x_prob <- seq(1, 3, length = 100)
+y_prob <- dunif(x_prob, min = 1, max = 6)
+xy_prob <- cbind(
+  c(1, x_prob, 3), c(0, y_prob, 0)
+  )
+polygon(xy_prob,  col = "lightgray", border = NA)
+lines(x_prob, y_prob, type = "l", lwd = 2, col = "blue")
+```
+
+##Exponenciális eloszlás
+Legtöbbször radioaktív részecskék bomlási idejét, élettartamot, vagy várakozási időt modelleznek vele. Paramétere $\lambda > 0$, sűrűségfüggvénye:
+$$
+  f(x) = \begin{cases}
+           \lambda \cdot e^{-\lambda \cdot x}, &\text{ ha } x > 0
+           \\
+           0, & \text{ ha } x \leq 0
+         \end{cases}
+$$
+Így segíthet az R egy eloszlás megismerésében:
+```{r}
+?pexp
+```
+
+##Normális eloszlás
+Vérható értékét $m$-el, szórását $\sigma$-val szoktuk jelölni. Ha visszaemlékszünk a CHT-re, akkor tulajdonképp nagy mintaszám esetén az összeget tekinthetjük normális eloszlásúnak. Sűrűségfüggvénye:
+$$
+  f(x) = \frac{1}{\sqrt{2\pi} \cdot \sigma} \cdot e^{-\frac{(x - m)^{2}}{2 \sigma^{2}}}
+$$
+Testmértékeket, terméshozamot, vagy IQ-t szoktak vele modellezni (többek közt). Ha $m = 0, \sigma = 1$, akkor standard normális eloszlásról beszélünk: $X \sim N(0,1)$. Ennek az eloszlásfüggvénye, $\Phi(x) = \int_{-\infty}^{x} f(t) \mathrm{d}t$ nem elemi függvény, de van rá táblázat.
+
+```{r}
+set.seed(2)
+xseq <- seq(-4, 4, 0.01)
+plot(xseq, pnorm(xseq, 0, 1), col = "red", type = "l", lwd = 2, xlab = "x", 
+     ylab = 'Phi(x)', 
+     main= "Standard normális eloszlás eloszlásfüggvénye\n
+     (értéke pl. 1-ben: Phi(1) = P(X < 1) = pnorm(1) = 0.8413447)")
+abline(h = c(0,1), lty = 2)
+abline(v = 1, lty = 3)
+abline(h = pnorm(1), lty = 3)
+```
+A standard normális eloszlás sűrűségfüggvénye:
+```{r}
+density <- dnorm(xseq, 0, 1)
+plot(xseq, density, type = "l", lwd = 2, col = "blue", cex.axis = 0.8,
+     xlab = 'x', ylab = 'y', 
+     main = "Standard normális eloszlás sűrűségfüggvénye")
+```
+Nézzük most meg néhány nem standard normális eloszlás sűrűségfüggvényét (ér vele később játszadozni)!
+```{r}
+x <- seq(-6, 6, 1/1000)
+dnorm <- dnorm(x)
+
+plot(x, dnorm, type = "l", col = "green", lwd = 2, ylab = '', xlab = '',
+     main = "Normális eloszlások sűrűségfüggvényei")
+legend(x = 'topleft', bty = 'n',
+       legend = c("N(0,1)", "N(2,1)", "N(0,2)", "N(0,3)"),
+       col = c("green", "orange", "blue", "red"), lwd = 2)
+
+lines(x, dnorm, type = "l", col = "black", lty = 2)
+
+dn2 <- dnorm(x, mean = 2, sd = 1)
+lines(x, dn2, type = "l", col = "orange", lwd = 2)
+
+dn3 <- dnorm(x, mean = 0, sd = 2)
+lines(x, dn3, type = "l", col = "blue", lwd = 2)
+
+dn4 <- dnorm(x, mean = 0, sd = 3)
+lines(x, dn4, type = "l", col = "red", lwd = 2)
+```
+Szimulált adatok hisztogramja a sűrűségfüggvényhez képest:
+```{r}
+sim <- rnorm(10000, 0, 1)
+hist(sim, freq = FALSE, xlab = " ", ylab = "Sűrűség",
+     main = "Standard normális szimuláció")
+curve(dnorm(x, 0, 1), add = TRUE, col = "blue", lwd = 3.5)
+curve(dnorm(x, mean(sim), sd(sim)), add = TRUE, col = "red", lwd = 2)
+```
+A normális valószínűségi változót szeretjük standardizálni, hiszen $N(0,1)$-nek a legkönnyebben számolható az eloszlásfüggvénye. Ez R-ben is így van:
+```{r}
+x <- rnorm(10000, mean = 5, sd = 3)
+hist(x, freq = FALSE)
+curve(dnorm(x, 5, 3), add = TRUE, col = "blue", lwd = 2)
+```
+Hasonlítsuk ezzel össze a standardizálás utáni eredményt (táblás gyakorlat alapján tudjuk, hogy a kettő ugyanaz kéne, hogy legyen)!
+```{r}
+x_normed <- (x - 5) / 3
+hist(x_normed, freq = FALSE)
+curve(dnorm(x, 0, 1), add = TRUE, col = "blue", lwd = 2)
+```
+
+\textbf{2. Feladat:}
+
+Legyen $X \sim N(7, 3^{2})$. Számoljuk ki $P(X > 8)$ standardizálással és anélkül is!
+```{r}
+#Insert R code here
+```
+
+\textbf{3. Feladat:}
+
+Az egyenletes eloszláshoz hasonlóan ábrázoljuk és számoljuk ki $P(-4 < X < -1)$-et, ha $X$ standard normális eloszlású!
+```{r}
+#x <- seq(-4, 4, length = 200)
+#y <- dnorm(x, mean = 0, sd = 1)
+
+### INSERT PLOT HERE
+
+#x <- seq(-4, -1, lenght = 100)
+#y <- dnorm(x, mean = 0, sd = 1)
+
+### INSERT POLYGON HERE
+```
+
+## t-eloszlás
+
+Ismert még Student-eloszlásként is. Arra szoktuk használni, hogy egy normális eloszlású valószínűségi változó várható értékét becsüljük kis mintaszám és ismeretlen szórás esetén. A t-eloszlás fontosságáról később fogunk beszélni, táblás gyakorlatokon (remélem).
+```{r}
+x <- seq(-6, 6, 1/1000)
+dt4 <- dt(x, 30) #30: szabadsági fog, azaz degrees of freedom
+plot(x, dt4, type = "l", col = "orange", lwd = 2, ylab = '', xlab = '',
+     main = "t-eloszléás sűtűségfüggvénye")
+```
+Vegyük észre, hogy az eloszlás hasonlít egy normálishoz. Nézzük meg, valóban van-e kapcsolat a kettő között!
+```{r}
+dt1 <- dt(x, 0.5)
+#plot(x) #Line needed to knit into PDF
+lines(x, dt1, type = "l", col = "cyan", lwd = 2)
+
+dt2 <- dt(x, 1.5)
+lines(x, dt2, type = "l", col = "purple", lwd = 2)
+
+dt3 <- dt(x, 5)
+lines(x, dt3, type = "l", col = "red", lwd = 2)
+
+normal <- dnorm(x)
+lines(x, normal, type = "l", col = "black", lty = 2)
+
+legend(x='topleft', bty='n', 
+       legend = c(paste('sz.f.', c(0.5, 1.5, 5., 30), sep='=')),
+       #sz. f. jelentése: szabadsági fok
+       col = c("cyan", "purple", "red", "orange"))
+
+legend(x='topright', bty='n',
+       legend = c(paste('N(0,1)', sep='=')),
+       col = c("black"), lwd = 2, lty = 3)
+```
+Megfigyelhető, hogy ahogy növekszik a szabadsági fogk, úgy közelítünk a standard normálishoz.
+
+\textbf{4. Feladat:}
+
+A fentihez hasonlóan ábrázoljuk az exponenciális eloszlás sűrűségfüggvényét (\texttt{dexp} parancs segíthet ebben) $\lambda = 2.5, 2, 1, 0.5$ paraméterekkel! Mit figyelhetünk meg?
+
+```{r}
+#Insert R code here
+```
+
+## Khí-négyzet eloszlás
+
+Ismert még Chi-squared néven is. Rövidebb jelölése (ha a Markdown engedné, akár ez is lehet \textit{pluszpont gyanús}): $\chi^{2}$-eloszlás. Független standard normális eloszlások négyzetösszege -- annyi darabé, amennyi a szabadsági foka. Rengeteg haszna van:
+\begin{itemize}
+  \item
+    Illeszkedés tesztelése
+  \item
+    Hipotézisvizsgálat
+  \item
+    Konfidenciaintervallumok megállapítása
+\end{itemize}
+Nézzük meg, különböző szabadsági fokokra hogy néz ki a $\chi^{2}$-eloszlás!
+```{r}
+x<- seq(0, 15, 1/1000)
+
+dchisq1 <- dchisq(x, df = 2)
+#df stands for degrees of freedom
+plot(x, dchisq1, type = "l", col = "red", lwd = 2, ylab = '', xlab = '',
+     main = "Khí-négyzet eloszlás sűrűségfüggvénye")
+
+dchisq2 <- dchisq(x, df = 3)
+lines(x, dchisq2, type="l", col = "purple", lwd = 2)
+
+dchisq3 <- dchisq(x, df = 4)
+lines(x, dchisq3, type="l", col = "blue", lwd = 2)
+
+dchisq4 <- dchisq(x, df = 5)
+lines(x, dchisq4, type="l", col = "orange", lwd = 2)
+
+legend(x = 'topright', bty = 'n',
+       legend = c(paste('df', c(2,3,4,5), sep = '=')),
+       col = c("red", "purple", "blue", "orange"), lwd = 2)
+```
+
+## F-eloszlás
+
+Két független $\chi^{2}$-eloszlás hányadosából származik úgy, hogy a hányadosképzés előtt leosztjuk az eloszlásokat a szabadsági fokukkal. Legnagyobb haszna az, hogy két egymástól független, ismeretlen szórású normális eloszlásról meg tudjuk az F-eloszlással állapítani, hogy a szórásuk egyezik-e.
+
+Az F-eloszlások (legalábbis néhány):
+```{r}
+x <- seq(0, 5, 1/1000)
+
+dF1 <- df(x, df1 = 2, df2 = 1)
+plot(x, dF1, type = "l", col = "red", lwd = 2, ylab = '', xlab = '',
+     main = "F-eloszlás sűtűségfüggvénye")
+
+dF2 <- df(x, df1 = 5, df2 = 2)
+lines(x, dF2, type = "l", col = "purple", lwd = 2)
+
+dF3 <- df(x, df1 = 5, df2 = 5)
+lines(x, dF3, type = "l", col = "blue", lwd = 2)
+
+dF4 <- df(x, df1 = 20, df2 = 20)
+lines(x, dF4, type = "l", col = "orange", lwd = 2)
+
+legend(x = 'topright', bty = 'n',
+       legend = c(paste('df1, df2', c("2, 1", "5, 2", "5, 5", "20, 20"))),
+       col = c("red", "purple", "blue", "orange"), lwd = 2)
+```
+
+## Néhány nevezetes abszolút folytonos eloszlásfüggvény
+
+```{r}
+par(mfrow = c(2,2))
+x_sample <- seq(-3.2, 3.2, 0.001)
+
+plot(x_sample, pnorm(x_sample), type = "l", col = "red", lwd = 2,
+     main = "Standard normális eloszlás", xlab = "", ylab ="")
+
+plot(x_sample, pt(x_sample, 5), type = "l", col = "red", lwd = 2,
+     main = "t-eloszlás 5 szabadsági fokkal", xlab = "", ylab ="")
+
+plot(x_sample, pexp(x_sample, 5), type = "l", col = "red", lwd = 2,
+     main = "Exp(5) eloszlás", xlab = "", ylab ="")
+
+plot(x_sample, punif(x_sample, -2, 2), type = "l", col = "red", lwd = 2,
+     main = "-2 és 2 közötti egyenletes eloszlás", xlab = "", ylab ="")
+```
+
+## Néhány nevezetes abszolút folytonos sűrűségfüggvény
+
+```{r}
+par(mfrow = c(2,2))
+x_sample <- seq(-3.2, 3.-2, 0.001)
+
+plot(x_sample, dnorm(x_sample), type = "l", col = "blue", lwd = 2,
+     main = "Standard normális eloszlás", xlab = "", ylab = "")
+
+plot(x_sample, dt(x_sample, 5), type = "l", col = "blue", lwd = 2,
+     main = "t-eloszlás 5 szabadsági fokkal", xlab = "", ylab = "")
+
+x_sample <- c(seq(0.01, 1.5, 0.001))
+plot(x_sample, dexp(x_sample, 5), xlim = c(-0.5, 1.5), type = "l", col = "blue",
+     lwd = 2, main = "Exp(5) eloszlás", xlab = "", ylab = "")
+x_e <- c(seq(-3, 0, length = 100))
+y_e <- seq(0,0, length = 100)
+lines(x_e, y_e, type = "l", lwd = 2, col = "blue")
+
+x <- seq(1, 6, lenght = 200)
+y <- dunif(x, min = 1, max = 6)
+plot(x, y, type = "l", lwd = 2, col = "blue", main = "E[1,6] eloszlás",
+     xlim = c(0, 7), ylim = c(0, 0.4), ylab = '', xlab = '')
+x_e <- c(seq(0,1, length = 100))
+y_e <- seq(0, 0, length = 100)
+lines(x_e, y_e, type = "l", lwd = 2, col = "blue")
+x_e <- c(seq(6,7, length = 100))
+y_e <- seq(0, 0, length = 100)
+lines(x_e, y_e, type = "l", lwd = 2, col = "blue")
+par(mfrow = c(1,1))
+```
+Érdemes az egyes eloszlások eloszlás-, és sűrűségfüggvényeit összehasonlítani!
+
+\textbf{5. Feladat:}
+
+Mit rajzol ki az alábbi program? Mutasd meg, hogy az alábbi függvény sűrűségfüggvény! Mit jelöl a besatírozott terület? Számold ki és ábrázold az eloszlásfüggvényt!
+
+```{r}
+x <- seq(0, 2, 1/100) ;y <- 1/4*(2-x)^3
+
+x_a <- seq(-1, 0, 1/100); y_a <- rep(0, length(x_a))
+x_b <- seq(2, 3, 1/100); y_b <- rep(0, length(x_b))
+
+plot(x, y, type = "l", col = "black", lwd = 3, ylab = '', xlab = '',
+     xlim = c(-0.5, 2.5), xaxt = "n", main = " ")
+axis(1, cex.axis = 1.5)
+lines(x_b, y_b, type = "l", col = "black", lwd = 3)
+lines(x_a, y_a, type = "l", col = "black", lwd = 3)
+abline(h = 0, lty = 2)
+x1 <- seq(0, 0.5, 1/100)
+y1 <- 1/4*(2-x1)^3
+polygon(c(0, x1, 0.5), c(0, y1, 0), col = "yellow")
+```
+
+## Nagy számok törvénye
+
+Ha $X_{1}, X_{2}, \ldots$ független azonos eloszlású valószínűségi változók és $E X_{1} = m < \infty$, akkor
+$$
+  \frac{X_{1} + \ldots + X_{n}}{n} \xrightarrow{n \rightarrow \infty} m \quad 1\text{  valószínűséggel}
+$$
+Kockadobással szemléltetve:
+```{r}
+dice <- 1:6
+n <- 1000
+
+throws <- sample(dice, size = n, replace = TRUE)
+avgs <- cumsum(throws) / 1:n
+plot(avgs, xlab = "Number of dice throws", ylab = "Average",
+     ylim = c(1,6), type = "l", main = paste("Average of simulated dice throws up to(", n, "throws)"))
+abline(h = 3.5, col = "blue")
+```
+
+\textbf{6. Feladat:}
+
+Demonstráljuk a Nagy Számok Törvényét tetszőlegesen paraméterezett biomiális és normális eloszlások esetén is!
+```{r}
+#Insert R code here for binomial distribution
+```
+
+```{r}
+#Insert R code here for normal distribution
+```
+
+
+## Centrális határeloszlás tétel
+
+Ha $X_{1}, X_{2}, \ldots$ független azonos eloszlású valószínűségi változók, $E X_{1} = m$ és $D^{2} X_{1} = \sigma^{2} < \infty$, akkor
+$$
+  P\left( \frac{X_{1} + \ldots + X_{n} - n \cdot m}{\sqrt{n}\sigma} \right) \xrightarrow{n \rightarrow \infty} \Phi(x) 
+$$
+Gyakorlatban ez azt jelenti, hogy elég nagy minta esetén számolhatunk normális eloszlással. Demonstráljuk ezt a kockadobásos példával! CHT alapján $n$ kockadobás átlagának eloszlása:
+```{r}
+n <- 100
+x_1 <- seq(1, 5, 0.001)
+plot(x_1, dnorm(x_1, mean = 3.5, sd = 1.707825/sqrt(n)),
+     type = "l", col = "red", lwd = 2, ylab = "", xlab = "",
+     main = "n kockadobás átlagának eloszlása a CHT alapján")
+lines(x_1, dnorm(x_1, mean = 3.5, sd = 1.707825/sqrt(5)),
+      type = "l", col = "green", lwd = 2)
+lines(x_1, dnorm(x_1, mean = 3.5, sd = 1.707825/sqrt(10)),
+      type = "l", col = "blue", lwd = 2)
+lines(x_1, dnorm(x_1, mean = 3.5, sd = 1.707825/sqrt(30)),
+      type = "l", col = "orange", lwd = 2)
+legend(x = 'topleft', bty = 'n',
+       legend = c(paste(c("n = 5", "n = 10", "n = 30", "n = 100"), sep='=')),
+       col = c("green", "blue", "orange", "red"))
+```
+
+Szimuláljuk most a kockadobásokat!
+
+```{r}
+x <- 1:6
+throw_num <- 30
+rep <- 1000
+
+A <- matrix(sample(x, throw_num*rep, replace = T), ncol = throw_num, byrow = TRUE)
+xbar <- apply(A, 1, mean) #Az n dobás átlágát számolja ki
+
+head(cbind(A, xbar))
+tail(cbind(A, xbar))
+
+hist(xbar, col = "blue", freq = F, xlab = "", ylab = "sűrűség",
+     ylim = range(0, max(hist(xbar)$density, 
+                         dnorm(x_1, mean = 3.6, sd = 1.707825/sqrt(throw_num)))),
+     main = paste(throw_num, "Kockadobás átlaga (", rep, "-szer szimulálva)"))
+
+```
+
+Érdemes a szimulált eredményeket összevetni a kapott normális eloszlásgörbével. Nézzük meg, a különböző értékekre a CHT adta normális görbe mennyire simul a hisztogramra!
+
+```{r}
+par(mfrow = c(2,2))
+
+hist(apply(matrix(sample(x, 5*rep, replace = T), ncol = 5, byrow = T),1, mean),
+     col = "blue", freq = F, xlim = c(1,6), xlab = "", ylab = "sűrűség",
+     main = "5 kockadobás átlaga")
+lines(x_1, dnorm(x_1, mean = 3.5, sd = 1.707825/sqrt(5)), type = "l",
+      col = "green", lwd = 2)
+
+hist(apply(matrix(sample(x, 10*rep, replace = T), ncol = 10, byrow = T),1, mean),
+     col = "blue", freq = F, xlim = c(1,6), xlab = "", ylab = "sűrűség",
+     main = "10 kockadobás átlaga")
+lines(x_1, dnorm(x_1, mean = 3.5, sd = 1.707825/sqrt(10)), type = "l",
+      col = "green", lwd = 2)
+
+hist(apply(matrix(sample(x, 30*rep, replace = T), ncol = 30, byrow = T),1, mean),
+     col = "blue", freq = F, xlim = c(1,6), xlab = "", ylab = "sűrűség",
+     main = "30 kockadobás átlaga")
+lines(x_1, dnorm(x_1, mean = 3.5, sd = 1.707825/sqrt(30)), type = "l",
+      col = "green", lwd = 2)
+
+hist(apply(matrix(sample(x, 100*rep, replace = T), ncol = 100, byrow = T),1, mean),
+     col = "blue", freq = F, xlim = c(1,6), xlab = "", ylab = "sűrűség",
+     main = "100 kockadobás átlaga")
+lines(x_1, dnorm(x_1, mean = 3.5, sd = 1.707825/sqrt(100)), type = "l",
+      col = "green", lwd = 2)
+```
+
+Figyeljük meg, hogy a konvergencia elég gyors -- már $100$ minta esetén is eléggé közel vannak a szimulált adatok a normális eloszlás görbéjéhez. Gondoljunk bele, $1000$ vagy $10000$ minta esetén számottevő lehet-e még a 
+
+\textbf{7. Feladat:}
+Számold ki R segítségével az alábbiakat, ha $Z \sim N(0,1)$!
+\begin{itemize}
+  \item
+    $P(Z < 1{,}645)$
+  \item
+    $P(Z < z) = 0{,}95$, mennyi $z$ értéke? Hint: \texttt{?pnorm} segíthet.
+  \item
+    $P(Z < -1.645)$
+  \item
+    $P(Z < z) = 0{,}05$, mennyi $z$ értéke?
+  \item
+    $P(Z > 1{,}96)$
+  \item
+\end{itemize}
+Legyen most $X \sin N(25, 3^2)$. Számoljuk ki az alábbiakat!
+\begin{itemize}
+  \item
+    $P(X < 33)$
+  \item
+    $P(X < x) = 0{,}95$, mennyi $x$ értéke?
+  \item
+    $P(X < 21)$
+  \item
+    $P(X < x) = 0{,}05$, mennyi $x$ értéke?
+  \item
+    $P(X > 22)$
+  \item
+    $P(23 < X < 25)$
+\end{itemize}
+
+\textbf{További táblás gyakorlat feladatok előfordulhatnak a jövőben!}

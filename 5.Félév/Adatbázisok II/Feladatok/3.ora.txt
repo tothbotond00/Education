@@ -1,0 +1,164 @@
+--Előző órás linkes feladat
+
+SELECT f.nev, o.nev, o.tld, f.orszagok 
+FROM NIKOVITS.vilag_orszagai o, NIKOVITS.folyok@aramisdb f
+WHERE f.nev = 'Mekong' AND f.orszagok LIKE '%'||o.tld||'%'
+order by INSTR(f.orszagok, o.tld);
+
+Kötelező feladat a 3. gyakorlathoz
+------------------------------------------
+Írják meg az alábbi, 5. feladatban szereplő procedúrát (num_of_rows).
+Azt, hogy az output helyes-e ellenőrizni tudják a feladat után megadott 'CHECK_PLSQL'
+procedúra futtatásával.
+
+Határidő: a következő gyakorlat kezdete.
+===========================================================================
+
+Papíron megoldandó feladat
+==========================
+
+Kiterjeszthető hasító index (vagy másképp kiterjeszthető tördelőtáblázat)
+---------------------------
+A kosártömb mérete mindig pontosan 2**i.
+Tegyük fel, hogy egy blokkba 2 rekord fér el, j értéke (a blokkok jobb oldalán) azt jelzi, 
+hogy hány bit használatos a blokkhoz tartozás eldöntésére.
+
+i=1
+    ----       0001
+0   | -|--->   ----1 
+    |  | 
+1   | -|--->   1001 
+    ----       1100 
+               ----1 
+ 
+  kosártömb    blokkok
+
+Szúrjuk be az alábbi hasító értékkel rendelkező sorokat egymás után, és minden 
+újabb blokk létrehozása után rajzoljuk újra a kosártömböt és a blokkokat. 
+
+0011, 0110, 1011, 0111, 1110, 1111, 0100
+
+
+Egy kis segítség:
+----------------
+
+A K kulcsú rekordot h(K) első i bitje alapján helyezzük el úgy, hogy követjük 
+a kosártömb ezen bejegyzéséhez tartozó mutatót.
+Ha nincs hely a megtalált blokkban akkor a következőt tesszük:
+1. Ha j < i akkor újabb blokkot hozunk létre és a j+1-edik bit alapján kettéosztjuk a 
+   rekordokat a két blokk között (mindkét blokkra j+1 lesz az új érték), majd 
+   a kosártömb szükséges mutatóit az új blokkra irányítjuk.
+2. Ha j = i akkor először i-t növeljük 1-gyel, megduplázzuk a kosártömböt, új mutatókat
+   teszünk bele, majd alkalmazzuk 1.-et.
+
+
+Lineáris hasító index (vagy másképp lineáris tördelőtáblázat)
+---------------------
+Tegyük fel, hogy egy blokkba 2 rekord fér el és a kosarak az alábbi rekordokat tartalmazzák:
+
+0000   0101
+1110   
+----   ----   
+ 0      1    
+
+A kosarakat 0-tól indexeljük, és a kosár sorszámát binárisan ábrázoljuk, vagyis
+majd a 2. kosár -> 10, 3. kosár -> 11, 9. kosár -> 1001 stb.
+Az előre megadott küszöbszám (rekordok száma/kosarak száma) legyen 2,4.
+Jelenleg m = 1 (a legnagyobb használt kosárindex)
+
+Szúrjuk be az alábbi hasító értékkel rendelkező sorokat egymás után, és minden 
+újabb kosár megnyitás után rajzoljuk újra a kosarakat. 
+
+0001, 0110, 1011, 0111, 1100, 1111, 0100
+
+
+Egy kis segítség:
+----------------
+
+Ha n kosarunk van, akkor a K kulcsú rekordot h(K) utolsó i bitje alapján tesszük a 
+megfelelő kosárba (i=log2n, illetve annak felső egész része). 
+Ha nincs benne hely, akkor újabb blokkot láncolunk ehhez a kosárhoz.
+Ha nincs ilyen kosár, akkor az első bitben különböző kosárba tesszük.
+Ha az előre megadott küszöböt átléptük, akkor új kosarat nyitunk és esetlegesen 
+ átpakoljuk a szükséges rekordokat az új kosárba.
+Ha n nagyobb lesz 2**i-nél növeljük i-t 1-gyel (0-át írunk a kosárindexek elé).
+
+
+
+
+ROWID adattípus formátuma és jelentése (lásd még DBMS_ROWID package)
+--------------------------------------------------------------------
+
+18 karakteren irodik ki, a kovetkezo formaban: OOOOOOFFFBBBBBBRRR
+OOOOOO -  az objektum azonositoja (egészen pontosan az úgynevezett adatobjektum azonosítója)
+FFF    -  fajl azonositoja (tablateren beluli relativ sorszam)
+BBBBBB -  blokk azonosito (a fajlon beluli sorszam)
+RRR    -  sor azonosito (a blokkon beluli sorszam)
+
+A ROWID megjeleniteskor 64-es alapu kodolasban jelenik meg (Base64). 
+Az egyes szamoknak (0-63) a következo karakterek felelnek meg:
+A-Z -> (0-25), a-z -> (26-51), 0-9 -> (52-61), '+' -> (62), '/' -> (63)
+
+Pl. 'AAAAAB' -> 000001
+
+1.
+A NIKOVITS felhasználó CIKK táblája hány blokkot foglal le az adatbázisban? (blokkszám)
+(Vagyis hány olyan blokk van, ami ennek a táblának a szegmenséhez tartozik és így már 
+más táblához nem rendelhető hozzá?)
+
+select blocks 
+from dba_segments
+where segment_name = 'CIKK'
+and owner = 'NIKOVITS';
+
+2.
+A NIKOVITS felhasználó CIKK táblájának adatai hány blokkban helyezkednek el? (blokkszám)
+(Vagyis a tábla sorai ténylegesen hány blokkban vannak tárolva?)
+!!! -> Ez a kérdés nem ugyanaz mint az előző, mert a tábla blokkjai lehetnek üresek is.
+
+select COUNT(DISTINCT(dbms_rowid.rowid_block_number(ROWID))) 
+from nikovits.cikk;
+
+3.
+Az egyes blokkokban hány sor van? (file_id, blokk_id, darab)
+
+select dbms_rowid.rowid_block_number(ROWID), count(dbms_rowid.rowid_row_number(ROWID)) 
+from nikovits.cikk
+group by dbms_rowid.rowid_block_number(ROWID);
+
+4.
+Állapítsuk meg, hogy a NIKOVITS.ELADASOK táblának a következő adatokkal azonosított sora
+(szla_szam=100) melyik adatfájlban van, azon belül melyik blokkban, és a blokkon belül hányadik a sor?
+(file_név, blokk_id, sorszám)
+
+select  dba_data_files.file_name fajl,
+        dbms_rowid.rowid_block_number(NIKOVITS.ELADASOK.ROWID) blokk,
+        dbms_rowid.rowid_row_number(NIKOVITS.ELADASOK.ROWID) sor
+from NIKOVITS.ELADASOK
+left join dba_data_files on dba_data_files.file_id = dbms_rowid.rowid_relative_fno(NIKOVITS.ELADASOK.ROWID)
+where NIKOVITS.ELADASOK.szla_szam=100;
+
+Mennyi az objektum azonosítója, és ez milyen objektum? (obj_id, obj_név)
+
+select  dba_objects.object_id, dba_objects.object_name
+from NIKOVITS.ELADASOK
+left join dba_objects on dba_objects.object_id = dbms_rowid.rowid_object(NIKOVITS.ELADASOK.ROWID)
+where NIKOVITS.ELADASOK.szla_szam=100;
+
+-----------------------------------------------------------------------
+5.
+Írjunk meg egy PLSQL procedúrát, amelyik kiírja, hogy a NIKOVITS.TABLA_123 táblának melyik 
+adatblokkjában hány sor van. Az output formátuma soronként: FILE_ID; BLOKK_ID -> darab
+Példa az output egy sorára: 2;563->306
+Vigyázat!!! Azokat az adatblokkokat is ki kell írni, amelyekben a sorok száma 0, de a tábla
+szegmenséhez tartoznak. Az output FILE_ID majd azon belül BLOKK_ID szerint legyen rendezett.
+
+CREATE OR REPLACE PROCEDURE num_of_rows IS 
+...
+SET SERVEROUTPUT ON
+EXECUTE num_of_rows();
+
+Ellenőrzés:
+----------
+EXECUTE check_plsql('num_of_rows()');
+-----------------------------------------------------------------------
