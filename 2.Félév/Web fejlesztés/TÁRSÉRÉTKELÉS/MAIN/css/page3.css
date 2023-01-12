@@ -1,0 +1,58 @@
+body{
+    background-color: #2c2c2c;
+    color: white;
+    text-align: justify;
+    font: 1em Arial;
+}
+
+nav{
+    
+    padding-bottom: 20px;
+    font: 1em Arial;
+}
+
+nav ol {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color:green;
+}
+  
+nav li {
+    float: left;
+    border-right: 1px solid white;
+}
+
+nav a{
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 20px 10px;
+}
+
+nav a:link{
+    text-decoration: none;
+}
+
+nav a:hover {
+    background-color: teal;
+}
+
+.rightnavbar{
+    float: right;
+    border-left: 1px solid white ;
+}
+
+.video{
+    display:block;
+    text-align: center;
+}
+
+iframe{
+    display: block;
+    margin: 0 auto;
+}
+
+/*
+*/

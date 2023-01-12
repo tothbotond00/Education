@@ -1,0 +1,6 @@
+4 
+Bean t 86 
+Green z 26 
+Dean p 12 
+Teen z 35 
+98

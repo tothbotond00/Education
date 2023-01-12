@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Táblázat</title>
+	<style>
+		table, td,th {
+			border: 1px solid black;
+			border-collapse: collapse;
+		}
+	</style>
+</head>
+
+<body>
+	<table>
+		<caption><strong>Egyetemek adatai</strong>
+			<details>
+				<summary>Súgó</summary>
+				Táblázat az egyetmek alapvető adatait tartalmazza.
+			</details>
+		</caption>
+		<tr>
+			<th scope="col"> Egyetem </th>
+			<th scope="col"> Székhely </th>
+			<th scope="col"> Weboldal </th>
+			<th scope="col"> Karok </th>
+		</tr>
+		<tr>
+			<th scope="row"> ELTE </th>
+			<td rowspan="2">Budapest</td>
+			<td>www.elte.hu</td>
+			<td>8</td>
+		</tr>
+		<tr>
+			<th scope="row"> BCE </th>
+			<td>www.unideb.hu</td>
+			<td>3</td>
+		</tr>
+		<tr>
+			<th scope="row"> DE </th>
+			<td>Debrecen</td>
+			<td>www.unideb.hu</td>
+			<td>15</td>
+		</tr>
+		<tr>
+			<td colspan="4">Forrás: Wikipédia</td>
+		</tr>
+	</table>
+</body>
+
+</html>

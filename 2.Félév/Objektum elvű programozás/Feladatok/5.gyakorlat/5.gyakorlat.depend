@@ -1,0 +1,31 @@
+# depslib dependency file v1.0
+1615543726 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\5.gyakorlat\main.cpp
+	<iostream>
+	"kaktusz.h"
+	"infile.h"
+	"outfile.h"
+
+1615541012 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\5.gyakorlat\kaktusz.cpp
+
+1615543464 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\5.gyakorlat\infile.cpp
+	"infile.h"
+	<iostream>
+	<sstream>
+
+1615543470 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\5.gyakorlat\infile.h
+	<string>
+	<fstream>
+	"kaktusz.h"
+
+1615541205 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\5.gyakorlat\kaktusz.h
+	<string>
+
+1615542701 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\5.gyakorlat\outfile.cpp
+	"outfile.h"
+	<iostream>
+
+1615542697 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\5.gyakorlat\outfile.h
+	<fstream>
+	<string>
+	"kaktusz.h"
+

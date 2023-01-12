@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="hu">
+    <head>
+        <title>Magyar Informatikusok - video + kérdőiv</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="Magyar Informatikusok">
+        <meta name="keywords" content="Informatikusok, Magyar kutatok">
+        <meta name="author" content="Varga Bence">
+        <link rel="stylesheet" href="../css/page3.css">
+    </head>
+    <body>
+        <nav>
+            <ol>
+                <li><a href="index.html">Magyar Informatikusok</a></li>
+                <li><a href="pages/page1.html">Neumann János</a></li>
+                <li><a href="pages/page2.html">Dömölki Bálint</a></li>
+                <li><a href="pages/page2.html">Nemes Tihamér</a></li>
+                <li><a href="pages/page2.html">Gróf András</a></li>
+                <li class="rightnavbar"><a href="pages/page3.html">Kérdőív</a></li>
+            </ol>
+        </nav>
+        
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/Ml3-kVYLNr8" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+        </iframe>
+        <h2><a href="fullscript.xml">A video teljes szővege</a></h2>
+        <form action="mailto:vbence0802@freemail.hu"  method="post" name="kerdoiv" enctype="text/plain">
+            <p><strong>Melyik országba emigrált Neumann János?</strong></p>
+            <input type="radio" name="elso" id="usa">
+            <label for="usa">Usa</label>
+            <br>
+            <input type="radio" name="elso" id="anglia">
+            <label for="anglia">Anglia</label>
+            <br>
+            <input type="radio" name="elso" id="szovjetunio">
+            <label for="szovjetunio">Szovjetunió</label>
+            <br>
+            <input type="radio" name="elso" id="romania">
+            <label for="romania">Románia</label>
+            <br>
+            <p><strong>Melyik informatikus(ok) nincs már közöttünk?</strong></p>
+            <input type="checkbox" name="masodik" id="masodik-neumann_janos">
+            <label for="masodik-neumann_janos">Neumann János</label>
+            <br>
+            <input type="checkbox" name="masodik" id="masodik-Domolki_balint">
+            <label for="masodik-Domolki_balint">Dömölki Bálint</label>
+            <br>
+            <input type="checkbox" name="masodik" id="masodik-nemes_tihamer">
+            <label for="masodik-nemes_tihamer">Nemes Tihamér</label>
+            <br>
+            <input type="checkbox" name="masodik" id="masodik-grof_andras">
+            <label for="masodik-grof_andras">Gróf András</label>
+            <br>
+            <p><strong>Kit nevezett a Time magazin az év emberévé?</strong></p>
+            <input type="radio" name="harmadik" id="harmadik-neumann_janos">
+            <label for="harmadik-neumann_janos">Neumann János</label>
+            <br>
+            <input type="radio" name="harmadik" id="harmadik-Domolki_balint">
+            <label for="harmadik-Domolki_balint">Dömölki Bálint</label>
+            <br>
+            <input type="radio" name="harmadik" id="harmadik-nemes_tihamer">
+            <label for="harmadik-nemes_tihamer">Nemes Tihamér</label>
+            <br>
+            <input type="radio" name="harmadik" id="harmadik-grof_andras">
+            <label for="harmadik-grof_andras">Gróf András</label>
+            <br>
+            <label for="teljes_nev"><strong>Neved:</strong></label>
+            <input type="text" id="teljes_nev" name="teljes_nev">
+            <br>
+            <br>
+            <textarea cols="50" rows="10" name="velemeny" id="velemeny" placeholder="A véleményem:" required></textarea>
+            <br>
+            <input type="submit" value="Elküld">
+            <input type="reset" value="Alaphelyzetbe állít">
+           </form>
+         
+    </body>
+</html>

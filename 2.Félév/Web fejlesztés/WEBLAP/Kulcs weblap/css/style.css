@@ -1,0 +1,408 @@
+@import 'https://fonts.googleapis.com/css2?family=Thasadith&display=swap';
+@import 'https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@100&display=swap';
+@import 'https://fonts.googleapis.com/css2?family=Meddon&display=swap';
+
+body {
+    font-family: 'Thasadith', Arial,Verdana,sans-serif;
+    background-color: #EB875F;
+}
+
+header, footer {
+    width: 100%;
+    background-color: white;
+    margin: 0 auto ;
+}
+
+main{
+    width: 95%;
+    margin: -16px auto -16px auto;
+    padding-bottom: 30px;
+    background-color: #FFF5EE;
+}
+
+h1,h2 {
+    font-weight:bold;
+    margin: 0 2%;
+    font-variant: small-caps;
+}
+
+main article{
+    font-size: 120%;
+}
+
+.rejtett {position:absolute; left:-9999px;}
+
+header{
+    position: relative;
+    font-size: 120%;
+    box-shadow: 0 0 3px black;
+}
+
+footer {
+    margin-top: 16px;
+    margin-bottom: -14px;
+    box-shadow: 0 0 3px black;
+}
+
+article p {
+    margin: 0 3%;
+}
+
+footer p strong{
+    padding-left: 2%;
+}
+
+footer p strong:first-of-type{
+    text-align: right;
+    margin-left: 27.5%;
+}
+
+footer img {
+    margin-left: 0.5%;
+}
+
+main section nav#fomenu a:first-of-type{
+    margin-left: 10%;
+}
+
+nav#gyengenlato  {
+    position: absolute;
+    width: 40%;
+    top: 25%;
+    right: 2%;
+    text-align: right;
+}
+
+nav#gyengenlato span {
+    display: inline-block;
+    align-items: flex-end;
+}
+
+a#normalbetu {display: none;}
+
+main section nav#fomenu a{
+    text-decoration: none;
+    font-variant: small-caps;
+    font-family: 'Alegreya Sans', Arial,Verdana,sans-serif ;
+    font-size: 1.7em;
+    color: black;
+    text-align: center;
+    margin-right: 12%;
+}
+
+main section nav#fomenu {
+    background-color:white;
+    text-align: center;
+}
+
+main section img {
+    margin-top: 10px;
+}
+
+aside#leiras {
+    text-align: right;
+    margin-top: -5%;
+}
+
+main article#hírek p {
+    margin-bottom: 5%;
+    text-align: justify;
+}
+
+main nav link { color: black;}
+
+main nav :visited { color: black; }
+
+main nav :hover { color: #EB875F; }
+
+img#logo {
+    width:5%;
+}
+
+img#mosaic {
+    width: 100%;
+}
+
+img#facebook {
+    width:3.9%; 
+}
+
+img#insta {
+    width:4%;
+}
+
+img#lakat, img#konyvek, img#lada {
+    width: 30%;
+    height: 30%;
+}
+
+img#hajokellekek {
+    width: 30%;
+    height : 30%;
+}
+
+img#fanstasykellekek{
+    width: 15%;
+    height: 15%;
+}
+
+ nav#fomenu a#jelenlegi {
+    text-decoration: overline #EB875F;
+}
+
+main  h1, main h2, main article p {
+    padding-top: 1%;
+    padding-left: 1%;
+}
+
+main article video {
+    width:40%;
+    padding: 3% 5%;
+    min-width: 450px;
+}
+
+main article h1#pillanat{
+    font-family: 'Meddon',cursive;
+    background-color: #B88571;
+    font-variant: normal;
+    padding-bottom: 0.5%;
+    padding-top: 0.5%;
+    margin: 0 0 5% 0;
+    text-align: center;
+}
+
+a {
+    color: blue;
+}
+
+a:visited, footer a{
+    color: purple;
+}
+
+main article#kepek figure :first-of-type{
+    margin-left: 1.5%;
+    left: auto;
+}
+
+main article#kepek img {
+    width: 24%;
+}
+
+main article fieldset{
+    padding-top: 1%;
+    padding-left: 1%;
+}
+
+textarea{
+    resize: none;
+    width: 50%;
+}
+
+article#form form fieldset {
+    padding-left: 3%;
+}
+
+fieldset#radio label{
+    padding-right: 1%;
+}
+
+main article section#erdo {
+    padding-left: 5%;
+    text-align: justify;
+}
+
+main div#carouselControls {
+    width: 80%;
+    margin: 2% auto;
+    padding-top: 15%;
+}
+
+main article section#hajotores {
+    text-align: left;
+    padding-right: 5%;
+} 
+
+main article section#hajotores img {
+    float: left;
+    margin: 0% 5% 5% 5%;
+} 
+
+h1#arlista {
+    text-align: center;
+}
+
+table#arak{
+    background-image: url("../media/Rose.jpg");
+    background-repeat: repeat;
+    height: 40%;
+    width: 70%;
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+    font-size: x-large;
+}
+
+table#arak caption p{
+    margin: 0 auto;
+}
+
+table#arak tr :nth-child(1) {
+    width: 50%;
+}
+
+table#arak tr :nth-child(2) {
+    width: 50%;
+}
+
+table#tablazat {
+    width: 100.1%;
+    position: relative;
+    margin: 0 auto;
+    text-align:right;
+}
+
+table#tablazat tr :nth-child(2){
+    width: 90%;
+    font-weight: 300;
+    background-color: #C8BEB8 ;
+    margin-bottom: 5%;
+    text-align: justify;
+}
+
+table#tablazat tr :nth-child(1){
+    width: 50%;
+}
+
+table#tablazat tr th#szabaly {
+    background-color: white;
+}
+
+table#tablazat tr :nth-child(1) iframe {
+    width: 100%;
+}
+
+table#tablazat tr :nth-child(2) p:first-of-type {
+    font-size: 150%;
+    margin-top: 5%;
+    margin-bottom: 2%;
+}
+
+figure#mini img{
+    min-width: 60px;
+}
+
+article#kepek img {
+    min-width: 220px;
+}
+
+article#rolunk {
+    column-count: 2;
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+}
+
+footer img {
+    min-width: 60px;
+}
+
+article#palyak h1 {
+    text-align: center;
+}
+
+article#palyak section#erdo {
+    text-align: center;
+    padding: 0;
+}
+
+article#palyak section#erdo{
+    margin-bottom: 5%;
+}
+
+article#palyak section#fantasy {
+    margin-top: 10%;
+    margin-bottom: 10%;
+}
+
+article#palyak section#fantasy img{
+    float: right;
+    margin: 0% 5% 5% 5%;
+}
+
+@media screen and  (min-width: 768px) and (max-width: 1200px)
+{
+    article#rolunk{
+        column-count: 1;
+        -webkit-column-count: 1;
+        -moz-column-count: 1;
+    }
+
+    main div#carouselControls{
+        width: 80%;
+    }
+
+    footer img {
+        width: 10%;
+    }
+
+    footer p strong:first-of-type{
+        margin-left: 2%;
+    }
+    
+    main section nav#fomenu a{
+        margin-right: 6%;
+    }
+
+    article#palyak img {
+        min-width: 250px;
+    }
+
+    article#kepek img {
+        min-width: 350px;
+        margin-left: 5%;
+    }
+
+    fieldset input#nev{
+        resize: none;
+        width: 30%;
+    }
+}
+
+@media screen and (max-width: 768px)
+{
+    main article video{
+        margin: 0 auto;
+    }
+
+    article#rolunk{
+        column-count: 1;
+        -webkit-column-count: 1;
+        -moz-column-count: 1;
+    }
+
+    main div#carouselControls{
+        width: 95%;
+    }
+
+    footer p strong:first-of-type{
+        margin-left: 2%;
+    }
+
+    main section nav#fomenu a{
+        margin-right: 10%;
+    }
+
+    article#palyak img {
+        min-width: 350px;
+        margin: 5% 0 5% 0;
+    }
+
+    article#palyak section#hajotores img {
+        margin-left: 13%;
+        float: none;
+    }
+
+    article#palyak section#fantasy img  {
+        margin-right: 5%;
+        float: none;
+    }
+}

@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1620982051 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\13.gyakrolat\main.cpp
+	<iostream>
+
+1620982036 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\13.gyakrolat\min3.cpp
+	<iostream>
+	<string>
+	"./library/summation.hpp"
+	"./library/maxsearch.hpp"
+
+1594542766 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\13.gyakrolat\library\summation.hpp
+	"procedure.hpp"
+	<iostream>
+
+1586934366 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\13.gyakrolat\library\procedure.hpp
+	<cstddef>
+	"enumerator.hpp"
+	<iostream>
+	<vector>
+
+1502810830 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\13.gyakrolat\library\enumerator.hpp
+
+1619803324 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\13.gyakrolat\library\maxsearch.hpp
+	"procedure.hpp"
+

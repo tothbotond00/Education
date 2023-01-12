@@ -1,0 +1,27 @@
+@import 'https://fonts.googleapis.com/css2?family=Thasadith&display=swap';
+
+body {
+    font-family: 'Thasadith', Arial,Verdana,sans-serif;
+    background-color: #EB875F;
+    font-size: x-large;
+}
+
+div#main {
+    width: 95%;
+    margin: -16px auto -16px auto;
+    padding-bottom: 30px;
+    background-color: #FFF5EE;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+div#header {
+    text-decoration: none;
+    font-variant: small-caps;
+    font-family: 'Alegreya Sans', Arial,Verdana,sans-serif ;
+    font-size: 1.7em;
+    color: black;
+    text-align: left;
+    background-color: white;
+}
+

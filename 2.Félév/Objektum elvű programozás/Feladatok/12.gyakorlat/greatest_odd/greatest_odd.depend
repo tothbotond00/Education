@@ -1,0 +1,23 @@
+# depslib dependency file v1.0
+1547542000 source:c:\users\gt\documents\oktatás\oep\eloadasok\programok\10.Újrafelhasznál\greatest_odd\main.cpp
+	<iostream>
+	"../library/maxsearch.hpp"
+	"../library/seqinfileenumerator.hpp"
+
+1547542000 c:\users\gt\documents\oktatás\oep\eloadasok\programok\10.Újrafelhasznál\library\maxsearch.hpp
+	"procedure.hpp"
+
+1556199140 c:\users\gt\documents\oktatás\oep\eloadasok\programok\10.Újrafelhasznál\library\procedure.hpp
+	<cstddef>
+	"enumerator.hpp"
+	<iostream>
+	<vector>
+
+1502814430 c:\users\gt\documents\oktatás\oep\eloadasok\programok\10.Újrafelhasznál\library\enumerator.hpp
+
+1535999580 c:\users\gt\documents\oktatás\oep\eloadasok\programok\10.Újrafelhasznál\library\seqinfileenumerator.hpp
+	<fstream>
+	<typeinfo>
+	<sstream>
+	"enumerator.hpp"
+

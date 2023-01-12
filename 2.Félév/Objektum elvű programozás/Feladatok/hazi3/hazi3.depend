@@ -1,0 +1,20 @@
+# depslib dependency file v1.0
+1619789061 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\hazi3\main.cpp
+	<iostream>
+	"file.h"
+	"system.h"
+	"directory.hpp"
+	<vector>
+
+1619788870 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\hazi3\log.h
+
+1619788216 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\hazi3\file.h
+	"log.h"
+
+1619788763 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\hazi3\system.h
+	"directory.hpp"
+
+1619789142 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\hazi3\directory.hpp
+	"log.h"
+	<vector>
+

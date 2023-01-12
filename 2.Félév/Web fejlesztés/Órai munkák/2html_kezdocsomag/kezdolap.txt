@@ -1,0 +1,82 @@
+    <!--címsor2-->Ugrás az oldalon belül<!--címsor2 vége-->
+    <!--link-->#tartalom - Ugrás a tartalomra<!--link vége-->
+    <!--címsor1-->A legjobb <internetes/webes> témájú filmek<!--címsor1 vége-->
+    <!--címsor2-->Főmenü<!--címsor2 vége-->
+    <!--félkövér-->Kezdőlap<!--félkövér vége--> <!--link-->urlap.html - Új film beküldése<!--link vége-->
+    <!--címsor2-->Bevezető<!--címsor2 vége-->
+    <!--mű_vagy_személy-->Krasznahorkai László<!--mű_vagy_személy vége--> a következőt írta: "Az internet (...) az eddigi legbiztosabb út az örökkévalóságba.". <!--sortörés-->Hogy ez igaz-e, mindenki döntse el maga, miután megnézte a listámban szereplő filmeket.<!--sortörés--><!--erős-->Figyelem!<!--erős vége--> <!--hangsúlyos-->A lista erősen szubjektív.<!--hangsúlyos vége-->
+    <!--címsor2-->Oldalmenü<!--címsor2 vége-->
+    <!--listaelem--><!--link-->#kozossegihalo - Social Network - A közösségi háló <!--link vége--><!--listaelem vége-->
+    <!--listaelem--><!--link-->#ano - A nő<!--link vége--><!--listaelem vége-->
+    <!--listaelem--><!--link-->#temegen - Te meg én és minden ismerősünk <!--link vége--><!--listaelem vége-->
+    <!--listaelem--><!--link-->#deepweb - Deep Web<!--link vége--><!--listaelem vége-->
+    <!--címsor2--><!--mű_vagy_személy-->Social Network - A közösségi háló <!--mű_vagy_személy vége--><!--címsor2 vége-->
+    <!--címsor2-->Adatlap<!--címsor2 vége-->
+    <!--erős-->A film adatai<!--erős vége-->
+    Súgó
+    A táblázatban a filmre vonatkozó adatokat (Bemutató, Angol cím, imdb pontszám tüntetjük fel.)
+    Bemutató: 2010. október 1.
+    Angol cím: <!--mű_vagy_személy-->The Social Network<!--mű_vagy_személy vége-->
+    IMDb értékelés:  7.7/10
+    <!--mű_vagy_személy-->Mark Zuckerberg<!--mű_vagy_személy vége--> jobban ért a számítógépekhez, mint a csajozáshoz. A Harvard egyetem diákja ideje nagy részét a gépe előtt tölti. 2003-ban új ötlettel áll elő: egy olyan <!--félkövér-->oldalt indít <!--félkövér vége-->a világhálón, ahol a haverok <!--félkövér-->közösségi életet<!--félkövér vége--> élhetnek. 
+    A kollégiumi szobából indult Facebook valóságos <!--félkövér-->kommunikációs forradalmat<!--félkövér vége--> hozott, és alapjaiban változtatta meg a világot, az emberi kapcsolatokat - és megváltoztatta az alkotóját is. Hat esztendővel és ötszázmillió ismerőssel később Zuckerberg a világ legfiatalabb milliárdosa. 
+    Egykor békés, nyugodt életről álmodott, a siker azonban felkavarta mind a szakmai, mind a magánéletét. 
+    <!--dőlt-->A Social Network - A közösségi háló a korszellemet grabancon ragadó, aktuális, de időtálló munka, ami nem csak, hogy sokkal jobb móka, mint két óra facebookozás, de biztos, hogy évek-évtizedek távlatából is élvezhető lesz.<!--dőlt vége-->
+    <!--beágyazás-->media/TheSocialNetwork.jpg<!--beágyazás vége-->
+    <!--felirat-->Jelenet a <!--mű_vagy_személy-->Social Network - A közösségi háló<!--mű_vagy_személy vége--> című filmből<!--felirat vége-->
+    <!--címsor3-->Forráskód a filmben<!--címsor3 vége-->
+    A filmben nagy figyelmet fordítottak arra is, hogy a megjelenő forráskódok a témához kapcsolódjanak. Íme egy példa:
+    <!--forráskód--><!--forráskód vége-->
+    <!--felirat-->A filmben szereplő forráskód részlete<!--felirat vége-->
+    <!--címsor3-->Filmzene<!--címsor3 vége-->
+    A filmzenéből <!--mű_vagy_személy-->Trent Reznor and Atticus Ross: A Familiar Taste<!--mű_vagy_személy vége--> című száma a kedvencem.
+     <!--beágyazás-->media/socialnetwork.mp3<!--beágyazás vége-->
+    <!--elválasztó vonal-->
+    <!--címsor2--><!--mű_vagy_személy-->A nő<!--mű_vagy_személy vége--> <!--címsor2 vége-->
+    <!--címsor2-->Adatlap<!--címsor2 vége-->
+    <!--erős-->A film adatai<!--erős vége-->
+    Súgó
+    A táblázatban a filmre vonatkozó adatokat (Bemutató, Angol cím, imdb pontszám tüntetjük fel.)
+    Bemutató: 2014. január 10.
+    Angol cím: <!--mű_vagy_személy-->Her<!--mű_vagy_személy vége-->
+    IMDb értékelés: 8/10
+    Los Angelesben, a közeli jövőben él Theodore Twombly író, aki abból él, hogy <!--félkövér-->megható, személyes leveleket ír<!--félkövér vége--> mások számára. A férfi rossz passzban van, próbálja kiheverni, hogy tönkrement egy hosszú kapcsolata. A számítógépein dolgozik és játszik. 
+    Egy nap unalmában letölt egy új, <!--félkövér-->intelligens operációs programot<!--félkövér vége-->. Így találkozik Samantha-val, pontosabban a hangjával, amely valósággal megigézi. Kiderül, hogy Samantha okos és éleslátó, érzékeny és meglepően vicces. A kezdeti barátságuk egyre jobban elmélyül.
+    <!--dőlt-->Spike Jonze A nővel gyakorlatilag megalkotta a tökéletes szerelmesfilmet, amelyből egyszerre derül ki, hogy ez az egész felhajtás mekkora baromság, és hogy nem érdemes élni nélküle.<!--dőlt vége-->
+    <!--címsor3-->A film előzetese<!--címsor3 vége-->
+    <!--beágyazás-->media/her_elozetes.mp4<!--beágyazás vége-->
+    <!--elválasztó vonal-->
+    <!--címsor2--><!--mű_vagy_személy-->Te meg én és minden ismerősünk<!--mű_vagy_személy vége--><!--címsor2 vége-->
+    <!--címsor2-->Adatlap<!--címsor2 vége-->
+    <!--erős-->A film adatai<!--erős vége-->
+    Súgó
+    A táblázatban a filmre vonatkozó adatokat (Bemutató, Angol cím, imdb pontszám tüntetjük fel.)
+    Bemutató: 2005. augusztus 5.
+    Angol cím:<!--mű_vagy_személy-->Me And You And Everyone We Know<!--mű_vagy_személy vége-->
+    IMDb értékelés: 7,4/10
+    Miranda July, multimédia-performer és zenész éleslátó és rendkívül szórakoztató filmet készített olyan <!--félkövér-->magányos emberekről<!--félkövér vége-->, akik megpróbálnak <!--félkövér-->kapcsolatot teremteni<!--félkövér vége--> környezetükkel. Azokat a külső és belső gátakat mutatja meg, amik magányos, modern világunkban gyakran meghiúsítják az egymással való kapcsolatteremtést. July szerint "a történet elérhetetlen vágyakat tápláló gyerekekről és felnőttekről szól, akik olyan korban élnek, mikor a felnőtté válás digitális folyamat és a valóság esztétikai döntésünk függvénye". 
+    <!--dőlt-->A  Miranda July korábbi műveiben felvetett témák folytatásának tekinthető Te meg én és minden ismerősünk leleplezi az emberek titkolt érzéseit, vágyait és motivációit. Az eredmény egy gyönyörű, egyedi film, amely észrevétlenül ejti rabul az ember szívét. <!--dőlt vége-->
+    <!--beágyazás-->media/meandyou.jpg<!--beágyazás vége-->
+    <!--felirat-->Jelenet a <!--mű_vagy_személy-->"Te meg én és minden ismerősünk"<!--mű_vagy_személy vége--> című filmből<!--felirat vége-->
+    <!--elválasztó vonal-->
+    <!--címsor2--><!--mű_vagy_személy-->Deep web<!--mű_vagy_személy vége--><!--címsor2 vége-->
+    <!--címsor2-->Adatlap<!--címsor2 vége-->
+    <!--erős-->A film adatai<!--erős vége-->
+    Súgó
+    A táblázatban a filmre vonatkozó adatokat (Bemutató, Angol cím, imdb pontszám tüntetjük fel.)
+    Bemutató: 2015. november 21.
+    Angol cím:<!--mű_vagy_személy-->Deep web<!--mű_vagy_személy vége-->
+    IMDb értékelés:  7,1/10
+    Az internet nem csak hírportálokból, közösségi oldalakból és cuki állatos videókból áll. A keresőmotoroktól elzárva ott húzódik a felszín alatt az úgynevezett deep web, vagy más néven dark web, a <!--félkövér-->világháló sötét oldala<!--félkövér vége-->. Anonimitásba burkolózott felhasználók szörföznek az internet sötét hullámain, ahol burjánzik a drog- és fegyverkereskedelem, és mindenre van kereslet, ami <!--félkövér-->illegális<!--félkövér vége-->. 
+    <!--dőlt-->Alex Winter dokumentumfilmje mélyen elmerül a deep web titkaiban. Kiderül, hogy az igazságszolgáltatásnak nem csupán az utcán kell üldöznie a bűnözőket, hanem a virtális világban nyüzsgő arctalan törvényszegőkkel is kénytelen megküzdeni. Mi, átlagfelhasználók nem is sejtjük, micsoda üzelmek folynak az internet rejtett bugyraiban. Egészen addig, amíg meg nem nézzük a Deep Web dokumentumfilmet.<!--dőlt vége-->
+    <!--beágyazás-->media/deepweb.jpg<!--beágyazás vége-->
+    <!--felirat-->Jelenet a <!--mű_vagy_személy-->Deep Web<!--mű_vagy_személy vége--> című filmből<!--felirat vége-->
+    <!--címsor3-->Mi is az a deep web?<!--címsor3 vége-->
+    Az alábbi angol nyelvű prezentáció bemutatja, hogy mi is az a deep web
+    <!--beágyazás-->slideshare<!--beágyazás vége-->
+    <!--elválasztó vonal-->
+    <!--címsor2-->Források<!--címsor2 vége-->
+     <!--listaelem--><!--link-->http://www.techtimes.com/articles/10259/20140711/the-best-movies-about-the-internet.htm - Techtimes.com<!--link vége--><!--listaelem vége-->
+     <!--listaelem--><!--link-->http://librarius.hu/2015/07/14/a-deep-web-megmutatja-a-virtualis-pokol-legmelyet/ - Librarius<!--link vége--> <!--listaelem vége-->
+    <!--elválasztó vonal-->
+    Készítette: Gipsz Jakab <!--sortörés-->(<!--link-->mailto:gipszjakab@mailinator.com - gipszjakab@mailinator.com<!--link vége-->)<!--sortörés-->1117 Budapest, Nevenincs u. 17

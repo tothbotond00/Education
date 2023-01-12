@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1614673354 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\hazi\main.cpp
+	<iostream>
+	"menu.h"
+
+1614682968 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\hazi\menu.cpp
+	"menu.h"
+	"read.hpp"
+	<sstream>
+
+1614672954 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\hazi\menu.h
+	"complex.h"
+
+1614690204 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\hazi\complex.h
+	<iostream>
+	"read.hpp"
+
+1614331081 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\hazi\read.hpp
+	<iostream>
+	<string>
+
+1614934329 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\hazi\complex.cpp
+	<iostream>
+	"complex.h"
+

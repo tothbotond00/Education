@@ -1,0 +1,32 @@
+# depslib dependency file v1.0
+1617985600 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\vizsgÁk\1.gépeszh\megfelelt.cpp
+	"megfelelt.h"
+
+1617988757 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\vizsgÁk\1.gépeszh\megfelelt.h
+	<string>
+	<sstream>
+	<fstream>
+
+1617988916 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\vizsgÁk\1.gépeszh\main.cpp
+	<iostream>
+	<fstream>
+	"megfelelt.h"
+	"datum.h"
+	"hallgatok.h"
+
+1617986608 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\vizsgÁk\1.gépeszh\datum.cpp
+	"datum.h"
+
+1617988766 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\vizsgÁk\1.gépeszh\datum.h
+	<string>
+	<sstream>
+	<fstream>
+
+1617988973 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\vizsgÁk\1.gépeszh\hallgatok.cpp
+	"hallgatok.h"
+
+1617989071 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\vizsgÁk\1.gépeszh\hallgatok.h
+	<string>
+	<fstream>
+	"datum.h"
+

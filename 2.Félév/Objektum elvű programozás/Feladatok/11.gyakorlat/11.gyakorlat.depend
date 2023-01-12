@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1619772087 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\11.gyakorlat\main.cpp
+	<iostream>
+
+1619773951 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\11.gyakorlat\noveny.cpp
+	"noveny.h"
+
+1619774858 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\11.gyakorlat\noveny.h
+

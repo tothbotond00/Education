@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1617866382 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\hazi2\main.cpp
+	<iostream>
+	"enor.h"
+
+1617866358 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\hazi2\enor.h
+	<fstream>
+	<string>
+
+1617865833 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\hazi2\enor.cpp
+	"enor.h"
+	<iostream>
+

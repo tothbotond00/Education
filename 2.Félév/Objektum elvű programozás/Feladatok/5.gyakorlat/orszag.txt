@@ -1,0 +1,5 @@
+agave Mexiko sarga 70
+oszlopkaktusz Mexiko piros 200
+sunkaktusz Mexiko piros 80
+ordognyelv Mexiko feher 51
+hordokaktusz Mexiko narancs 54

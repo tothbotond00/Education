@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1616752191 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\7.gyakorlat\enor.cpp
+	"enor.h"
+
+1616752459 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\7.gyakorlat\main.cpp
+	<iostream>
+	"enor.h"
+
+1616751508 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\7.gyakorlat\enor.h
+	<string>
+	<fstream>
+

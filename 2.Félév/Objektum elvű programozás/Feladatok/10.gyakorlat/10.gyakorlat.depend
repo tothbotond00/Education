@@ -1,0 +1,30 @@
+# depslib dependency file v1.0
+1619168982 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\10.gyakorlat\department.cpp
+	"department.h"
+	<fstream>
+
+1619169178 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\10.gyakorlat\department.h
+	<vector>
+	<string>
+	"product.h"
+
+1619168417 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\10.gyakorlat\product.h
+	<string>
+
+1619169306 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\10.gyakorlat\store.cpp
+	"store.h"
+
+1619169181 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\10.gyakorlat\store.h
+	"department.h"
+	<string>
+
+1619166883 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\10.gyakorlat\main.cpp
+	<iostream>
+	"customer.h"
+	"store.h"
+
+1619169378 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\10.gyakorlat\customer.h
+	<string>
+	<vector>
+	"store.h"
+

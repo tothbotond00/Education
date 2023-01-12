@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="hu">
+    <head>
+        <title>Magyar Informatikusok - Főoldal</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="Magyar Informatikusok">
+        <meta name="keywords" content="Informatikusok, Magyar kutatok">
+        <meta name="author" content="Varga Bence">
+        <link rel="stylesheet" href="/css/sytle.css">
+    </head>
+    <body>
+        <nav>
+          <ol>
+            <li><a href="/index.html">Magyar Informatikusok</a></li>
+            <li><a href="/pages/page1.html">Neumann János</a></li>
+            <li><a href="/pages/page2.html">Dömölki Bálint</a></li>
+            <li><a href="/pages/page2.html">Nemes Tihamér</a></li>
+            <li><a href="/pages/page2.html">Gróf András</a></li>
+            <li class="rightnavbar"><a href="pages/page3.html">Kérdőív</a></li>
+          </ol>
+        </nav>
+        <button onclick="func()">Hátérkép megváltoztatása</button>
+        <script>
+          function func() {
+          document.body.style.backgroundImage = "none";
+          document.body.style.backgroundColor = "#2c2c2c";
+        }
+        </script>
+        
+        <table>
+          <caption>
+            <details>
+              <summary>Gyors ősszefoglaló</summary>
+              <p>Az informatikusok összefoglalója születési év, mű és díjak szerint.</p>
+            </details>
+          </caption>
+            <tr>
+              <th></th>
+              <th>Születési Év</th>
+              <th>Művei</th>
+              <th>Dijai</th>
+            </tr>
+            <tr>
+              <td>Neumann János</td>
+              <td>1903</td>
+              <td>A számologép és az agy</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Dömölki Bálint</td>
+              <td>1935</td>
+              <td>Prolog in practice</td>
+              <td>Akadémia dij</td>
+            </tr>
+            <tr>
+                <td>Nemes Tihamér</td>
+                <td>1895</td>
+                <td>Kibernetikai gépek</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Gróf András</td>
+                <td>1936</td>
+                <td>Csak a paraonidok maradnak fent</td>
+                <td>Time magazin: az év embere 1997</td>
+            </tr>
+          </table>
+    </body>
+</html>

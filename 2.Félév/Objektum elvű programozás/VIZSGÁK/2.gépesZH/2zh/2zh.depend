@@ -1,0 +1,35 @@
+# depslib dependency file v1.0
+1622191498 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás (c++)\vizsgÁk\2.gépeszh\2zh\main.cpp
+	<iostream>
+	<string>
+	"./library/summation.hpp"
+	"./library/counting.hpp"
+	"./library/seqinfileenumerator.hpp"
+	"./library/stringstreamenumerator.hpp"
+
+1594542766 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás (c++)\vizsgÁk\2.gépeszh\2zh\library\summation.hpp
+	"procedure.hpp"
+	<iostream>
+
+1586934366 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás (c++)\vizsgÁk\2.gépeszh\2zh\library\procedure.hpp
+	<cstddef>
+	"enumerator.hpp"
+	<iostream>
+	<vector>
+
+1502810830 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás (c++)\vizsgÁk\2.gépeszh\2zh\library\enumerator.hpp
+
+1537807748 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás (c++)\vizsgÁk\2.gépeszh\2zh\library\counting.hpp
+	"summation.hpp"
+
+1594564888 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás (c++)\vizsgÁk\2.gépeszh\2zh\library\seqinfileenumerator.hpp
+	<fstream>
+	<typeinfo>
+	<sstream>
+	"enumerator.hpp"
+
+1554933622 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás (c++)\vizsgÁk\2.gépeszh\2zh\library\stringstreamenumerator.hpp
+	<typeinfo>
+	<sstream>
+	"enumerator.hpp"
+

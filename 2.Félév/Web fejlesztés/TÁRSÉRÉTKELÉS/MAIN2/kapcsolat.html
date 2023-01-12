@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/alapstilus.css">
+    <script type="text/javascript" src="scripts/styleswitcher.js"></script>
+    <title>NJ Transz - Kapcsolat</title>
+</head>
+<body>
+
+<nav class="kipozicional">
+    <a href="#tartalom">Ugrás a tartalomra</a>
+</nav>
+<header>
+    <nav id="infok">
+        <ul>
+            <li><span class="ikon"></span>+3630 289 2607</li>
+            <li><span class="ikon"></span>4002 Debrecen, Gáspár György kert 51163</li>
+            <li><span class="ikon"></span>njaszallito@gmail.com</li>
+        </ul>
+    </nav>
+    <nav id="logo">
+        <img src="kepek/joci_logo4.png" alt="pic of the logo">
+    </nav>
+        <nav id="oldalmenu">   
+        <ul>
+            <li><a href="index.html">Kezdőlap</a></li>
+            <li><a href="szolgaltatasok.html">Szolgáltatások</a></li>
+            <li><a href="geppark.html">Géppark</a></li>
+            <li>Kapcsolat</li>
+        </ul>
+        </nav>
+</header>
+
+<main id="tartalom">
+    <h1>Kapcsolat</h1>
+    <article id="kapcsolat">
+
+    <aside id="urlap">
+        <form action="mailto:borosbalintka@gmail.com" method="POST" enctype="text/plain">
+            <p>Ajánlatkérés</p>
+            <fieldset>
+                <legend> Személyes adatok </legend>
+                <label for="nev"> <strong> Név </strong> </label> <br> <input type="text" 
+                name="neve" id=nev size="50" maxlength="40" placeholder="Az Ön vagy képviselt cégnek a neve" required><br>
+                <label for="email">
+                    <strong> E-mail cím </strong>  <br> <input type="email" maxlength="35" name="emailcim" id="email" size="30"><br>
+                </label>
+                <label for="telefon">
+                    <strong> Telefonszám </strong>  <br> <input type="number" name="telefonszam" 
+                    id="telefon"  value="06" required> <br>
+                </label>
+                
+            </fieldset>
+            <fieldset id=daruzas>
+                <legend> Munkavégzés leírása </legend>
+                <input type="radio" name="daruzas" id="daruval" value="daruzas" checked> <label for="daruval">Daruzás szükséges</label> <br>
+                <input type="radio" name="daruzas" id="daru_nelkul" value="daru_nelkul"> <label for="daru_nelkul">Daruzás nem szükséges</label> <br>
+                <label for="leiras">
+                    <strong> Leírás </strong>  <br>
+                    <textarea cols="40" rows="15" name="leirasa" id="leiras" maxlength="500"
+                    placeholder="Kérem írja le részletesen, hogy mikor, mit és hova szeretne szállítani."></textarea>
+                </label><br>
+                <input type="checkbox" name="maganszemely" id="maganszemely" value="igen">
+                <label for="maganszemely"> Magánszemély vagyok </label>
+            </fieldset>
+            <fieldset>
+                <legend> Adatok elküldése </legend>
+                <input type="submit" value="Elkuld">
+                <input type="reset" value="Torles">
+            </fieldset>
+        </form>
+        
+    </aside>
+    <p>Telefon: <br>(30)289 2607</p>
+        <p>Telephely: <br>Debrecen 4002, Gáspár György kert 51163</p>
+        <p>E-mail: <br>njaszallito@gmail.com</p>
+        
+    </article>
+</main>
+
+</body>
+</html>

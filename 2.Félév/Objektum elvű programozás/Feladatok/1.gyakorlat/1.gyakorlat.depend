@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1613125289 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\1.gyakorlat\main.cpp
+	<iostream>
+	<vector>
+	<cmath>
+	<fstream>
+

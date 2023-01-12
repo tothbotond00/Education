@@ -1,0 +1,35 @@
+@media print {
+    @page{
+        margin: 3cm;
+    }
+    html {
+        background-color: white;
+    }
+    body {
+        width: 100%;
+        min-width: initial;
+        max-width: initial;
+        box-shadow: initial;
+        font-family:'Times New Roman', Times, serif;
+        background: white;
+        text-decoration: none;
+        margin: 0;
+    }
+    
+    h1,h2 {
+        text-shadow: none;
+    }
+
+    nav {
+        display: none;
+    }
+
+    header {
+        display: none;
+    }
+
+    footer a img {
+        display: none;
+    }
+
+}

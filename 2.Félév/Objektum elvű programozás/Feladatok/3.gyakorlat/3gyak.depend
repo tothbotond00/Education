@@ -1,0 +1,18 @@
+# depslib dependency file v1.0
+1614335714 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\3.gyakorlat\main.cpp
+	<iostream>
+	"menu.h"
+
+1614335196 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\3.gyakorlat\menu.h
+	"priorsor.h"
+
+1614335724 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\3.gyakorlat\priorsor.h
+	<vector>
+	<string>
+	<iostream>
+	"read.hpp"
+
+1614331081 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\3.gyakorlat\read.hpp
+	<iostream>
+	<string>
+

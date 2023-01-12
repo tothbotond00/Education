@@ -1,0 +1,339 @@
+@import 'https://fonts.googleapis.com/css?family=Oswald';
+
+body {
+    font-family: Arial, Verdana, Helvetica, sans-serif;
+    background-color:rgb(68, 68, 68);
+    
+}
+
+h1,h2 {
+    font-family: 'Oswald', sans-serif;
+    margin: 20px auto;
+}
+main h1 { text-align: center;}
+
+p {
+    text-align: justify;   
+}
+
+nav#logo img {
+    width: 100%;
+}
+
+figure#kezdokep img {
+    width: 100%;
+}
+
+article#geppark img {
+    width: 90%;
+}
+
+
+header, main, footer{
+    width: 80%;
+    min-width: 400px;
+    max-width: 1000px;
+    background-color: black;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin: 0 auto;
+    padding: 10px;
+    color: white;
+}
+ 
+footer{
+    opacity: 0.7;         /*áttetszőség*/
+}
+footer a:link {color: white;}
+footer a:visited{color: rgb(210, 210, 210);}
+header {
+    position: relative;
+}
+
+article {
+    margin: 0 2em;
+    border-bottom: 1px thin gray;
+    padding-bottom: 20px;
+    overflow: hidden;
+}
+figure{
+    overflow: hidden;
+}
+
+nav#infok {
+    /*background-color: rgb(187,13,17);*/
+    background-color: rgb(255,205,16);
+    text-align: center;
+    padding: 2px 0px 2px 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: -10px;
+    /*border-bottom: 1.5px solid white;
+    border-left: 1.5px solid white;
+    border-right: 1.5px solid white;*/
+}
+
+nav#oldalmenu {
+    float: right;
+    background-color: rgb(255,205,16);
+    color: midnightblue;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    /*top: 115px;*/
+    width: 60%;
+    font-size: 1.4em;
+    /*border: 1.5px solid white;*/
+}
+nav#oldalmenu a {color: black;}
+
+nav#logo {
+    float: left;
+    width: 35%;
+    margin-bottom: 40px;
+}
+
+header nav ul li {
+    display: inline-block;
+    white-space: nowrap;   
+    margin-right: 1em;
+}
+header nav#infok ul li {
+    display: inline-block;
+    white-space: nowrap;   
+    color: black;
+    margin-right: 4em;
+    font-style: italic;
+}
+
+header nav a {
+    text-decoration: none;
+    
+    color: black;
+}
+
+header nav a:link {color:black;}
+
+header nav a:visited {color: rgb(68, 68, 68);}
+
+main a:link {color:rgb(210, 210, 210);}
+main a:visited {color:rgb(170,170,170);}
+
+header nav a:hover {
+    text-decoration:underline; 
+    color: black; 
+}
+
+.kipozicional a {position: absolute; left: -9000px;}
+
+.kipozicional a:focus {position: static; background: white;}
+
+header nav#infok li span {
+    background-image: url('../kepek/ikonkeszlet.png');
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+}
+header nav#logo {
+    margin: 0px;
+}
+header nav#infok li:nth-of-type(1) span { background-position: 0 0; }  
+header nav#infok li:nth-of-type(2) span { background-position: -60px 0; } 
+header nav#infok li:nth-of-type(3) span { background-position: -120px 0; } 
+
+p {
+    
+    text-align: justify;
+    font-size: 125%;
+    margin-left: auto;
+}
+article#szolgaltatasok {
+    width: 100%;
+    text-align: center;
+    margin: 30px auto;
+}
+article#szolgaltatasok table {
+    
+    margin: 0 auto;
+    padding: 10px;
+    width: 80%;
+}
+article#szolgaltatasok table th, article#szolgaltatasok table td {
+    padding: 15px;
+    margin-bottom: 20px;
+    padding: 10px;
+    text-align: left;
+    width: 40%;
+}
+article#szolgaltatasok table td ul li {
+    margin-bottom: 20px;
+}
+article#szolgaltatasok table th{text-align: center;}
+article#szolgaltatasok table td{background-color: rgb(30,30,30);}
+
+article#geppark table {
+    margin-left: 0px;             /*kiérjen a két széléig*/
+    margin-right: 0px;
+    padding: 0px;
+    width: 100%;
+}
+
+article#geppark table td {
+    background-color: rgb(30,30,30); 
+    text-align: left;
+    width: 50%;
+    margin: 10px auto;
+    padding: 20px;
+}
+
+article#geppark table td p {text-align: left;}
+
+article#gallery  img {
+    width: 30%;
+}
+article#gallery figure#bal {
+    float: left;
+}
+article#gallery figure#jobb {
+    float: right;
+}
+
+/*
+main article#gallery ul li {
+    display: inline-block;
+    white-space: nowrap; 
+    margin-right: 1em;
+    margin-bottom: 1em;
+    transition: linear 0.3s;
+    
+} */
+
+main article#gallery img:hover {
+    transform: scale(1.3);
+    border: 3px solid rgb(255,205,16);
+}
+
+main article#gallery {text-align: center;}
+
+section#video { 
+    text-align: center;
+    margin: 40px auto;
+    width: 80%;
+}
+/*
+aside#kapcsolat{
+    float:left;
+    width: 400px;
+    padding: 10px;
+    margin: 20px 10px 20px 0;      fennt jobb lennt bal
+    background-color: black;
+}
+*/
+main {background-color: black;}
+article#kapcsolat aside{
+    float: right;
+    width: 55%;
+    background-color: rgb(255,205,16);
+    color: black;
+    padding: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+caption {caption-side: bottom;}
+main h1, main h2 {
+    text-align: center;
+    width: auto;
+    float: none;
+    margin-top: 10px;
+}
+
+aside#urlap form fieldset {margin-bottom: 20px;}
+
+/*article#kapcsolat aside{
+    float: right;
+    width: 500px;
+    background-color: rgb(255,205,16);
+    color: black;
+    padding: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+}*/
+
+@media screen and (max-width:700px)
+{
+    nav#oldalmenu, nav#logo{
+        float: none;
+        text-align: center;
+    }
+    article#kapcsolat aside {
+        float: none;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    nav#oldalmenu li {display: block;}
+    
+}
+
+@media screen and (max-width: 1100px)
+{
+    nav#oldalmenu, nav#logo{
+        float: none;
+        text-align: center;
+    }
+    article#kapcsolat aside {
+        float: none;
+        width: 90%;
+        margin: 10px;
+        padding: 10px;
+    }
+
+    nav#oldalmenu li {display: block;}
+}
+
+@media print 
+{
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        margin: 3cm;
+    }
+    nav{display: none;}
+    article#kapcsolat aside {
+        float: none;
+        width: 400px;
+        margin: 10px;
+        padding: 10px;
+    }
+
+    footer{
+        display: none;
+    }
+    a:after {content: " (" attr(href) ") ";}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

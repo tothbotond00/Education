@@ -1,0 +1,26 @@
+# depslib dependency file v1.0
+1617967906 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\8.gyakorlat\megfigyelesenor.cpp
+	"megfigyelesEnor.h"
+
+1617958964 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\8.gyakorlat\megfigyelesenor.h
+	<string>
+	<iostream>
+	<fstream>
+	<sstream>
+
+1617961064 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\8.gyakorlat\feketelyukenor.cpp
+	"FeketeLyukEnor.h"
+
+1617960257 c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\8.gyakorlat\feketelyukenor.h
+	<string>
+	<iostream>
+	<sstream>
+	<fstream>
+	"megfigyelesEnor.h"
+
+1617960661 source:c:\users\lenovo\desktop\tantárgyak\objektum elvû programozás\feladatok\8.gyakorlat\main.cpp
+	<iostream>
+	<fstream>
+	"megfigyelesEnor.h"
+	"FeketeLyukEnor.h"
+

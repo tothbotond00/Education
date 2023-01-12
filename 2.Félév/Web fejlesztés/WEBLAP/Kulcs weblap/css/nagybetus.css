@@ -1,0 +1,37 @@
+@import url('style.css');
+
+body {
+    font-size: 2em;
+}
+
+main section nav#fomenu,header{
+    background-color: #FFF5EE;
+}
+
+main, footer {
+    background-color: white;;
+}
+
+video {
+    width: 50%;
+    min-width: 400px;
+}
+
+main article#kepek img{
+    min-width: 300px;
+}
+
+a#nagybetu {display:none;}
+a#normalbetu {display:block;}
+
+header {
+    font-size: medium;
+}
+
+nav#normalbetu{
+    top:10%;
+}
+
+table#arak{
+    font-size: 1.7em;
+}

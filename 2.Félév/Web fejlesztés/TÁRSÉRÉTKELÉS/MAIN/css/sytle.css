@@ -1,0 +1,77 @@
+button {
+    padding: 20px 20px;
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+body{
+    background-image: url(/images/background.jpg);
+    background-repeat: repeat;
+    background-size:100% 100%;
+    color: white;
+    text-align: justify;
+    font: 1em Arial;
+}
+
+nav{
+    padding-bottom: 20px;
+    font: 1em Arial;
+}
+
+nav ol {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color:green;
+}
+  
+nav li {
+    float: left;
+    border-right: 1px solid white;
+}
+
+nav a{
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 20px 10px;
+}
+
+nav a:link{
+    text-decoration: none;
+}
+
+nav a:hover {
+    background-color: teal;
+}
+
+.rightnavbar{
+    float: right;
+    border-left: 1px solid white ;
+}
+
+table {
+    margin: auto;
+    width: 90%;
+    border-collapse: collapse;
+}
+
+table, th, tr, td {
+    border: 1px solid black;
+}
+
+th, td {
+    background-color: grey;
+    padding: 20px 20px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+th{
+    background-color: green;
+}
+
+caption {
+    background-color: green;
+}

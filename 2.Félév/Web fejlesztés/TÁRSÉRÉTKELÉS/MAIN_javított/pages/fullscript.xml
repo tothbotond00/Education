@@ -1,0 +1,560 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+ <title>Full transcript</title>
+</head>
+<body>
+<h1>Full transcript</h1>
+<pre>
+>> Sean: Professor Brailsford - a lot of people
+talk about von Neumann architecture and
+
+we've talked about Babbage; we've talked
+about Turing. Who was von Neumann ?!
+
+>> DFB: We've done a lot about Turing; we've
+done a fair bit about Babbage, in the
+
+generation earlier. In fact a lot of
+people, I guess, in the English-speaking
+
+world would regard Turing, in some way, as
+being the Father of Computing. He came up
+
+with this very important result, in the
+mid-thirties, about what was computable,
+
+and as we now know. to his credit. he
+wasn't at all afraid to burn himself with a
+
+soldering iron and try to create
+hardware. Which he did at Bletchley Park
+
+during the war. So, yes, if he's the Father,
+if Babbage was the Grandfather and if Ada,
+
+Countess of Lovelace, was the Great-Aunt,
+
+then who on earth was John von Neumann?
+And why is he mentioned alongside Turing?
+
+Well right at the outset let's say John
+von Neumann was the impossibly talented,
+
+impossibly charismatic, very wealthy,
+Uncle to computing. It was he that, in the
+
+mid-1940s, in a way, made it all happen by
+the force of his own personality. And
+
+kept it, not just in an enclosed
+community, but encouraged all those who
+
+wanted to build general-purpose
+computers to come along to this Summer
+
+School and do it.  But that really, I guess,
+is in the future. It's where we've got to
+
+get to in the von Neumann story. But, yes,
+you're quite right Sean, to say that one
+
+of the first phrases that almost any
+computer scientist hears about is The
+
+von Neumann Architecture for computers,
+which to a large extent we still follow
+
+even now - all of, what 60-70 years later. 
+So, we've mentioned EDSAC before, we'll
+
+be coming back to mention this very
+important early computer again. But it is
+
+a von Neumann machine and all it's
+saying is [that] it's very simple to build a
+
+computer. You need a Store, or Memory as
+it's more commonly called nowadays, to
+
+hold your instructions and your data.
+You need a
+
+control unit, often called a CPU now. And
+you need an arithmetic capability - the
+
+ALU, the arithmetic and logic unit. Again
+many of you will know in modern chips
+
+those two are often combined into what
+we just call "the CPU chip" nowadays.
+
+And you need input devices of various sorts
+leading back to people's Teletypes [with] 
+
+input/output devices for backup storage,
+disk and so on. You need to be able to do
+
+input and output. So there it is. It's
+just one, two, three, four, five boxes - that
+
+is the von Neumann architecture. And it's
+very, very similar today. There was a big
+
+debate at the time about that Store that
+Memory. Shouldn't you, for safety's sake,
+
+put the instructions of your program in
+a different sort of memory to your data?
+
+Wouldn't it be safer to do that and
+better in some ways? On the other hand,
+
+clearly, if you've got a good memory
+technology, that works, the temptation
+
+might be just to put them [instructions and data] 
+in separate areas of that same technology and try
+
+and take some sort of precaution about
+them not interfering with each other. In
+
+EDSAC the only way to get into a
+subroutine and get back out of it again
+
+was to over-write part of your program
+instructions! Let's just return back to
+
+this incredible character John von
+Neumann. How does he fit in alongside
+
+Alan Turing? Well, like I said, he's the
+older, impossibly talented, Uncle. Did
+
+Turing and von Neumann know each other?
+Oh yes they did! They were both, basically,
+
+trained as mathematicians. Von Neumann - 
+it's hard to know where to begin and
+
+where to end. You can't exaggerate enough 
+about how
+
+good he was. He was Hungarian and his
+Hungarian name - where they give surnames
+
+first - was, I think, Neumann Janos.
+His father was very, very wealthy and
+
+when one was quite young the family
+became ennobled in Hungary. [They] became
+
+basically at the level of Baron - 
+hereditary Baron I think
+
+over here. Janos was very talented; he was
+a childhood prodigy. He could divide one
+
+eight-digit number by another eight
+digit-number in a fraction of a second
+
+when he was aged about 6. He loved
+history; he was a multi-talented polymath
+
+he easily came top of the class he
+effortlessly took in detail. And that's
+
+the first thing that all of his
+mathematics contemporaries said about
+
+him was his sheer speed of picking up
+new ideas and seeing the ramifications
+
+of them. So he was notorious even as a
+teenager, and as a maths undergrad. He did
+
+his early education I think up to PhD
+level in Budapest. He almost naturally
+
+ended up at a place we mentioned before
+in connection with Godel and Hilbert.
+
+I'm talking, of course, about Gottingen
+University in Germany. So Neumann Janos
+
+makes the journey, via a PhD, to becoming
+effectively the research assistant
+
+to the superstar David Hilbert at
+Gottingen. But because his family
+
+had been ennobled he's not Janos Neumann 
+any more - Neumann 
+
+Janos sorry  - he's Johann von Neumann
+- impossibly talented. Hilbert his
+
+supervisor, at a seminar given by Johnny,
+
+John,  Johann (!)  asked who his tailor was.
+Because his impossibly smart
+
+pinstripe suit was just a complete
+knockout. So he was a legend almost the
+
+moment he got there and did some
+fabulously important work there. It was
+
+obvious that for somebody of his talents
+he was going to get a full Professorship
+
+very quickly indeed. I think he became
+impatient, waiting for it to happen at
+
+any German university. So, in the late thirties 
+- '37-'38?  Somewhere around there anyway -
+
+Anyway he got an offer from Princeton, in
+New Jersey. And that was, I don't know,
+
+very timely. It all fitted in together
+very well. As part of his tours of Europe,
+
+giving seminars, and on his way to
+Princeton, I think he met Turing in the
+
+mid-thirties in Cambridge. Because he
+gave seminars there
+
+and I think a lot of mutual respect grew
+up. I mean, obviously, Turing being in awe of
+
+von Neumann wouldn't be so exceptional.
+But after that 1936 paper of Turing's,
+
+about decidability, following on from
+Godel and all that, von Neumann rated
+
+Turing - there was no question about that.
+This was evidenced by the fact, you will
+
+recall - those of you who have seen my previous
+videos - that Turing also took a
+
+sabbatical and worked with Alonzo Church at Princeton.
+
+Well, von Neumann was there by that time.
+Von Neumann was such a superstar, they not only
+
+made him [full] Professor of Mathematics at
+Princeton, at an absurdly early age - 
+
+probably about 30, something like that.
+But some of you will recall, right next
+
+door to Princeton - about a mile and a
+half across the meadows - is the Institute
+
+for Advanced Study which had been
+endowed in the early 1930s by a
+
+multi-millionaire. And this really was
+the ultimate Club to be invited to join.
+
+You've got to be of the quality of
+Einstein, who accepted the invitation.
+
+Hermann Weyl one of the founders of
+quantum mechanics; Godel - we know about
+
+Godel. Godel was invited to just come
+to IAS - Institute for Advanced Study at
+
+Princeton - stay as long as you like. Yes,
+you're a Professor; everything found: food
+
+accommodation; the lot. All we want is to
+have the greatest minds here. Von Neumann
+
+was offered a professorship in that
+community, I think at age 35 - maybe
+
+slightly younger. Unbelievably young. He'd
+hardly been at Princeton a year or two, as
+
+an ordinary mathematics professor.
+Everybody thought "This is a truly
+
+phenomenal person". He reminded many
+people of absolute superstars like
+
+Newton, Gauss, Euler, Einstein, Hilbert
+himself. Even at early to mid-
+
+thirties they could see that potential
+in him, there. So, yes, Turing visits
+
+Princeton in 1938 - worked with Alonzo
+Church - but also of course had frequent
+
+interactions at seminars with von Neumann
+And then came the big question,
+
+if you recall, for Alan Turing: "Should I
+return to England and do my patriotic
+
+duty?" According to Andrew Hodges'
+definitive biography of Turing,
+
+Turing's father was all for Turing
+staying in Princeton, you know: "Keep out
+
+of the war; get a prestigious mathematics
+job". And that was underlined by the fact
+
+that von Neumann offered Turing a job. He
+basically said: "Turing, would you like to
+
+be my research assistant at the
+Institute for Advanced Study?" Now
+
+Turing could see, straight away, that would
+just make you as a mathematician. 
+
+You were invited, by the great von Neumann,
+to be his research assistant, at IAS!
+
+Only problem was, I think, first of all, I think
+Alan Turing did feel a certain
+
+patriotism in wanting to come home and
+do his bit. There was also the worry that
+
+at that time von Neumann had not
+properly got into computing - he'd not
+
+turned his considerable talents to
+considering it - and for the research
+
+assistantship he wanted Alan Turing to
+do quantum mechanics, another of von
+
+Neumann's great loves. And I don't think
+Turing was keen on that because he
+
+knew from experience, at Cambridge, where
+he'd tried doing mathematical physics, it
+
+really wasn't his arena at all. So he
+politely declined with great thanks, came
+
+back to England and the rest, if you like,
+is more or less history. Now there's
+
+"Johnny", as he'd now become. Johann von
+Neumann speaker of four, five languages
+
+including Italian and English, once he'd
+transferred from Gottingen to Princeton,
+
+wanted to become the all-American genius.
+So he was ... on more formal occasions he
+
+was just John von Neumann but to his
+friends he was "Johnny". You can't 
+
+exaggerate enough! I mean, his wife said: "He
+can count everything but calories". He was
+
+fond of food and drink; the champagne
+parties! the glitz! the glamour! the
+
+girlfriends! Good old Johnny - he
+absolutely was the antithesis of the
+
+shy mathematician. He was all-
+encompassing and everybody who met him
+
+was just stunned by how he could see 
+his way through
+
+problems in no time flat. And just do
+impossible things. And so he was there, in
+
+a very ,very nice position, Institute for
+Advanced Study, even before the
+
+Americans joined the war. But he stayed
+there throughout the war. But being who
+
+he was he was endlessly in demand to be
+a consultant and, most famously, along
+
+with people like J Robert Oppenheimer he
+was one of the consultants employed on
+
+the Manhattan Project - the atomic bomb and
+the hydrogen bomb. But he was used by the
+
+Army, the US Navy, the Air Force
+- everybody wanted Johnny as their
+
+consultant. And this even included, as the
+war developed, the fact that one of the
+
+earliest computers which we have
+mentioned in a previous video was
+
+University of Pennsylvania, Moore School
+of Engineering. They helped develop the
+
+ENIAC which, if you remember, was a vacuum
+tube computer running on decimal
+
+arithmetic and initially devoted to
+gunnery trajectory calculations. It was a
+
+bit late in 1946 to be in direct
+strategic use in gunnery, Actually Johnny,
+
+who by this time *of course* was a
+consultant to the Moore School, devised a
+
+way, I think, to turn ENIAC into being a
+general purpose computer, although it
+
+wasn't a very efficient one, and I
+believe he used it for some calculations
+
+relevant to the atomic bomb and all that
+kind of thing. The natural question
+
+arising with everybody at the end of the
+war went like this: "We all know - or even
+
+though it's top-secret at Bletchley Park
+we have heard gentle rumours - that
+
+computers are being developed all over
+the place and you've always got to say:
+
+Are they special-purpose? Are they
+general-purpose? Are they
+
+binary? Are they decimal? Are they fully
+electronic? Or are they electromechanical?
+
+And literally there must have been at
+least a dozen machines around that
+
+satisfied some of these criteria. If you
+ask Germans about "Who's the father of
+
+computing?", they'll  say "Konrad Zuse", He
+developed electromechanical
+
+machines that were Turing-complete and
+calculated things. But they never got
+
+beyond electromechanical. You get on to
+electronic ones - you get Atanasoff 
+
+and Berry's electronic, valve driven,
+thing - special purpose though! Could solve
+
+certain differential equations. And even
+Tommy Flowers, and Colossus, we know,
+
+special purpose: could decrypt Tunny traffic -
+Lorenz cipher as it later become
+
+known as. So, you've got everything
+happening that if it's general-purpose
+
+it's not yet electronic; if it's
+special-purpose it is electronic but we
+
+want it to be general-purpose. So, at the
+end of the war was the perfect time to
+
+get everybody together and say: "Look, now
+that the war's over we all want to find
+
+the way to do it correctly. To build
+general-purpose, probably binary-based
+
+because they're more reliable, all
+electronic digital computers. How do we
+
+do it"? And who better to lead the charge and
+
+run a Summer School, and be associated
+with it, than uncle Johnny of course!
+
+And the Moore School at Pennsylvania, to their
+great credit, did this. They decided that
+
+the successor to ENIAC would be a thing
+called EDVAC. They said, yeah, it's
+
+going to take us three or four years to do
+this but in the meantime here we are,
+
+1946, why not all of you, all over the
+world, who are interested in the quest to
+
+build general-purpose, all electronic,
+digital computers, probably based on the
+
+binary system ... we'll hold a Summer School
+in the Moore School of Engineering, 1946,
+
+welcome everybody. Did Turing go to it?
+He was, I believe, at that time at the
+
+National Physical Laboratory in the UK
+No he didn't.
+
+Hated conferences did Turing. He wasn't
+a clubbable character. He  couldn't stand
+
+small-talk. Classic shy mathematician not 
+at all like 
+
+von Neumann, right? So Turing wasn't, if you
+like, the UK representative there. And one
+
+wonders whether he would also been held
+back by Bletchley Park and the Official
+
+Secrets Act because he'd only just left a
+few years before. The representative from
+
+the UK was somebody who was Turing's exact
+contemporary. They had both done
+
+mathematics in the early 1930s, at
+Cambridge. They had both got first-class
+
+degrees. Did they get on? Not very well!
+But who's this other person? His name is
+
+Maurice Wilkes - Maurice Vincent Wilkes - and
+by the vagaries of job allocations
+
+around about World War II, he didn't end
+up at Bletchley Park, did Maurice, he ended
+
+up in radar. But he knew enough about
+mathematics and electronics to be in a
+
+good position to do, or make, a von
+Neumann machine in the UK in the period
+
+from about 1946 onwards. But we'd better
+stop there because Maurice and his EDSAC
+
+is an extra story.
+</pre>
+</body>
+</html>

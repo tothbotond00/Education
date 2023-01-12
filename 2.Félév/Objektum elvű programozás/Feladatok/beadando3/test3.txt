@@ -1,0 +1,12 @@
+10 
+Bean t 86 
+Green z 26 
+Dean p 12 
+Teen z 35 
+Tundra p 10 
+Forest z 25 
+Hills p 14 
+Rocky p 1 
+Desert p 0 
+Sea t 150 
+98
