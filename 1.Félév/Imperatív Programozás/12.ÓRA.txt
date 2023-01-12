@@ -1,0 +1,310 @@
+Imperatív programozás 11.
+Unix filterek implementálása
+A UNIX szűrők (filters) olyan programok, amelyek valami elemi tevékenységet végeznek el. Ilyen filter a cat, grep, diff és még sok más program. Ezek a programok tipikusan a standard inputról olvasnak EOF-ig és az eredményt a standard outputra írják. Amennyiben a programok egy vagy több fájlnév paramétert kapnak, akkor a standard input heyett ezekről a fájlokról olvasnak. Az így megírt programokat kényelmesen és sokoldalúan lehet pipe-okba szervezni.
+
+grep
+Az alábbi a grep program egy leegyszerűsített megvalósítása. A program reguláris kifejezések-et keres az input állományokban.
+
+Alapvetően így használható a program:
+
+$ gr pattern file1 file2 file3
+Ebben az esetben a pattern mintát keressük a file1, file2, és file3 állományokban és kiírjuk azokat a sorokat, ahol találat van.
+
+Megvalósítjuk a -i és -v kapcsolókat, melyek az alapvető működést befolyásolja.
+
+$ gr -iv pattern file1 file2 file3
+A -v kapcsoló hatására azok a sorok íródnak ki, melyekben nem volt találat.
+A -i kapcsoló a kis-nagybetűk közötti különbséget nem veszi figyelembe.
+A -w kapcsoló csak olyankor jelez találatot, ha az egy teljes szó, azaz üreshelyekkel van körbevéve.
+A grep. pontos leírása a linken található.
+
+A teljes program
+/*
+ * gr.c -- a simple grep-like program
+ * usage: gr [-ivw] pattern [files...]
+ *
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define BUFSIZE 1024
+
+struct param_s
+{
+  int  iflag;     /* case insensitive on */
+  int  vflag;     /* negation on         */
+  int  wflag;     /* word regex on       */
+  char *pattern;  /* pattern to search   */
+  char *upattern; /* upper case pattern  */
+};
+
+void usage( char *prname)
+{
+  fprintf( stderr, "Usage: %s [-ivw] pattern [files...]\n", prname); 
+  exit(1);
+}
+
+int do_params( struct param_s *p, int argc, char *argv[])
+{
+  int i = 1;
+
+  p->iflag = 0;
+  p->vflag = 0;
+  p->wflag = 0;
+
+  /* letter flags first */
+  while ( i < argc  &&  '-' == argv[i][0] )
+  {
+    int j = 1;
+    while ( '\0' != argv[i][j] )
+    {
+      switch(argv[i][j])
+      {
+      case 'i': p->iflag = 1; break;
+      case 'v': p->vflag = 1; break;
+      case 'w': p->wflag = 1; break;
+      default : fprintf( stderr, "Invalid flag: %c\n", argv[i][j]);
+                usage(argv[0]); /* invalid flag: exit() */
+      }
+      ++j;
+    }
+    ++i;
+  }
+  /* end of flags, pattern should come here */
+  if ( i >= argc )
+  {
+    fprintf( stderr, "No pattern was given\n");
+    usage(argv[0]);      /* no pattern: exit() */
+  }
+  p->pattern = argv[i];   /* ok, pattern found */
+
+  if ( p->iflag )  /* case insensitive */
+  {
+    int k;
+    p->upattern = (char *) malloc(strlen(p->pattern)+1);
+    for ( k = 0; k < strlen(p->pattern)+1; ++k)
+    {
+      p->upattern[k] = toupper(p->pattern[k]);
+    }
+  }
+  return ++i;  /* continue from next parameter */
+}
+
+int is_delim( char ch)
+{
+  return !( isalpha(ch) || isdigit(ch) || '_' == ch );
+}
+
+int wmatch( char *buffer, char *pattern, char *where)
+{
+  char *before = where - 1;
+  char *after =  where + strlen(pattern);
+
+  return (  where == buffer  &&  is_delim(*after) ) ||
+         (  is_delim(*before)  &&  '\n' == *after ) ||
+         (  is_delim(*before) && is_delim(*after) );
+}
+ 
+void gr( struct param_s *p, FILE *in, FILE *out)
+{
+  char buffer[BUFSIZE];
+  while ( NULL != fgets( buffer, BUFSIZE, in) )
+  {
+    int is_match  = 0; /* true if matches */
+    char *where   = 0; /* pointer to beginning of matching */
+
+    if ( p->iflag )
+    {
+      char ubuffer[BUFSIZE];
+      int k;
+      for ( k = 0; k < strlen(buffer)+1; ++k)
+      {
+        ubuffer[k] = toupper(buffer[k]);
+      }
+      is_match = ( NULL != (where = strstr( ubuffer, p->upattern)) );
+      if ( is_match && p->wflag )
+        is_match = wmatch( ubuffer, p->upattern, where);
+    }
+    else
+    {
+      is_match = ( NULL != (where = strstr( buffer, p->pattern)) );
+      if ( is_match && p->wflag )
+        is_match = wmatch( buffer, p->pattern, where);
+    }
+  
+    if ( p->vflag )
+    {
+      is_match = ! is_match;
+    }
+
+    if ( is_match )
+    {
+      fputs( buffer, out);
+    }
+  }
+}
+
+
+int main( int argc, char *argv[])
+{
+  struct param_s params;
+  int i = do_params( &params, argc, argv);
+
+#ifdef DEBUG
+  fprintf( stderr, "iflag    = %d\n", params.iflag);
+  fprintf( stderr, "vflag    = %d\n", params.vflag);
+  fprintf( stderr, "wflag    = %d\n", params.wflag);
+  fprintf( stderr, "pattern  = %s\n", params.pattern);
+  fprintf( stderr, "upattern = %s\n", params.upattern);
+  fprintf( stderr, "i == %d\n", i);
+#endif /* DEBUG */
+
+  if ( i == argc )
+  {
+    gr( &params, stdin, stdout);
+  }
+  else
+  {
+    for ( ; i < argc; ++i)
+    {
+      FILE *fp = fopen( argv[i], "r");
+      if ( NULL != fp )
+      {
+        gr( &params, fp, stdout);
+        fclose(fp);
+      }
+      else
+      {
+        fprintf( stderr, "Can't open %s for read\n", argv[i]);
+      }
+    }
+  }
+  return 0;
+}
+hexdump
+Az input állomány(oka)t hexadecimális formátumban írja ki 16 bájtonként. A 16 elemű sor kiírás előtt megelenik a sor címe (szintén hexadecimálisan), utána pedig maguk a karakterek íródnak ki ASCII formátumban (a nem megjeleníthető karakterek helyett pedig egy pont karakter).
+
+A program implementációja C-ben
+#include <stdio.h>
+#include <ctype.h>
+
+#define LINESIZE 16
+
+void hd(FILE *in, FILE *out);
+void print( FILE *fp, long addr, unsigned char *buffer, int len);
+
+int main(int argc, char *argv[])
+{
+  int err = 0;
+  if ( argc < 2 )
+  {
+    hd( stdin, stdout);
+  }
+  else
+  {
+    int i;
+    for ( i = 1; i < argc; ++i )
+    {
+      FILE *fp = fopen( argv[i], "r");
+      if ( NULL != fp )
+      {
+        hd( fp, stdout);
+      }
+      else
+      {      
+        fprintf( stderr, "Can't open %s\n", argv[i]);
+        err = 1;
+      }
+    }
+  }
+  return err;
+}
+
+void hd( FILE *in, FILE *out)
+{
+  int cnt = 0;
+  long addr = 0L;
+  char ch;
+  unsigned char buffer[LINESIZE];
+
+  while ( EOF != (ch = fgetc(in)) )
+  {
+    buffer[cnt++] = ch;
+    if ( LINESIZE == cnt )
+    {
+      print( out, addr, buffer, cnt);
+      addr += LINESIZE;
+      cnt = 0;
+    }
+  }
+  print( out, addr, buffer, cnt);
+}
+
+void print( FILE *out, long addr, unsigned char *buffer, int len)
+{
+  int i;
+  fprintf( out, "%08lx  |  ", addr);
+  for ( i = 0; i < len; ++i )
+  {
+    fprintf( out, " %02x", buffer[i]);
+  }
+  for ( i = len; i < LINESIZE; ++i)
+  {
+    fprintf( out, "   ");
+  }
+  fprintf( out, "  |  ");
+  for ( i = 0; i < len; ++i)
+  {  
+    fprintf( out, "%c", isgraph(buffer[i]) ? buffer[i] : '.');
+  }
+  fprintf( out, "\n");
+}
+A program implementációja Python3-ban
+#!/usr/bin/env python3
+
+from curses import ascii
+import io
+import sys
+
+def hd(input, output):
+
+    addr = 0
+    line_size = 16
+
+    buffer = input.read(line_size)
+    while buffer != b"":
+        printer(output, addr, buffer, line_size)
+        addr+= line_size
+        buffer = input.read(line_size)
+
+def printer(output, addr, buf, line_size):
+
+    line_in_hex = " ".join("{:02x}".format(c) for c in buf) \
+        .ljust(line_size*2+line_size)
+
+    replace_non_ascii = lambda a: chr(a) if ascii.isgraph(a) else "."
+    line_in_text = "".join(replace_non_ascii(c) for c in buf)
+
+    formatted_line = "{:08x}  |   {} |  {}".format(addr,
+                                                   line_in_hex,
+                                                   line_in_text)
+    print(formatted_line, file=output)
+
+
+def main():
+    if len(sys.argv) < 2:
+        hd(sys.stdin.buffer, sys.stdout)
+    else:
+        for arg in sys.argv[1:]:
+            try:
+                with io.open(arg,'rb') as file_content:
+                    hd(file_content, sys.stdout)
+            except IOError as ioerr:
+                print("Can't open " + arg)
+
+if __name__ == "__main__":
+    main()
+Copyright © 2015-2020 Zoltán Porkoláb

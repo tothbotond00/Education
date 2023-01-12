@@ -1,0 +1,70 @@
+sum' :: Num a => [a] -> a
+sum' l = foldR (+) 0 l
+
+-- sum' [1,2,3]
+-- foldR (+) 0 [1,2,3]
+-- 1 + foldR (+) 0 [2,3]
+-- 1 + (2 + (foldR (+) 0 [3]))
+--         3 + foldR (+) 0 []
+--             0
+
+
+--sum' []     = 0
+--sum' (x:xs) = x + sum' xs
+-- sum' [1,2,3]
+-- 1 + sum' [2,3]
+-- 1 + (2 + sum' [3])
+-- 1 + (2 + (3  + sum' []))
+-- 1 + (2 + (3  + 0))
+
+prod :: Num a => [a] -> a
+prod l = foldR (*) 1 l
+--prod []     = 1
+--prod (x:xs) = x * prod xs
+
+-- foldR :: (a -> a -> a) -> a -> [a] -> a
+foldR :: (a -> b -> b) -> b -> [a] -> b
+foldR f e []     = e
+foldR f e (x:xs) = x `f` foldR f e xs
+
+lengtH :: [a] -> Int
+lengtH l = foldR (\ x y -> y + 1) 0 l
+
+foldL f acc []     = acc
+foldL f acc (x:xs) = foldL f (acc `f` x) xs
+
+-- sum l = foldL (+) 0 [1,2,3]
+-- foldL (+) 0 [1,2,3]
+-- foldL (+) (0+1) [2,3]
+-- foldL (+) ((0+1) + 2) [3]
+-- foldL (+) (((0+1) + 2) + 3) []
+-- (((0+1) + 2) + 3)
+-- 6
+
+{-(&&) :: Bool -> Bool -> Bool
+(&&) True x = x
+(&&) _    _ = False
+-}
+
+and' :: [Bool] -> Bool
+and' l = foldr (&&) True l
+-- foldr -- [True, False, True, True]
+-- True && foldr (&&) True [False, True, True]
+--         False && foldr ...
+--         False
+
+-- foldl -- [True, False, True, True]
+-- foldl (&&) (True && True) [False, True, True]
+-- foldl (&&) ((True && True) && False) [True, True]
+-- ...
+
+--and' []     = True
+--and' (b:bs) = b && and' bs
+
+-- (f o g) (x) -> f (g(x))
+
+--       (Bool -> Char) -> (Int -> Bool) -> (Int -> Char)
+-- (.) :: (b -> c) -> (a -> b) -> (a -> c)
+-- f . g = \ e -> f (g e)
+-- f . g = h where h e = f (g e)
+-- (.) f g e = f (g e)

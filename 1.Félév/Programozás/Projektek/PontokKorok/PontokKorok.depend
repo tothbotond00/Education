@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1543908843 source:c:\!data\progalap\2018_osz\gyakorlatok\gyak11\kesz\pontokkorok\main.cpp
+	<iostream>
+	<fstream>
+
+1574694054 source:d:\!data\progalap\2019_osz\gyakorlatok\gyak11\kesz\pontokkorok\main.cpp
+	<iostream>
+	<fstream>
+	<cmath>
+	<stdlib.h>
+

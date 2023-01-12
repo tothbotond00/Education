@@ -1,0 +1,347 @@
+Függvények, paraméterátadás
+A függvények és eljárások, gyakori összefoglaló nevükön alprogramok az imperatív nyelvek alapvető építőkövei. Levetővé teszik, hogy a nagyobb, komplex programokat kisebb, könnyebben karbantartható, egyszerűbb részekre bontsuk fel, eltakarva az implementációs részleteket a külvilág elől. Segítségükkel újra fel tudjuk használni a már megírt algoritmusainkat, az esetleges különbségeket a paraméterekkel kifejezve.
+
+Függvények egy csoportját külön fordítási egységekbe szervezhetjük és könyvtárakat is építhetünk belőlük. Ezeket a könyvtárakat statikusan vagy dinamikusan szerkeszthetjük hozzá a programjainkhoz (lásd 1. előadás). A leggyakrabban használt függvnyek a standard könyvtárban vannak és onnan használhatóak a megfelelő fejlécállományok (header-ek) include-ja után.
+
+A C nyelvet úgy tervezték, hogy könnyen írhassunk függvényeket és azok futási időben kis költséggel végrehajthatók legyenek.
+
+A függvénydeklarációban nem kell megadnunk a függvény törzsét, csak a hívásához szükséges információkat: a nevet, a paramétereket és a visszatérési érék típusát (ha van). A függvények deklarációjában használt paraméter neveket szokás formális paraméternek (parameter) nevezni, míg a függvény meghívásakor ténylegesen átadott értékek az aktuális paraméter (argument). A függvény nevét a teljes paraméterlistával a függvény szignatúrájának (signature) nevezzük, a visszatérő érték típusát és a szignatúrát együtt pedig a függvény prototípusának (function prototype) nevezzük.
+
+C-ben az összes alprogramot egységesen függvénynek nevezzük. Amennyiben nem adnak vissza értéket (eljárás), akkor azt a void visszatérő típussal jelöljük.
+
+Függvénydeklaráció C-ben
+A visszatérő érték és a paraméterlista típusa része a függvény típusának. Ahol a függvénynek nincsen visszatérő értéke a void típust használjuk. Tömbök nem használhatóak visszatérő típusként.
+
+int f(void);    /* függvény par. nélkül, int visszatérő típussal  */
+int *fp(void);  /* függvény par. nélkül, int* visszatérő típussal */
+A deklarációkban használt formális paraméternevek csak leíró szerepűek, ténylegesen nem használja fel a fordító, és el is hagyhatjuk őket.
+
+int f(int *x, int *y); /* az x,y neveknek nincs szerepe,  */
+                       /* elhagyhatók                     */
+int f(int *, int *);   /* ekvivalens a fentivel */
+A C nagyon régi, ANSI szabvány előtti verziójában nem használtunk prototípusos deklarációkat. Az evvel való kompatibilitás miatt az ANSI C-ben is elhagyhatjuk a paraméterek specifikációját:
+
+int f(void);    /* függvény pontosan nulla paraméterrel   */ 
+int g();        /* függvény paraméter-specifikáció nélkül */
+Itt f() és g() különböznek. Tudjuk, hogy f() pontosan nulla paraméterrel rendelkezik, de semmit sem tudunk g() paramétereinek számáról vagy típusáról. A g() deklarációja reverz kompatibilis az ANSI előtti C-vel, de ilyet új kód írásakor ne használjunk.
+
+Megjegyzés C++-ban mindig alkalmaznunk kell a prototípusos deklarációt. Ott a g() jelölés ekvivalens a g(void) jelöléssel és a pontosan nulla paramétert jelenti.
+
+Abban az esetben, ha nem tudjuk a paraméterek számát, vagy típusát, mint pl a printf esetében, használjuk az ellipsis jelölést:
+
+int printf(const char *format, ...); 
+int fprintf(FILE *stream, const char *format, ...); 
+Ennek a jelölésnek az a jelentése, hogy nulla vagy több további paraméter ismeretlen típussal. Ilyen függvényeket nem egyszerű implementálni, az ilyen változó paraméterlistájú (variadic parameter) függvényeket a <stdarg.h> headerfájl va_ makróival írhatunk.
+
+Függvényhívás C-ben
+Amikor egy f függvényt meghívunk, a hívásnak meg kell felelnie a deklaráció prototípusának:
+
+A paraméterek száma ugyanannyi.
+A hívás minden aktuális paramétere olyan típusú, hogy értékül adható legyen a deklaráció formális paraméter típusának.
+Ha a paraméterek száma nem felel meg a deklarációnak, akkor a viseledés nemdefiniált. Ha a deklaráció az ellipsis jelölést használja, vagy a típusok nem kompatibilisak, a viselkedés szintén nemdefiniált.
+
+Ha a deklaráció nem prototípusos (azaz üres nyitó-csukó zárójeles, pl. void f() ), akkor a függvényhíváskor az ún. default promóciók történnek meg, mint az egész típusok int vagy long-ra és a lebegőpontos típusok double vagy long double konverziója.
+
+Ha a deklaráció prototípusos, azaz felsoroltuk az egyes paramétereket és típusait, akkor az aktuális paraméter értékek pontosan úgy konvertálódnak a formális paraméterekre, mint ha értékadás történne. Az ellipsis-től kezdve ez a konverzió megáll, és onnan csak a default promóciók történnek meg.
+
+double fahr2cels(double);  /* prototípusos deklaráció */
+double cels2fahr();        /* nem prototípusos deklaráció */
+/* ... */
+float f = 3.14;
+printf("%f\n",fahr2cels(36)); /*ok, double-re konvertálódik*/
+printf("%f\n",cels2fahr(f));  /*ok, float->double promóció */
+printf("%f\n",cels2fahr(36)); /*hiba, int param. adódik át */
+Két további konverzió történhet még meg:
+
+signed – unsigned konverzió, ha az érték reprezentálható mindkét típusban
+
+void * – char * konverzió.
+
+Egy függvényhívás szekvecia-pont, azaz először az aktuális paraméterek értékelődnek ki nemdefiniált sorrendben, és a függvény törzsének végrehajtása csak azután kezdőthet. A paraméterek kiértékelésének egymás közötti sorrendje viszont definiálatlan. (A paramétereket elválasztó vessző nem a vessző operátor.)
+
+( *t[f1()] ) ( f2(), f3(), f4() );
+Az f1, f2, f3, f4 függvények akármilyen sorrendben meghívódhatnak.
+
+A rekurzív függvényhívások akár direkt akár indirek módon megtörténhetnek:
+
+int factorial(int n)
+{
+  if ( 1 == n ) 
+    return 1;
+  else 
+    return n * factorial(n-1);
+}
+Ha ezt a függvényt egynél kisebb paraméterrel hívjuk meg, akkor végtelen rekurzió következik be, ami futási idejű hibát okoz.
+
+A rekurzív függvények gyakran olvashatóbbak, de rosszabb futási időben
+hatékonyságúak, mint pl. a ciklussal megírt verzió. Ha a rekurzív függvény utolsó utasítása a rekurzív hívás, akkor végrekurzió-ról beszélünk (tail recursion). Az ilyen rekurzív függvényeket a fordító programok gyakran automatikusan átalakítják ciklusra.
+
+int factorial(int n)
+{
+  int result = 1;
+  int i;
+  for ( i = 2; i <= n; ++i ) 
+    result *= i;
+  return result;
+}
+Paraméterátadás
+A programozási nyelvek az idők során számos módszert dolgoztak ki a paraméterek átadására.
+
+Cím szerinti
+A cím szerinti (call by address, call by reference) paraméterátadás esetében az aktuális és formális paraméterek memória-lokációja megegyezik, az alprogram paramétere lényegében a híváskor átadott tárterület (változó) szinonímája (álneve). Minden módosítás, amit az alprogramban a paraméteren végzünk valójában az átadott aktuális paraméteren történik meg és azonnal látszik. Ez a legegyszerűbben implementálható és az egyik legrégibb paraméterátadási módszer.
+
+Előnye, hogy az alprogram a paramétereken keresztük kétirányú kommunikációt folytathat a hívóval: onnan információkat kaphat és visszafelé is adhat. A paraméterek módosítása valójában a hívó változóinak módosítása. Ez néha zavaró is lehet, különösen ha mind az aktuális és a formális paraméter is látható/haszálható az alprogramban. Bár a cím szerinti paraméterátadás olcsón implementálható, hiszen nincsenek másolások, mint az érték szerintiben, az aliasing lehetősége miatt a fordítóprogram csak óvatosabban optimalizálhat.
+
+Ugyancsak problémát jelenthet, ha kifejezéseket vagy konstansokat (pl. 42) adunk át paraméterként, hiszen ezeknek eredetileg nincsen memóriaterületük.
+
+Érték szerint
+A C nyelv paraméterátadása így működik.
+
+Az érték szerinti (call by value) paraméterátadás során a függvény formális paramétereit úgy tekintjük, mintha azok a függvény lokális változói lennének. A függvényhívás során ezeket a “lokális változókat” az aktuális paraméter értékekkel inicializáljuk: lényegében azok értékeit másoljuk a formális paraméterekbe. Mindez azt jelenti, hogy az alprogram végrehajtása során az aktuális és formális paraméter jól elkülönül. Ennek nemcsak az az előnye, hogy könyebben érvelhetünk a program működéséről, de gyakran a fordítóprogram is hatékonyabb kódot fordíthat, ha nem lehetséges alisaing.
+
+A módszer előnye, hogy a paramétereket úgy kezelhetjük, mint a lokális változókat. Hátránya, hogy az alprogramban a paraméterek módosítását nem tudják továbbítani a hívó eljárás felé. Ezt gyakran úgy kerüljük meg, hogy paraméterként eleve a módosítandó területre hivatkozó mutatót adjuk át. Pont így működik pl. a C scanf függvénye.
+
+Eredmény szerinti
+Az eredmény szerinti (call by result) paraméterátadás nagyon hasonló az érték szerintihez, de az alprogramból történő visszatérés pillanatában az alprogramban létező másolat (a formális paraméter) értéke visszamásolódik az aktuális paraméterbe. Így a függvény végrehajtása során külön-külön tárterületet használ a formális és az aktuális paraméter, de az alprogram általi módosítások a visszatérés pillanatában láthatóvá válnak a hívó számára. Más mellett ilyen paraméterátadási módot is használ az ADA output és inout paraméterek esetében.
+
+Név szerinti
+A név szerinti (call by name) paraméterátadást elsősorban az Algol 60 és a Simula 67 alkalmazta. Ebben az esetben nem az aktuális paraméter memória területét vagy pillanatnyi értékét használjuk fel a paraméterátadáskor, hanem magát a kifejezést, amit a programozó beírt a függvényhíváskor. Amikor az alprogram végrehajtása során hivatkozunk a formális paraméterre, akkor újra kiértékeljük az átadott kifejezés pillanatnyi értékét, és azt használjuk.
+
+Implemetációja gyakran úgy történt, hogy a kifejezést kiszámoló kis eljárást, ún. closure-t adtunk át, és ezt hajtódott végre a paraméter minden meghivatkozásakor. A mai nyelvekben ritkán alkalmazzuk, ha mégis valami hasonlóra van szükségünk, akkor pl. C++-ban lamdba kifejezést adunk át paraméterként.
+
+Az egyes programozási nyelvek stratégiái
+A FORTRAN és számos azt követő nyelv cím szerinti paraméterátadást alkalmazott. Amikor nem változót, hanem egy kifejezést adtunk át, akkor azt egy temporális tárterületen számoltuk ki és ennek a területnek címét adtuk át. A C programozási nyelv érték szerinti paraméretátadást használ. A C++ alapértelmezésben ugyancsak érték szerinti, de a referencia típusú paraméterek esetében lényegében a cím szerinti paraméterátadással dolgozik. Ugyanígy a Pascal is használja mindkét módszert: az alapértelmezés az érték szerinti-nek felel meg, viszont a var kulcsszó alkalmazásával lényegében cím szerint adhatunk át paramétereket. Az Algol 60 és Simula 67 érték és név szerinti paraméterátadást használt. Javaban a beépített típusok érték szerint adódnak át, de a class típusok referencia szerint, ilyenkor lényegében olyan pointerek adódnak át, amik a tényleges objektumra mutatnak - hatásában ez leginkább a cím szerinti paraméterátadásnak felel meg. Az ADA nyelv érték és eredmény szerinti paraméterátadást használ.
+
+Paraméterátadás C-ben
+A C programozási nyelvben az aktuális paraméterek érték szerint adódnak át, azaz a kifejezés értéke bemásolódik a formális paraméter területére, pont úgy, mintha a függvényben definiált lokális változó lenne, amit az aktuális paraméterből inicializálnánk.
+
+#include <stdio.h>
+void increment(int i)
+{
+  ++i;
+  printf("i in increment() = %d\n",i);
+} 
+int main()
+{
+  int i = 0;
+  increment(i);
+  increment(i);
+  printf("i in main() = %d\n",i);
+  return 0;    
+}
+$ gcc -ansi -pedantic -Wall -W f.c 
+$ ./a.out 
+i in increment() = 1
+i in increment() = 1
+i in main() = 0
+A cím szerinti paraméterátadást szimulálhatjuk avval, ha a változó helyett annak címét adjuk át paraméternek:
+
+#include <stdio.h>
+void increment(int *ip)
+{
+  ++*ip;
+  printf("i in increment() = %d\n",*ip);
+} 
+int main()
+{
+  int i = 0;
+  increment(&i);
+  increment(&i);
+  printf("i in main() = %d\n",i);
+  return 0;    
+}
+$ gcc -ansi -pedantic -Wall -W f.c 
+$ ./a.out 
+i in increment() = 1
+i in increment() = 2
+i in main() = 2
+Pont így működik a scanf függvénycsalád, ami az inputról olvas:
+
+#include <stdio.h>
+void f(void)
+{
+  int i;
+  double d;
+  char c;
+  char buffer[20];
+
+  if ( 4 == scanf("%d %f%19s %c", &i, &d, buffer, &c) )
+    /* 42   3.14e-2   Hello  word 
+       i == 42, f = 0.0314, buffer = "Hello", c == ' '  
+    */
+} 
+A tömb paramétereket az első elemre mutató pointer értékként adjuk át:
+
+#include <stdio.h>
+int f( int *t, int i)
+{
+  return t[i];
+}
+int main()
+{
+  int arr[] = {1, 2, 3, 4};
+  printf("%d\n", f(arr,1));/* arr tomb elso elemére mutat */
+  printf("%d\n", f(&arr[0],1)); /* ugyanaz, mint f(arr,1) */
+  return 0;
+}
+$ gcc -ansi -std=c99 -Wall -W a.c
+$ ./a.out 
+2
+2
+Ezért ezek a deklarációk ekvivalensek:
+
+int f( int *t, int i)   { return t[i]; }
+int f( int t[], int i)  { return t[i]; }
+int f( int t[4], int i) { return t[i]; }
+
+/* a tömbhatárokat nem ellenőrzi a fordító, ezért ez is 
+ lefordul, de lehet, hogy hibásan működik */
+int f( int t[4], int i)  { return t[6]; } 
+Mivel egy függvényparaméter sohasem lehet tömb (melyek helyett mindig egy pointer adódik át), ezért egy függvényparaméterre alkalmazni a sizeof operátort hibás eredményre vezet.
+
+int f(void) 
+{
+  char buffer[100]; /* sizeof(buffer) == 100 */
+  return g(buffer);
+}
+int g( char t[]) 
+{ 
+  return sizeof(t); /* hiba! sizeof(pointer) */
+} 
+A visszatérő típus
+A visszatérő értékek a függvény visszatérő típusára konvertálódik:
+
+double f(void)
+{
+  int i;
+  /* ... */
+  return i;   /* double-ra konvertálódik */
+}
+A main függvény paraméterei
+A main() függvényt az alábbi módokon lehet definiálni:
+
+int main(void) { /* ... */ }
+int main( int argc, char *argv[]) { /* ... */ }
+
+/* ha az operációs rendszer támogatja (pl. UNIX) */
+int main( int argc, char *argv[], char *envp[]) { /* ... */ }
+Ha argc definiált, akkor argv[argc] nullpointer. Ha argc nagyobb nullánál, akkor argv[0] a program neve, ahogy azt meghívták, és argv[1] … argv[argc-1] a program operációs rendszertől kapott paraméterei. Az argv[i] paraméterek NUL azaz ‘\0’ karakterrel terminált karaktertömbök.
+
+Normális esetben az argc mindig nagyobb, mint 0.
+
+#include <stdio.h>
+int main(int argc, char *argv[])
+{
+  printf("name of the program = %s\n", argv[0]);
+  for (int i = 1; i < argc; ++i)
+    printf("argv[%d] = %s\n", i, argv[i]);
+  return 0;    
+}
+$ gcc -ansi -std=c99 -Wall -W -o mainpars mainpars.c 
+$ ./mainpars
+name of the program = ./mainpars
+$ ./mainpars first second third
+name of the program = ./mainpars
+argv[1] = first
+argv[2] = second
+argv[3] = third
+A hívási verem szerkezete
+alt text
+
+Függvénymutatók
+Függvényere is állíthatunk mutatókat, az ilyen pointerek típusához hozzátartozik a teljes prototípus, így a visszatérő érték típusa is.
+
+A függvénymutató értékeket a (deklarált) függvénynevekből képezzük:
+
+double sin(double); /* vagy #include <math.h> */
+...
+double f(void)
+{
+  double result = 0.0;
+  double (*fp)(double); /* fp mutató double(double) fv-re */
+  fp = sin;        /*˙fp most double sin(double)-re mutat */
+  
+  if ( NULL != fp )
+  {
+    result = (*fp)(.5)       /* sin(.5) meghívása */
+    result =   fp (.5)       /* ekvivalens a fentivel */
+  }
+  return result;
+}
+Az előző increment-es példa pointerrel:
+
+#include <stdio.h>
+void increment(int *ip)
+{
+  ++*ip;
+  printf("i in increment() = %d\n",*ip);
+} 
+int main()
+{
+  void (*fp)(int *); /* mutató void (int*) függvényre */
+  void (*gp)();      /* mutató ismeretlen paraméterlistájú 
+                        függvényre */
+  int i = 0;
+  fp = increment;
+  gp = fp;
+  (*fp)(&i);    /* increment() meghívása */
+    fp (&i);    /* ugyanaz egyszerűbben  */
+    gp (&i);    /* increment() mghívása, 
+                   de nem ellenőrzi a paramétereket */
+  printf("i in main() = %d\n",i);
+  return 0;    
+}
+$ gcc -ansi -pedantic -Wall -W f.c 
+$ ./a.out 
+i in increment() = 1
+i in increment() = 2
+i in increment() = 3
+i in main() = 3
+Egy függvénymutató:
+
+mutathat a kompatibilis típusú függvényre
+értékül adható egy kompatibilis függvénymutatónak
+összehasonlítható a nullpointerrel
+meghívható a mutatott függvény, ha nem nullpointer
+Néha hasznos a typedef használata, hogy egyszerűsítsük a definíciókat és deklarációkat. A typedef nem hoz létre új típust, csak a régi típus egy új szininímáját.
+
+typedef double length_t; /* lenght_t a double szinonímája */
+typedef int    index_t;  /* index_t az int szinonímája    */
+
+/* trigfp_t a double visszatérőértékű, double paraméterű
+   függvénymutató szinonímája                             */
+typedef double (*trigfp_t)(double); 
+A matematikai függvények használatához include-olni kell a <math.h> headert és a szerkesztéshez meg kell adni a matematikai könyvtár -lm kapcsolóját.
+
+#include <stdio.h>
+#include <math.h>
+
+typedef double (*trigfp_t)(double);
+
+trigfp_t inverse(trigfp_t fun)
+{
+  static trigfp_t from[] = {  sin,  cos,  tan };
+  static trigfp_t to[]   = { asin, acos, atan };
+  int i = 0;
+
+  for ( i = 0; i < sizeof(from)/sizeof(from[0]); ++i)
+  {
+    if ( fun == from[i] ) return to[i];
+  }
+  return fun;
+}
+
+int main()
+{
+   double   d1  = sin(.5);
+   trigfp_t rev = inverse(sin);
+   double   d2  = rev(d1);
+
+   printf( "sin(.5) = %f, arc sin(%f) = %f\n", d1, d1, d2);
+   return 0; 
+}
+A fordítás és a futattás eredménye:
+
+$ gcc -ansi -pedantic -Wall inverse.c -lm
+$ ./a.out 
+sin(.5) = 0.479426, arc sin(0.479426) = 0.500000

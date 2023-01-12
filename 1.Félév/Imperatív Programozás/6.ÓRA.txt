@@ -1,0 +1,376 @@
+Imperatív programozás 6.
+Deklarációk, láthatóság, élettartam
+Az imperatív programozási nyelvekben két fontos szabályrendszer határozza meg a változók, függvények és típusok használatát: a láthatóság (scope) és az élettartam (life). A láthatóság helyett szokták a hatókör elnevezést is használni. A láthatóságot és élettartamot - hasonlóan más nyelvekhez - a C programozási nyelvben a deklarációk formája és helye határozza meg.
+
+Deklaráció, definíció
+Amikor egy nevet (azonosítót) bevezetünk egy programban, akkor a statikus típusrendszerű (lásd 2. előadás) nyelvek elvárják, hogy közöljük a fordítóprogrammal, hogy “mit gondoljon” erről az azonosítóról: pl. mi a típusa, vagy hol és mennyi ideig kívánjuk használni.
+
+A deklarációk egy része konkrétan meg is határozza az illető objektumot: ezt nevezzük definíciónak. A változók esetén a definíció intézkedik a tárterület tényleges lefoglalásáról, a függvények esetén a paraméter lista és visszatérő érték típusa megadása mellett a konkrét függvénytörzs meghatározása is megtörténik, típusok esetén pedig az adatszerkezetet kell megadnunk.
+
+A deklaráció azonban gyakorta nem jár együtt a definícióval. Ha pl. egy változót egy másik fordítási egységben (forrásfájlban) foglalnak le (azaz ott definiálják), de ebben a fájlban is akarjuk használni (írni, olvasni), akkor ebben a fordítási egységben is meg kell mondni a fordítóprogramnak, hogy mit gondoljon felőle. Azaz deklarálni kell. Ilyenkor a változóknak meg kell adni a típusát. A függvényeknél a visszatérő értékét és a paraméterlistáját (hogy pl. konverziók történjenek a paraméterátadáskor vagy visszatéréskor), de nem kell megadni, hogy mely konkrét utasítások lesznek végrehajtva, hiszen a függvény kódját a másik fordítási egység fordítja le.
+
+Deklaráció formája
+A deklarációk formája C nyelvben tárolási-osztály típusnév deklarátor-lista, ahol a deklarátor-lista egyszerűen vesszővel elválasztott deklarátor-ok listája. A tárolási osztály (storage class) egy olyan kulcsszó, ami a deklaráció jelentését befolyásolja, és az alábbi kulcsszavak egyike:
+
+auto, register, static, extern, typedef
+
+Mivel C-ben nem szükséges alkalmazásuk, ezért inkább kerüljük a register és auto használatát. A register egy optimalizációs ajánlás, amit a modern fordítóprogramok enélkül is megtesznek. Az auto kulcsszó pedig más jelentéssel bír C++-ban. A többi tárolási osztály használatára látunk majd példákat.
+
+A deklaráror rekurzív formában van megadva:
+
+függvény esetében: deklarátor ( paraméter-lista )
+mutató esetében: * deklarátor
+tömb esetében: deklarátor [ n ]
+egyébként egy azonosító: azonosító
+Példák definíciókra:
+
+int  i;      /* egész (int) változó definiálása */
+int *pi;     /* egész típusra mutató pointer definiálása  */
+int  t[10];  /* egy 10 egészt tartalmazó tömb definiálása */
+int func1(void){...} /* par nélküli, int-el visszatérő fv */
+int func2(int i, double d){...} /* uaz int és double par. */
+Ezeket a deklarátorokat rekurzívan is lehet használni. A kivételek: függvények nem térhetnek vissza függvénnyel vagy tömbbel, és tömbök nem tartalmazhatnak függvényeket.
+
+int **pi; /* egy egészre mutató pointer-re mutató pointer */
+int  tt[10][20]; /* 10 db 20 elemű egész tömböt tart. tömb */
+int *func3(void){...}/* par. nélküli int ptr visszatérő fv */
+int *func4(int i, double d){...} /* int- és double par. fv */
+Amennyiben kétértelműség állna fenn, akkor az operátorok precedenciája és a zárójelezés dönti el a deklaráció értelmét. Ugyancsak vigyázzunk arra, hogy pl. a mutató * jele a deklarátorhoz tartozik!
+
+int  *ptr_arr[10];/* 10 elemű tömb int mutatókkal */
+int (*ptr_to)[10];/* mutató 10 egészet tartalmazó tömbre */
+int*  ptr1, ptr2; /* ptr1 mutató egészre, ptr2 viszont int */  
+A változóknak a definiciójuknál kezdőértéket is adhatunk, azaz inicializálhatjuk őket. Ez erősen ajánlott, hiszen így biztosan azt az értéket tartalmazzák, amit mi adtunk nekik.
+
+int     i = 1;
+double pi = 3.14;
+int  *ptr = &i    /* pointer to int. i-re mutat */ 
+
+int arr1[10] = {0,1,2,3,4,5,6,7,8,9};     /* nem ajánlott */
+int arr2[10] = {0,1,2,3,4,5,6,7,8};  /* mert arr2[9] == 0 */ 
+int arr3[] = {0,1,2,3,4,5,6,7,8}; /* ajánlott int arr3[9] */
+int t[][3] = { {1,2,3}, {4,5,6} };         /* int t[2][3] */
+
+char str1[] = {'H','e','l','l','o','\0'}; /* char str1[6] */
+char str2[] = "Hello";                    /* char str2[6] */
+char  *str3 = "Hello";         /* char * (pointer 'H'-ra) */ 
+A globális, statikus élettartamú tárterületek 0-ra inicializáltak alapértelmezésben, más esetekben azonban a változók inicializálás nélküli tartalma valami memória-szennyeződés (ismeretlen érték) lehet.
+
+A fenti példák definíciók voltak, azaz változóknál rendelkeztünk a tárterület lefoglalásáról ill. megadtunk a függvények törzsét. A következő példák deklarációk lesznek:
+
+extern int i;        /* egész deklarációja, 
+                        valahol máshol van definiálva */
+extern int *pi;      /* mutató deklarációja, 
+                        valahol máshol van definiálva */
+extern int t[10];    /* egész tömb deklarációja, 
+                        a méretet nem vesszük figyelembe */
+extern int t[];      /* egész tömb deklarációja, 
+                        ekvivalens a fentivel */
+extern int tt[10][20];  /* tömb deklarációja, minden 
+                          tömbelem 20 int-ből álló tömb */
+extern int tt[][20];    /* tömb deklarációja, 
+                          ekvivalens a fentivel */  
+extern int func1(void); /* paraméter nélküli függvény 
+                           deklarációja */
+extern int func2(int i, double d); /* int, double 
+                       paraméteres fv deklarációja */
+int func1(void);   /* függvénydeklarációkor az extern 
+                      kulcsszó elhagyható */
+int func2();       /* csak deklarációkor: semmit sem 
+                      tudunk a paraméterekről */
+A forrásfájlunkat sikeresen lefordíthatjuk, ha a használt változókat, függvényeket deklaráltuk. A futásra kész, összeszerkesztett programunknak azonban rendekleznie kell a deklarációkhoz tartozó pontosan egy definícióval. A változót, amit több forrásfájlban is használunk, pontosan egy fordítási egységben le kell foglalni. A függvényt, ami több forrásfájlból is hívható, pontosan egy fordítási egységben definiálnunk kell: meg kell adni, milyen utasításokat tartalmaz.
+
+Annak ellenőrzését, hogy egy másik forrásfájlban mit csináltunk, nem tudja ellenőrizni a fordító, ami csak a pillanatnyilag fordított fájlt látja. Ezért az evvel kapcsolatos hibákat nem a fordító, hanem a szerkesztő (linker) program fogja detektálni. Amennyiben nincsen egyetlen definíció sem, akkor a linker feloldatlan hivatkozás (unresolved external) hibát fog jelezni, ha pedig egynél több azonos nevű objektumot definiálunk, akkor többértelmű hivatkozás (ambigous reference) hibát kapunk.
+
+Láthatóság
+A láthatóság (scope) szabályai határozzák meg, hogy egy azonosítót (pl. változó-, függvény-, vagy típusnevet) a program mely részein használhatunk az adott objektum azonosítására. A egy változó láthatóságát szokás a változónév hatókörének is nevezni.
+
+A C-ben egy deklaráció lehet lokális, ha valamely függvényen belüli blokkban helyezkedik el, vagy globális, ha minden függvényen kívül.
+
+A lokális nevek a deklaráló blokkon belül láthatóak, beleértve a belső blokkokat is, kivéve, ha ugyanezt a nevet egy belső blokkban újra deklarálják, azaz eltakarják (hide). A globális változók a deklaráció helyétől a forrásfájl végéig látszódnak, hacsak egy blokkban el nem takarják őket. Függvényeket csak globálisként tudunk definiálni, azaz nem léteznek függvénybe beágyazott lokális függvények (mint léteznek pl. Pascal-ban).
+
+A lokális változók belső szerkesztésű-ek (internal linkage), azaz a linker számára láthatatlanok. A globálisan deklarált nevek alapértelmezésben külső szerkesztésűek (external linkage), a linker számára láthatóak. Globálisoknál a static kulcsszó jelenti azt, hogy a név belső szerkesztésű. Az ilyen neveket a linker nem látja, azaz ezek a nevek csak az adott forrásfájlban használhatók. Ha ugyanazt a nevet több forrásfájlban belső szerkeszthetőségűnek definiálunk, akkor arra a linker nem jelez hibát.
+
+A C nyelvben a belső szerkesztésű változókat és függvényeket gyakran egy nagyobb kódmodul belső, implementációs céljaira használjuk, a külső szerkesztésűeket pedig az illető modul interfészének. Íly módon, bár elég primitíven, szimulálni tudjuk az objektum-orientált nyelvek enkapszuációs elveit. A main mindig külső szerkesztésű kell legyen.
+
+int i;          /* globális, külső szerkesztésű */
+static int j;   /* globális, belső szerkesztésű */
+extern int n;   /* globális, valahol máshol definiált */
+extern double fahr2cels(double); /* függvény deklaráció */
+ 
+void f() /* külső szerkesztésű, hívható más forrásfájlból */
+{
+  int i;             /* lokális i, eltakarja (1)-et */
+  static int k = 5;  /* lokális k, statikus élettartam */
+  {
+    int m = n; /* lokális m, globális n (3)-nál deklarálva*/
+    int i = k; /* lokális i, eltakarja (8)-at */
+  }
+  i = 6;    /* ez ismét (8)-ban deklarált */
+}
+static void g()  /* statikus függvény: belső szerkesztésű */
+{
+  extern double aa;    /* deklaráció, máshol definiált aa */
+  extern void h(int);  /* deklaráció, máshol definiált f  */ 
+  aa = fahr2cels(35); /*(4)-ben deklarált függvény hívása */
+  h(aa);            /* (19)-ben deklarált függvény hívása */
+  ++i; ++j;         /* globális i (1) és j (2) használata */
+}
+Az ANSI C-ben (C89) a deklarációk minden blokkban meg kell előzzék a végrehajtható utasításokat. A C99 óta ez már nem szükséges, a C++-hoz hasonlóan tetszőleges helyen deklarálhatunk változókat. Ennek az az előnye, hogy csak akkor hozunk létre új változókat, amikor kezdőértéket tudunk nekik adni, így kevesebb definiálatlan értékű változónk lesz.
+
+Élettartam
+Az élettartam szabályok azt határozzák meg, hogy az egyes memóriaterületek melyeket a programunk használ, mettől meddig érvényesek a programunk futása során. Ha olyan tárterületere hivatkozunk, ami már nem érvényes, súlyos futási idejű hiba következhet be.
+
+Tipikus élettartam kategóriák
+Az első programozási nyelvek az összes változó számára a program elején lefoglalták a tárterületet, amit a program végéig fent is tartottak. Ez a statikus élettartam egy “biztonságos” megközelítés, de rendkívül pazarló, hiszen a változók jó részét csak a programunk kis területén (egy függvényen belül, vagy akár csak egy blokkon belül) akarjuk csak használni. Ezen a blokkon/függvényen kívül miért ne használhatnánk másra ugyanazt a memória-területet?
+
+Az Algol 60 nyelvben vezették be a blokk fogalmát, ami nemcsak a vezérlés szerkezetét határozta meg, hanem a lokális változók élettartamát is. A lokális változók a blokkba való belépéskor foglalódtak le, és léteztek a belső blokkok, vagy meghívott függvények végrehajtása alatt is (bár esetleg nem voltak névvel elérhetőek, ha a neveiket eltakarták). Ezek a memóriaterületek akkor szabadultak fel, amikor a létrehozó blokkjuk végrehajtása befejeződött. Ez az automatikus élettartam képes ugyanazt a memóriaterületet időben máskor más és más változók számára kiosztani.
+
+Végül olyan eset is előfordul, amikor a tárterület létrehozása és megszünése nem kapcsolható egy blokk végrehajtásához. Pl. az egyik függvényben foglaljuk le a tárterületet és egy másikban kell megszüntetni azt. Ez a dinamikus élettartam, amikor a programozó vezérli (függvényhívásokkal vagy más módon) a tárterület élettartamát.
+
+Statikus élettartam
+A globális változók, ideértve a belső szerkesztésű, static globálisakat is statikus élettartamúak. Tárterületük a program elején létrejön és a program végéig lefoglalva marad. A statikus tárterületek inicializálási sorrendje a forrásfájlon belül a definíciós sorrend, a fordítási egységek közötti sorrendiség nem definiált. A nem inicilaizált statikus memóriaterületek kezdőértéke nulla.
+
+char buffer[80];/* statikus élettartam, kezdőértéke csupa 0*/
+int k = 42;         /* statikus élettartam, kezdőértéke 42 */
+static double j;   /* statikus élettartam, kezdőértéke 0.0 */
+
+int main()
+{
+  /* ... */
+}   
+/* az élettartamok vége */
+A statikus élettartam egy speciális esete, amikor egy lokális változót definiálunk static kulcsszóval. Ilyenkor a static nem a szerkesztést, hanem az élettartamot befolyásolja, az ilyen lokális változók statikus élettartamúak. A statikus lokális változók egyetlen egyszer inicalizálódnak.
+
+int count(void)
+{
+  static int cnt = 0; /* lokális statikus inicializálása
+                       csak első alkalommal hajtódik végre */
+  ++cnt;               
+  /* ... */
+  return cnt; /* minden hiváskor egyel nagyobbat ad vissza */ 
+}   
+A lokális statikusok a sima (automatikus) lokális változókhoz képest a blokkból kilépve is megőrzik a tartalmukat, és a legközelebbi belépéskor “emlékeznek” rá. Olyan globális változóknak gondolhatjuk őket, melyek láthatósága a blokkra korlátozott.
+
+Automatikus élettartam
+A (nem statikus) lokális változók a C programozási nyelvben a program végrehajtási vermében (program stack) jönnek létre. A verem egyben a függvényhívásoknál a paraméterátadás és a visszatérő értékek közvetítésére is szolgál.
+
+Az ilyen változók a blokkba való belépéskor foglalódnak le és élettartamuk megszűnik, amikor elhagyjuk a blokkot. Ha van inicializálásuk, akkor az minden egyes alkalommal megtörténik, amikor belépünk a blokkba. Ellenkező esetben a változók értéke nem definiált (valami memóriaszemét, ami a verem korábbi használatából maradt ott). Amikor a blokk végrehajtása befejeződik, a verem állapota visszaáll a blokkba való belépés előttire, azaz az automatikus változóink (és függvényparamétereink) tárterülete felszámolódik, más függvények, blokkok számára felhasználhatóvá válik.
+
+alt text
+
+A bp az ún. bázis-pointer, ami egy adott függvényhívás során a verem által használt területet, az ún. stack-frame-et azonosítja. A lokális változók (és az átadott függvényparaméterek) pozíciója a bátzispointerhez képest relatív távolsággal kerül meghatározásra.
+
+Ha a blokk végrehajtása során egy függvényt hívunk, akkor annak a függvénynek a számára újabb stack-frame foglalódik le, ezalatt a változóink értéke megőrződik. Ez egyben azt is jelenti, hogy a függvények rekurzívan is hívhatóak: minden hívás saját stack-frame-et hoz létre.
+
+Dinamikus élettartam
+Vannak esetek, amikor a memóriaterület létrehozása és felszámolása nem kapcsolható valamely függvény vagy blokk végrehajtásához. Ilyenkor a programozó manuálisan intézkedik a tárterület lefoglalásáról az ún. szabad memóriából (free memory, heap). A tárterület lefoglalva marad, amíg a programozó azt manuálisan fel nem szabadítja. Amennyiben ezt elmulasztja, akkor hosszan futó programok esetében (pl. egy szerver program vagy maga az operációs rendszer) a rendszeres fel nem szabadított allokálások miatt a memória elfogyhat. Ezt a hibajelenséget nevezzük memória elszivárgásnak (memory leak).
+
+Számos modern programozási nyelv figyeli, hogy létezik-e még hivatkozás a heap területen lefoglalt memóriaterületekre. Ha az már “elérhetetlen”, akkor “begyűjtésre” jelöli meg, és ha szabad memóriára lenne szükség, akkor felszabadítja és újrahasználja azt. Ezt a bonyolult és nem olcsó mehanizmust nevezzük szemétgyűjtésnek (garbage collection), illetve az ezt elvégző eszközt szemétgyűjtőnek (garbage collector).
+
+Azok a nyelvek, melyek valamely virtuális futtató környezetet használnak, mint a Smalltalk, Java, C# és Eiffel, alkalmazzák a szemétgyűjtést, más nyelvek, ahol a hardver közvetlen, hatékony elérésén van a hangsúly, mint a C vagy a C++, azok nem. Ez utóbbi nyelveknél nagyon kell figyelnünk a memória elszivárgás megelőzésére.
+
+C nyelvben a dinamikus memória lefoglalását a malloc függvénnyel végezzük, melynek paramétereként a lefoglalandó bájtok számát adjuk meg. Jó ötlet itt a sizeof operátor használata. A malloc egy void* pointert ad vissza, amit a szükséges típusra kell konvertálnunk. Előfordulhat, hogy nincsen elég memória, ilyenkor a malloc NULL pointert ad vissza, ezt soha se felejtsük el ellenőrizni!
+
+A memória felszabadítását a free függvény végzi, aminek a malloc által adott mutatót kell megadnunk. A felszabadított tárterületet tilos tovább használnunk, ez futási idejű hibát okoz. Különösen súlyos hiba a többszöri felszabadítás. A free függvény kaphat NULL pointert, ekkor semmit sem csinál.
+
+#include <stdlib.h>
+#include <assert.h>
+
+void g(double *);
+
+void main()
+{
+  double *dbls;
+
+  /* megkísérlünk 1024 char-t lefoglalni */
+  char *buffer = (char*) malloc(1024);  
+
+  if ( NULL != buffer )  /* sikeres volt a foglalás? */
+  {
+      *buffer = 'x';   /* használhatjuk a területet  */ 
+      free (buffer );  /* felszabadítjuk a területet */      
+  }
+
+  /* megkísérlünk 10 darab double-t lefoglalni */
+  if ( dbls = (double*) malloc( 10*sizeof(double) ) )
+  { 
+      /* sikeres volt a lefoglalás */
+      g(dbls);   /* dbls használata */
+      /* a területet itt már nem használhatjuk
+         mert g() felszámolta */
+  }
+}
+
+void g( double *dptr)
+{
+  assert ( NULL != dptr ); 
+  dptr[2] = 3.14;  /* használjuk a területet */
+
+  /* átméretezzük, a régi terület átmásolódik */
+  if ( dptr = realloc( dptr, 20) ) 
+  {
+      dbtr[19] = dbtr[2]; /* a régi értékek átmásolódtak */
+  }
+  free(dptr);   /* a 20 double felszabadítása */
+}   
+Élettartammal kapcsolatos hibák
+Az alábbiakban ezgy esettanulmányon keresztül megvizsgáljuk a láthatóság és élettartam kapcsolatát és azt, milyen hibákat kell elkerülnünk.
+
+Legyen feladatunk egy egyszerű answer függvény megírása, amelyik kiírja a paraméterként kapott kérdést, beolvassa a választ és azt visszaadja a hívójának. A hívó program (main) kiírja a választ a standard outputra.
+
+/*
+ * Ez nagyon HIBÁS verzió 
+ */
+#include <stdio.h>
+char *answer( const char *question);
+int main()
+{
+  printf( "answer = %s\n", answer( "How are you? ") );
+  return 0;
+}
+/* nagyon hibás !! */
+char *answer( const char *question)
+{
+  char buffer[80]; /* lokális láthatóság, aut. élettartam */
+  printf( "%s\n", question);
+  gets(buffer);  /* ERR1: buffer-túlcímzés !! */
+  return buffer; /* ERR2: automatikus élettartam vége, 
+                    tilos használni! */
+}
+Két súlyos hibát követtünk el:
+
+A gets(buffer) az első újsor karakterig olvassa a karaktereket, így lehet, hogy többet olvasnánk, mint a bufferünk hossza. Ez súlyos hiba, mert felülírjuk a buffer mögötti memóriát. Ez a buffer-túlcsordulás hiba ez egyik legkritikusabb C biztonsági hibák egyike.
+
+A return buffer egy karakterre mutató pointert ad vissza a lefoglalt automatikus élettartamú tömb elejére. Viszont amint visszatérünk a függvényből, a verem ezen része felszabadul és a mutatónk egy invalid területre fog mutatni.
+
+Javítási kísérlet, változtassuk meg a buffer élettartamát és cseréljük ki a beolvasást biztonságosabbra:
+
+/*
+ * Működik, de nehezen karbantartható
+ */
+#include <stdio.h>
+
+#define BUFSIZE 80
+char buffer[BUFSIZE]; /* globális láthatóság, 
+                         statikus élettartam */
+char *answer( const char *question);
+int main()
+{
+  printf( "answer = %s\n", answer( "How are you? ") );
+  return 0;
+}
+char *answer( const char *question)
+{
+  printf( "%s\n", question);
+  fgets(buffer, BUFSIZE, stdin); /* legfeljebb BUFSIZE-1 
+                                    char olvasása */
+  return buffer;   /* ok, pointer globálisra */
+}
+Ez így működik, de nehezen karbantartható. A buffer feleslegesen globális, neve ütközhet más fordítási egységekkel. Túl sok helyről elérhető. Rejtsük el a függvényen kívüli világ elől.
+
+/*
+ * Működik, karbantarthatóbb, de nem szál-biztos
+ */
+#include <stdio.h>
+#define BUFSIZE 80
+
+char *answer( const char *question);
+int main()
+{
+  printf( "answer = %s\n", answer( "How are you? ") );
+  return 0;
+}
+char *answer( const char *question)
+{
+  static char buffer[BUFSIZE]; /* lokális láthatóság,
+                                  statikus élettartam */
+  printf( "%s\n", question);
+  fgets(buffer, BUFSIZE, stdin); /* legfeljebb BUFSIZE-1 
+                                    char olvasása */
+  return buffer;   /* ok, pointer statikus élettartamúra */
+}
+Ebben a környezetben az answer függvény már jól működik, a buffer élettartama statikus, tehát a függvény visszatérése után is használható, láthatósága viszont lokális, így lényegében implementációs részletként eltakartuk a külvilág elől.
+
+A statikus élettartamú változóknak is van azonban veszélye. Mivel egyetlen példányban léteznek, nem pedig minden egyes függvényhíváskor a veremben jönnek létre, mint az automatikusak, veszélyes, ha egy időben több helyről használjuk őket. Az alábbi program mindig ugyanazt a (második) választ adja vissza:
+
+/*
+ * Működik, karbantarthatóbb, de nem szál-biztos
+ */
+#include <stdio.h>
+#define BUFSIZE 80
+
+char *answer( const char *question);
+int main()
+{
+  printf( "answer = %s\n%s\n", answer( "How are you?"), 
+                               answer("Sure?") );
+  return 0;
+}
+char *answer( const char *question)
+{
+  static char buffer[BUFSIZE]; /* lokális láthatóság,
+                                  statikus élettartam */
+  printf( "%s\n", question);
+  fgets(buffer, BUFSIZE, stdin); 
+  return buffer; /* ugyanaz a buffer minden hivás esetén */
+}
+Minden egyes hívás esetén ugyanoda rakjuk a választ (evvel potenciálisan felülírva a korábbi válaszokat). Ha több hívásunk is van, csak az utolsót fogjuk tudni kiolvasni. Ez a probléma különösen veszélyesen jelentkezik többszálú (multithreaded) programok esetében.
+
+Úgy tűnik, minden függvényhívás esetében új területre van szükségünk. Próbáljuk meg dinamikus élettartammal.
+
+/*
+ * Egy ideig működik, de memória elszivárgást okoz
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#define BUFSIZE 80
+
+char *answer( const char *question);
+int main()
+{
+  printf( "answer = %s\n%s\n", answer( "How are you?"), 
+                               answer("Sure?") );
+  return 0;
+}
+char *answer( const char *question)
+{
+  /* új memória lefoglalása minden híváskor */
+  char *buffer = (char *) malloc(BUFSIZE); 
+  if ( NULL == buffer ) 
+      return "error\n"; /* jelezzük a hibát */
+  printf( "%s\n", question);
+  fgets(buffer, BUFSIZE, stdin); 
+  return buffer; /* mindig új buffer */
+} /* de ki fog felszabadítani? */
+Ez a megoldás egy ideig működik, de közben memória elszivárgást okoz. Minden alkalommal újra és újra lefoglaljuk a memóriát, de sohasem szabadítjuk fel.
+Nem is lenne egyszerű, hol szabadítsuk fel: az answer függvényben még korai, a main-ben meg nem igazán alkalmas.
+
+A helyes megoldáshoz azt kell eldönteni, hogy végül is, kinek van szüksége a tárterületre? Ki legyen a tulajdonos (owner), akinek a feladata a memória kezelése?
+
+Mivel a tárterületet a main akarja felhasználni, legyen ő a tulajdonos!
+
+/* 
+ * OK
+ */ 
+#include <stdio.h>
+#define BUFSIZE 80
+
+char *answer( const char *question, char *buffer, int len);
+
+int main()
+{
+  char buffer1[BUFSIZE], buffer2[BUFSIZE]; /* lokális, 
+                                              automatikus */
+  printf("answer = %s\n%s\n",
+                   answer("How are you?", buffer1, BUFSIZE),
+                   answer("Sure?", buffer2, BUFSIZE) );
+  return 0;
+}
+char *answer( const char *question, char *buffer, int len)
+{
+  printf( "%s\n", question);
+  fgets(buffer,len,stdin); /*kölcsönkapott területre írunk*/
+  return buffer; /* ok, a hívó függvényben van lefoglalva */               
+}
+A körülményekhez képest még ez a legstabilabb, karbantarthatóbb megoldás.

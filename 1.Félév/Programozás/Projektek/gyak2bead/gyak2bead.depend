@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1600184593 source:c:\users\lenovo\desktop\tananyag\programozás\projektek\gyak2bead\main.cpp
+	<iostream>
+	<time.h>
+

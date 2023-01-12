@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1352409249 source:d:\progalap\2012_osz\gyakorlatok\gyak08\fgvek\main.cpp
+	<iostream>
+	<cmath>
+
+1415057300 source:e:\progalap\2014_osz\gyakorlatok\gyak08\halozatra\fgvek\main.cpp
+	<iostream>
+	<cmath>
+
+1541609278 source:d:\progalap\2018_osz\gyakorlatok\gyak07\kesz\fgvek\main.cpp
+	<cmath>
+	<sstream>
+

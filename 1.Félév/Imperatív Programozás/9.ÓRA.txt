@@ -1,0 +1,654 @@
+Dinamikus memóriakezelés
+A C programok statikus, automatikus és dinamikus élettartamú tárterületeket hozhatnak létre (Élettartam). A globális és lokális statikus változók élettartama a program elejétől a végéig tart. A nem statikus lokálisak a veremben jönnek létre az őket deklaráló blokkba való belépéskor és felszámolódnak, amikor kilépünk a blokkból. Lehetséges azonban, hogy ad-hoc módon kell tárterületet foglalnunk, vagy előre nem ismerjük a szükséges méretet. Ilyenkor használjuk a dinamikus élettartamot.
+
+address space
+
+A statikus élettartamú változók a futásra betöltött program egy direkt erre fentartott területén jönnek létre - külön az inicializált és a nem inicializált, ez utóbbi automatikusan zéró inicializált lesz. A lokális automatikus élettartamú változókat a végrehajtási veremben foglaljuk le. Minden egyes függvényhívás egy aktivizációs rekordot hoz létre, a függvény visszatérésekor ez felszámolódik.
+
+A dinamikus élettartamú objektumokat a szabad memóriában (free store, heap) foglaljuk le. Majdnem minden imperatív nyelv rendelkezik szabad memóriával, de annak használata erősen változó. Pl. Java-ban, C#-ban objektumokat csak a szabad memóriában tudunk létrehozni a new művelet segítségével. Ami lokális változó(nak) látszik, az is csak egy referencia (valójában egy pointer), maga az objektum a heap-ben jön létre. A C nyelvben minden objektum (egyszerű vagy összetett típusú) létrejöhet a statikus, az automatikus és a dinamikus tárterületen is.
+
+A tárterület lefoglalása a malloc(size_t sz) függvénnyel történik, melynek a lefoglalandó bájtok számát adjuk meg. Hasznos, ha a paramétert a sizeof operátoron keresztül adjuk meg, nem pedig “beégetjük” a programba. A visszatérő érték típusa void *, amit a kívánt típusra mutató pointerré kell konvertálnunk. A malloc garantálja, hogy a lefoglalt tárterületen tetszőleges típusú objektum tárolható. Viszont a tárterület nem lesz inicializálva, lényegében “memória-szemetet” fog tartalmazni.
+
+void alloc1( int nelem)
+{
+  void *ptr = malloc( nelem * sizeof(int) );
+
+  if ( NULL != ptr )
+  {
+    /* sikeres memóriafoglalás, de inicializálatlan */
+    int *ip = (int *)ptr; 
+    /* memória ip-n keresztüli típushelyes használata */ 
+    free( ip );   /* memória visszaadása */
+  }
+  else
+  {
+    /* memóriafoglalás sikertelen volt */
+  }
+}
+Előfordulhat, hogy nem sikerül lefoglalni a kívánt mennyiségű memóriát. Ekkor a malloc() NULL pointer értékkel tér vissza. A programozó fontos kötelessége, hogy mindig ellenőrizze a malloc() visszatérő értékét, mert a nullpointer dereferálása futási idejű hibát okoz!
+
+Ha a tárterületet csupa nulla bájtra szeretnénk inicializálni, akkor ehhez a calloc(size_t num, size_t sz) függvényt használjuk, ami num darab sz méretű objektumnak foglal helyet és a területet nullára inicializálja.
+
+void alloc2( int nelem)
+{
+  void *ptr = calloc( nelem, sizeof(int) );
+
+  if ( NULL != ptr )
+  {
+    /* sikeres memóriafoglalás, csupa zéró */
+    int *ip = (int *) ptr; 
+    /* memória ip-n keresztüli típushelyes használata */ 
+    free( ip );   /* memória visszaadása */
+  }
+  else
+  {
+    /* memóriafoglalás sikertelen volt */
+  }
+}
+Ugyanakkor a tárterület csupa nulla bájtra inicializálása elvileg nem garancia arra, hogy pl. egy lebegőpontos érték 0.0 vagy egy pointer NULL értékű lesz. Gyakorlatilag azonban a platformok többségén ez így van.
+
+A tárterület lefoglalva marad, amíg azt a free(ptr) függvénnyel vissza nem adjuk a szabad memória számára. A ptr mindenképpen egy malloc(), calloc(), vagy realloc() függvény által adott kell legyen. Ha a tárterület visszaadásáról megfeledkezünk, akkor elfogyhat a szabad memória. Ilyenkor a malloc(), calloc(), realloc() függvények soron következő hívásai NULL pointert adnak vissza. Mindig ellenőrizzük ezen függvények visszatérő értékét!
+
+Ellentétben más programozási nyelvekkel, a C-ben (és C++-ban) nincsen automatikus szemétgyűjtés (garbage collection), azaz a már nem használt, akár már hivatkozás hiányában el sem érhető tárterületek sem szabadulnak fel automatikusan. Ehhez mindig a free() függyvény meghívása kell. Azt a jelenséget, amikor az elérhetetlen tárterület a programozó hibájából lefoglalva marad, nevezzük memória elszivárgásnak (memory leak). Hosszan futó programok esetében (pl. egy szerver program vagy maga az operációs rendszer) a memóriaelszivárgás súlyos gondokat okozhat.
+
+Mivel a malloc(), calloc(), realloc() visszatérő értékét ellenőriznünk kell, gyakori a következő programozási technika:
+
+void alloc3( int nelem)
+{
+  double *dp;
+
+  if ( dp = (double *)malloc(nelem * sizeof(double)) )
+  {
+    int i;
+    for ( i = 0; i < nelem; ++i)  dp[i] = i;  
+    /* dp felhasználása */  
+    free( dp ); 
+  }
+}
+A lefoglalt területet nem kötelező abban a függvényben felszabadítani, ahol lefoglaltuk. Gyakori, hogy külön függvényekben foglaljuk le a területet és máshol szabadítjuk fel. Ez ugyanakkor megnehezítheti a program megértését.
+
+A dinamikusan lefoglalt tárterületet a realloc(void *ptr, size_t newsize) függvénnyel tudjuk átméretezni. A ptr az egy előzőleg malloc(), calloc(), realloc() által lefoglalt tárterület, a newsize pedig a kívánt új méret. Az új méret lehet nagyobb, vagy kisebb is a jelenleg lefoglaltnál. Növeléskor a realloc() megpróbálja helyben megnövelni a tárterületet, az új terület inicializálatlan lesz. Ha ez nem sikerül, akkor más helyen próbál lefoglalni a tárterületet, odamásolja a régi terület tartalmát, majd felszabadítja a régi területet. Ha nem sikerül az új helyfoglalás, akkor NULL pointer tér vissza és a régi terület megőrződik, siker esetén az aktuális (akár új) területre mutató pointer tér vissza.
+
+void alloc5( double *dp, int n)  
+{
+  /* ki akarjuk terjeszteni a területet n double-ra */ 
+  double *extra = (double *)realloc( dp, n*sizeof(double)); 
+  if ( extra )
+  {
+    /* sikerült az extra terület lefoglalása, használjuk */
+    free(extra); /* az új terület felszámolása */
+  }
+  else
+  {
+    free(dp); /* az eredeti terület felszámolása */
+  }
+}
+void alloc4( int nelem)
+{
+  double *dp;
+  if ( dp = (double *)malloc(nelem * sizeof(double)) )
+  {
+    int i;
+    for ( i = 0; i < nelem; ++i)  dp[i] = i;  
+    /* dp felhasználása */  
+    alloc5(nelem+10);  /* 10 elemet hozzá akarunk adni */
+    /* alloc5 felszámolta a memóriát, itt nincs free() */
+  }
+}
+A realloc() elvileg alkalmas a lefoglalt terület csökkentésére is, azonban implementáció függő, hogy valóban visszaad-e memóriát.
+
+A realloc() veszélyes lehet, ha az átméretezendő tárterületünkre más mutatók hivatkoznak. Ilyenkor elmozgatva a hivatkozott tárterületet az oda mutató pointerek érvénytelenné válnak.
+
+Megjegyzések
+A szabad memória számon tartja, hogy mekkora területet foglaltunk le, ezt a free()-nek nem kell megadnia. Az információ a heap-ben, a ptr környékén tárolódik, többek közt ez az oka, hogy ha nem a helyes pointerrel akarunk felszabadítani, az futási idejű hibát fog okozni.
+
+Vannak platformok, ahol a programban több heap is létezik, pl. a főprogramban és egyes dinamikus library-kben (.DLL, .so) is. Ilyenkor fontos, hogy ugyanaz a programrész szabadítsa fel a memóriát, aki lefoglalta, különben esetleg a free függvény rossz heap-be próbálná visszaadni a tárterületet. Ez futási idejű hibához vezethet.
+
+Úgy is elfogyhat a memória, ha a különböző méretű lefoglalások és felszabadítások során feldarabolódik (fragmented) a heap. Ilyenkor lenne még elég szabad bájt, csak nincsen elég egyetlen összefüggő területen. A mai modern szabad memória implementációk számos módon próbálják ennek a lehetőségét csökkenteni. Érdekes megoldás a .NET framework-é, ott a managed heap feltömöríti a használt területet, így eltüntetve a lyukakat, egy összefüggő memóriaterületet hoz létre a szabad területből. Ilyenkor azonban az átmozgatott területre mutató pointerek értékeit is módosítani kell (managed pointer), ami komoly hatékonyságcsökkentő tevékenység. Egy másik megoldás, amit a C allokátorok is alkalmazhatnak, hogy a heapben külön területeket tartanak fel a kis, közepes és nagy memóriaterületek foglalására, illetve gyakran 2 hatvány bájtot foglalnak le, így a szomszédos felszabadított területek összevonása is 2 hatvány lesz.
+
+Ha egy területet felszabadítottunk, akkor tilos ismételten felszabadítani. Ilyen hibát akkor szoktunk kapni, ha egy pointert lemásolunk és mindkét helyen fel akarjuk szabadítani a mutatott tárterületet. Ez gyakran az ún. sekély másolás (shallow copy) eredménye, amikor a pointert másoljuk a mutatott tárterület helyett.
+
+A felszabadított memóriára tilos hivatkozni. Az indirekció (*) operátor használata ilyenkor futási idejű hibát okozhat.
+
+A free() függvénynek átadhatunk NULL pointert, ilyenkor a hatása az üres utasítással ekvivalens. A free() viszont nem állítja NULL-ra az átadott pointer értékét.
+
+A heap műveletek szálbiztosak, azaz többszálú programban is biztonsággal használhatjuk őket. Viszont ez azt jelenti, hogy a heap használata a háttérben lock-olásokkal jár, ami csökkenti a hatékonyságot.
+
+Gyakori hiba, hogy egy C string másolása számára akarunk helyet foglalni az strlen függvény visszatérő értéke alapján. Azonban ha pont annyi helyet foglalunk le, akkor nem marad hely a lezáró bináris NUL karakterre. Ezt a hibát hívják off by one (OBOE, OB1) errornak. Helyesen használjuk a malloc(strlen(source)+1) kifejezést.
+
+A dinamikus élettartammal kapcsolatos függvények az <stdlib.h> headerben vannak deklarálva.
+
+Példák összetett adatszerkezetek dinamikus kezelésére
+Verem implmentálása
+A verem egy utolsónak be - elsőnek ki (last in - first out, LIFO) adatszerkezet. Elsőnek próbáljuk meg egy fix méretű tömbbel implementálni.
+
+#include <stdio.h>
+#define CAPACITY 10
+
+void print_reverse( double *stack, int size)
+{
+  while ( --size >= 0 )  /* stack[size-1] ... stack[0] */
+  {
+    printf( "%f\n", stack[size]);  
+  }	  
+}
+int main()
+{
+  double  d;
+  double  stack[CAPACITY];   /* a buffer */
+  int     size = 0;          /* a beszúrt elemek száma */
+
+  while ( size < CAPACITY  &&  1 == scanf("%lf", &d) )  
+  {
+    stack[size++] = d;
+  }
+  printf("==== eredmeny ====\n");	
+  print_reverse( stack, size );  /* elemek kiírása */
+  return 0;
+}
+A programot lefordítva, lefuttatva megadhatjuk az input lebegőpontos számokat, EOF-ig.
+
+$ gcc -ansi -pedantic -W fixarray.c -o fixarray
+$ ./fixarray
+2.3
+4.5
+7.8
+==== eredmeny ====
+7.800000
+4.500000
+2.300000
+
+$ ./fixarray 
+1 2 3 4 5 6 7 8 9 0 1 2
+==== eredmeny ====
+0.000000
+9.000000
+8.000000
+7.000000
+6.000000
+5.000000
+4.000000
+3.000000
+2.000000
+1.000000
+Működik a program, de legfeljebb 10 elemet tudunk berakni a verembe. Kevesebbet lehet, EOF-ig írhatunk számokat, akkor is jól működik.
+
+Szeretnénk azonban tetszőleges hosszúságú számsorozatokat is berakni a verembe. Ehhez dinamikus memóriafoglalást fogunk használni. Most is egy fix kezdőmérettel indulunk, de amikor betelik a verem, akkor megnöveljük a méretét.
+
+#include <stdio.h>
+#include <stdlib.h>
+
+const int INIT_CAP = 10;
+
+void nomem_error()
+{
+  fprintf( stderr, "Fatalis hiba: nincs memoria\n");
+  exit(1);
+}
+void print_reverse( double *stack, int size)
+{
+  while ( --size >= 0 )  /* stack[size-1] ... stack[0] */
+  {
+    printf( "%f\n", stack[size]);
+  }	  
+}
+/* megduplázzuk a buffert, és átírjuk a kapacitást */
+void grow( double **pdp, int *pcap)
+{
+  double *pnew = 
+          (double *)realloc(*pdp, *pcap*2*sizeof(double));	
+  if ( NULL == pnew ) 
+    /* noreturn */ nomem_error(); 
+  *pdp  = pnew; /* visszaírjuk az új pointert */
+  *pcap *= 2;   /* update-eljük a kapacitást  */
+}
+int main()
+{
+  double  d;
+  int     cap   = INIT_CAP;  /* a buffer mérete */	
+  int     size  = 0;         /* beszúrt elemek száma */
+  double *stack = (double *)malloc(cap * sizeof(double));
+  if ( NULL == stack )
+    /* noreturn */ nomem_error(); 
+
+  while ( 1 == scanf("%lf", &d) )  
+  {
+    if ( size == cap )  /* betelt a buffer */
+    {
+      grow( &stack, &cap);  /* megnöveljük a buffert */	    
+    }	    
+    stack[size++] = d;
+  }
+  printf("==== eredmeny ====\n");	
+  print_reverse( stack, size );  /* elemek kiírása */
+  return 0;
+}
+A programot lefordítva, lefuttatva megadhatjuk az input lebegőpontos számokat, EOF-ig.
+
+$ gcc -ansi -pedantic -W stack.c -o stack
+$ ./a.out
+2.3
+4.5
+7.8
+==== eredmeny ====
+7.800000
+4.500000
+2.300000
+Verem implementálása listával
+A lista az egyik legegszerűbb dinamikus adatszerkezet. A legegyszerűbb esetben a listaelemeket egy irányba fűzzük egymáshoz.
+
+lista
+
+Listával implementálhatunk pl. verem adatszerkezetet is.
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct list
+{
+  struct list *next;   
+  double       value;  /* payload */
+};
+
+void nomem_error()
+{
+  fprintf( stderr, "Fatalis hiba: nincs memoria\n");
+  exit(1);
+}
+/* lista elemeinek kiírása előlről hátra */
+void print_reverse( struct list *head )
+{
+  while ( head	)   /* NULL != head */
+  {
+    printf( "%f\n", head->value);
+    head = head->next;    
+  }	  
+}
+int main()
+{
+  struct list *head = NULL;  /* fejelem */
+  double d;
+
+  while ( 1 == scanf("%lf", &d) )  
+  {
+    struct list *pnew =
+             (struct list *)malloc(sizeof(struct list));
+    if ( NULL == pnew )
+      /* noreturn */ nomem_error(); 
+
+    /* első elemként befűzzük az új elemet */
+    pnew->next  = head;
+    pnew->value = d;
+    head = pnew;  /* az új elemre mutat a fejelem */
+  }
+  printf("==== eredmeny ====\n");	
+  print_reverse( head );  /* elemek kiírása */
+  return 0;
+}
+A programot lefordítva, lefuttatva megadhatjuk az input lebegőpontos számokat, EOF-ig.
+
+$ gcc -ansi -pedantic -W list.c -o list
+$ ./a.out
+2.3
+4.5
+7.8
+==== eredmeny ====
+7.800000
+4.500000
+2.300000
+A dinamikus memóriakezelés ellenőrzése
+Vajon memória-elszivárgás mentesek-e a programjaink?
+
+A program futását ellenőrizhetjük valamely dinamikus analízis eszközzel, pl. a google memory sanitizer-rel vagy a valgrind-al.
+
+$ valgrind ./fixarray
+==5860== Memcheck, a memory error detector
+==5860== Command: ./fixarray
+==5860== 
+1 2 3 4 5 6 7 8 9 0 1 2 3 4
+==== eredmeny ====
+0.000000
+9.000000
+8.000000
+7.000000
+6.000000
+5.000000
+4.000000
+3.000000
+2.000000
+1.000000
+==30117== 
+==30117== HEAP SUMMARY:
+==30117==     in use at exit: 0 bytes in 0 blocks
+==30117==   total heap usage: 4 allocs, 4 frees, 80 bytes allocated
+==30117== 
+==30117== All heap blocks were freed -- no leaks are possible
+==30117== 
+==30117== For counts of detected and suppressed errors, rerun with: -v
+==30117== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+A fixméretű tömbbel megírt programunk érthetően rendben van a dinamikus memória használata szempontjából. A malloc/realloc-ot használó megoldásunk azonban a program végéig nem adott vissza minden memóriát. Nyilvánvalóan, a program befejeztekor nem számoltuk fel a(z esetleg közben többször is átméretezett) buffert.
+
+$ valgrind ./stack
+==6046== Memcheck, a memory error detector
+==6046== Command: ./stack
+==6046== 
+1 2 3 4 5 6 
+==== eredmeny ====
+6.000000
+5.000000
+4.000000
+3.000000
+2.000000
+1.000000
+==6046== 
+==6046== HEAP SUMMARY:
+==6046==     in use at exit: 80 bytes in 1 blocks
+==6046==   total heap usage: 3 allocs, 2 frees, 2,128 bytes allocated
+==6046== 
+==6046== LEAK SUMMARY:
+==6046==    definitely lost: 80 bytes in 1 blocks
+==6046==    indirectly lost: 0 bytes in 0 blocks
+==6046==      possibly lost: 0 bytes in 0 blocks
+==6046==    still reachable: 0 bytes in 0 blocks
+==6046==         suppressed: 0 bytes in 0 blocks
+==6046== Rerun with --leak-check=full to see details of leaked memory
+==6046== 
+==6046== For counts of detected and suppressed errors, rerun with: -v
+==6046== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+$ valgrind ./stack 
+==8900== Memcheck, a memory error detector
+==8900== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==8900== Using Valgrind-3.14.0 and LibVEX; rerun with -h for copyright info
+==8900== Command: ./stack
+==8900== 
+1 2 3 4 5 6 7 8 9 0 1 2 3 4
+==== eredmeny ====
+4.000000
+3.000000
+2.000000
+1.000000
+0.000000
+9.000000
+8.000000
+7.000000
+6.000000
+5.000000
+4.000000
+3.000000
+2.000000
+1.000000
+==8900== 
+==8900== HEAP SUMMARY:
+==8900==     in use at exit: 160 bytes in 1 blocks
+==8900==   total heap usage: 4 allocs, 3 frees, 2,288 bytes allocated
+==8900== 
+==8900== LEAK SUMMARY:
+==8900==    definitely lost: 160 bytes in 1 blocks
+==8900==    indirectly lost: 0 bytes in 0 blocks
+==8900==      possibly lost: 0 bytes in 0 blocks
+==8900==    still reachable: 0 bytes in 0 blocks
+==8900==         suppressed: 0 bytes in 0 blocks
+==8900== Rerun with --leak-check=full to see details of leaked memory
+==8900== 
+==8900== For counts of detected and suppressed errors, rerun with: -v
+==8900== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+$ valgrind  ./list
+==7722== Memcheck, a memory error detector
+==7722== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==7722== Using Valgrind-3.14.0 and LibVEX; rerun with -h for copyright info
+==7722== Command: ./list
+==7722== 
+1 2 3 4 5 6 7 8 9 0 1 2 3 4
+==== eredmeny ====
+4.000000
+3.000000
+2.000000
+1.000000
+0.000000
+9.000000
+8.000000
+7.000000
+6.000000
+5.000000
+4.000000
+3.000000
+2.000000
+1.000000
+==7722== 
+==7722== HEAP SUMMARY:
+==7722==     in use at exit: 224 bytes in 14 blocks
+==7722==   total heap usage: 16 allocs, 2 frees, 2,272 bytes allocated
+==7722== 
+==7722== LEAK SUMMARY:
+==7722==    definitely lost: 16 bytes in 1 blocks
+==7722==    indirectly lost: 208 bytes in 13 blocks
+==7722==      possibly lost: 0 bytes in 0 blocks
+==7722==    still reachable: 0 bytes in 0 blocks
+==7722==         suppressed: 0 bytes in 0 blocks
+==7722== Rerun with --leak-check=full to see details of leaked memory
+==7722== 
+==7722== For counts of detected and suppressed errors, rerun with: -v
+==7722== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Amikor egy program befejeződik, a teljes lefoglalt memóriája felszabadul és visszakerül az operációs rendszerhez. Ha azonban a mostani programunkat egy nagyobb és hosszabb ideig futó rendszer részeként szeretnénk felhasználni, lehetnének bajok a memória elszivárgásból.
+
+Javítsuk ki a programjainkat: egészítsük ki a főprogram végén a memória felszabadításával. A realloc()-os programunk végén egyszerűen felszabadítjuk a buffert.
+
+int main()
+{
+  /* idáig változatlan a main() */
+  printf("==== eredmeny ====\n");	
+  print_reverse( stack, size );  /* elemek kiírása */
+
+  free( stack );  /* felszabadítjuk a memóriát */
+  return 0;
+}
+A listás megoldásnál egy kicsit többet kell dolgoznunk. Írunk egy függvényt, ami egyesével felszabadítja a listaelemeket (mindig a legelsőt).
+
+void free_list( struct elem *head)
+{
+  while ( head )
+  {
+    struct elem *first =  head;   /* az első elem */
+    head = head->next;     /* kifűzzük a listából */
+    free( first );                    /* töröljük */
+  }
+}
+int main()
+{
+  /* idáig változatlan a main() */
+  printf("==== eredmeny ====\n");	
+  print_reverse( stack, size );  /* elemek kiírása */
+
+  free_list( stack );   /* felszámoljuk a memóriát */
+  return 0;
+}
+További példa: Alakzatok
+A felhasznált “alakzat” típusokat az (Összetett adatszerkezetek előadáson tárgyaltuk részletesen.
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct square { int centerX; int centerY; int side; };
+struct rectangle { int centerX; int centerY;
+                   int lenA; int lenB; };
+struct circle { int centerX; int centerY; int radius; };
+
+typedef struct square    square_t;
+typedef struct rectangle rectangle_t;
+typedef struct circle    circle_t;
+
+enum shape_tag_t { square_tag, rectangle_tag, circle_tag };
+
+typedef struct shape /* a shape on canvas */
+{
+  int               id;
+  enum shape_tag_t tag;
+  union shapeKind
+  {
+    square_t    s;
+    rectangle_t r;
+    circle_t    c;
+  }   u;
+} shape_t;
+
+typedef struct elem  /* one node in object list */
+{
+  shape_t     *shp;
+  struct elem *next;
+} elem_t;
+
+typedef struct canvas  /* the canvas for shapes */
+{
+  int     count;
+  elem_t *first;
+} canvas_t;
+
+int genId()
+{
+  static int i = 0;
+  return i++;
+}
+
+shape_t *createSquare( int x, int y, int side)
+{
+  shape_t *sp = (shape_t *)malloc(sizeof(shape_t));
+  if ( NULL == sp )
+    return NULL;
+  sp->id        = genId();
+  sp->tag       = square_tag;
+  sp->u.s.centerX = x; 
+  sp->u.s.centerY = y; 
+  sp->u.s.side    = side;
+  return sp; 
+}
+
+shape_t *createRectangle( int x, int y, int a, int b)
+{
+  shape_t *sp = (shape_t *)malloc(sizeof(shape_t));
+  if ( NULL == sp )
+    return NULL;
+  sp->id        = genId();
+  sp->tag       = rectangle_tag;
+  sp->u.r.centerX = x; 
+  sp->u.r.centerY = y; 
+  sp->u.r.lenA    = a;
+  sp->u.r.lenB    = b;
+  return sp; 
+}
+
+shape_t *createCircle( int x, int y, int r)
+{
+  shape_t *sp = (shape_t *)malloc(sizeof(shape_t));
+  if ( NULL == sp )
+    return NULL;
+  sp->id        = genId();
+  sp->tag       = circle_tag;
+  sp->u.c.centerX = x; 
+  sp->u.c.centerY = y; 
+  sp->u.c.radius  = r;
+  return sp; 
+}
+
+char *sShapeKind(enum shape_tag_t tg)
+{
+  switch( tg )
+  {
+  case    square_tag: return "square";
+  case rectangle_tag: return "rectangle"; 
+  case    circle_tag: return "circle";
+  default           : return "unknown";
+  }
+}
+ 
+void printShape(shape_t *sp)
+{
+  printf("id = %d, type = %s\n", sp->id, sShapeKind(sp->tag));
+}
+
+void initCanvas( canvas_t *cp)
+{
+  cp->count = 0;
+  cp->first = NULL;
+}
+
+void addCanvas( canvas_t *cp, shape_t *sp)
+{
+  elem_t *newElem = (elem_t *)malloc(sizeof(elem_t));
+  newElem->shp = sp; 
+  newElem->next = NULL;
+  if ( 0 == cp->count )
+    cp->first = newElem; 
+  else
+  {
+    elem_t *p = cp->first;
+    while ( NULL != p->next )
+      p = p->next;
+    p->next = newElem;
+  }
+  ++cp->count;
+}
+void deleteCanvas( canvas_t *cp)
+{
+  elem_t *ep = cp->first;
+  while ( NULL != ep )
+  {
+    elem_t *ptrToDel = ep;
+    ep = ep->next;
+
+    free( ptrToDel->shp);
+    free( ptrToDel); 
+  }
+}
+
+void printCanvas( canvas_t *cp)
+{
+  elem_t *ep = cp->first;
+  printf( "num of shapes = %d\n", cp->count);
+  
+  while ( NULL != ep )
+  {
+    printShape(ep->shp);
+    ep = ep->next;
+  }
+}
+
+int main()
+{
+  canvas_t cvs;
+
+  initCanvas( &cvs);
+
+  addCanvas( &cvs, createCircle( 10, 10, 20));
+  addCanvas( &cvs, createRectangle( 14, 20, 10, 30)); 
+
+  printCanvas( &cvs);
+  deleteCanvas( &cvs);
+
+  return 0;
+}
+$ ./a.out 
+num of shapes = 2
+id = 0, type = circle
+id = 1, type = rectangle
+A program futását ellenőrizhetjük valamely dinamikus analízis eszközzel, pl. a google memory sanitizer-rel vagy a valgrind-al.
+
+valgrind ./a.out
+==30117== Memcheck, a memory error detector
+==30117== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
+==30117== Using Valgrind-3.10.1 and LibVEX; rerun with -h for copyright info
+==30117== Command: ./a.out
+==30117== 
+num of shapes = 2
+id = 0, type = circle
+id = 1, type = rectangle
+==30117== 
+==30117== HEAP SUMMARY:
+==30117==     in use at exit: 0 bytes in 0 blocks
+==30117==   total heap usage: 4 allocs, 4 frees, 80 bytes allocated
+==30117== 
+==30117== All heap blocks were freed -- no leaks are possible
+==30117== 
+==30117== For counts of detected and suppressed errors, rerun with: -v
+==30117== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

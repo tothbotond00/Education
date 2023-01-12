@@ -1,0 +1,1 @@
+﻿Get-ChildItem -LiteralPath .\ -File

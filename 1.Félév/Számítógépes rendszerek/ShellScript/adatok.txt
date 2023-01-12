@@ -1,0 +1,23 @@
+Név/Tantárgy Irodalom Nyelvtan Angol Német Matematika Fizika Kémia Földrajz Biológia Ének Rajz
+Alapos Anita 5 4 5 5 1 5 3 1 5 1 3
+Béna Béla 1 1 1 1 1 2 1 4 5 1 1
+Cégvezető Cecil 3 2 1 2 2 2 4 1 2 4 2
+Dundi Dénes 5 1 1 2 5 3 3 5 5 5 5
+Eszes Emő 5 5 5 5 5 5 5 5 5 5 5
+Fehér Fatima 2 4 3 2 4 4 2 2 2 2 3
+Gátlástalan Gábor 3 5 5 3 3 3 4 3 1 5 1
+Habogó Hugó 5 3 1 5 3 4 5 3 5 1 1
+Irigy Imre 4 3 4 5 5 2 5 5 1 4 4
+Játékos Jácint 1 2 3 1 3 4 4 3 2 1 1
+Kedves Kamilla 3 4 3 1 5 5 5 3 1 4 1
+Lelkes Lajos 4 3 5 5 3 4 1 1 2 5 4
+Mulatós Marcell 4 2 4 2 5 2 5 5 1 4 5
+Nedves Nelli 3 4 4 3 1 1 2 4 1 5 2
+Okoskodó Ottó 5 2 1 2 1 2 3 2 4 5 5
+Pelenkás Péter 1 5 5 4 1 1 2 2 3 2 2
+Róka Rudi 3 5 2 2 3 5 2 3 1 5 5
+Sunnyogó Sanyi 1 1 2 1 1 4 5 4 5 1 4
+Türelmetlen Teréz 5 2 1 5 3 5 1 2 1 3 1
+Ugató Ubul 4 1 3 4 3 1 1 1 5 2 5
+Véres Vera 1 2 4 5 1 5 2 3 2 1 2
+Zavarodott Zalán 2 4 2 5 2 4 3 4 5 3 3

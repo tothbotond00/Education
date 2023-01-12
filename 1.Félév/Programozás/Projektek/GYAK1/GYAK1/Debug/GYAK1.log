@@ -1,0 +1,10 @@
+﻿  GYAK1.cpp
+C:\Users\LENOVO\Desktop\Tananyag\Programozás\Projektek\GYAK1\GYAK1\GYAK1.cpp(11,5): error C2065: 'cout': undeclared identifier
+C:\Users\LENOVO\Desktop\Tananyag\Programozás\Projektek\GYAK1\GYAK1\GYAK1.cpp(12,5): error C2065: 'cout': undeclared identifier
+C:\Users\LENOVO\Desktop\Tananyag\Programozás\Projektek\GYAK1\GYAK1\GYAK1.cpp(12,20): error C2065: 'cin': undeclared identifier
+C:\Users\LENOVO\Desktop\Tananyag\Programozás\Projektek\GYAK1\GYAK1\GYAK1.cpp(13,5): error C2065: 'cout': undeclared identifier
+C:\Users\LENOVO\Desktop\Tananyag\Programozás\Projektek\GYAK1\GYAK1\GYAK1.cpp(13,20): error C2065: 'cin': undeclared identifier
+C:\Users\LENOVO\Desktop\Tananyag\Programozás\Projektek\GYAK1\GYAK1\GYAK1.cpp(17,5): error C2065: 'cout': undeclared identifier
+C:\Users\LENOVO\Desktop\Tananyag\Programozás\Projektek\GYAK1\GYAK1\GYAK1.cpp(17,35): error C2065: 'endl': undeclared identifier
+C:\Users\LENOVO\Desktop\Tananyag\Programozás\Projektek\GYAK1\GYAK1\GYAK1.cpp(18,5): error C2065: 'cout': undeclared identifier
+C:\Users\LENOVO\Desktop\Tananyag\Programozás\Projektek\GYAK1\GYAK1\GYAK1.cpp(18,35): error C2065: 'endl': undeclared identifier

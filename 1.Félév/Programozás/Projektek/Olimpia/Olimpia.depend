@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1476985621 source:c:\users\veanna\desktop\olimpia\main.cpp
+	<iostream>
+
+1544499287 source:c:\!data\progalap\2018_osz\gyakorlatok\gyak12\olimpia\main.cpp
+	<iostream>
+
+1544636228 source:c:\!data\progalap\2019_osz\gyakorlatok\gyak12\keret\olimpia\main.cpp
+	<iostream>
+	<sstream>
+

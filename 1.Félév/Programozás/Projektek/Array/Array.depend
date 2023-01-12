@@ -1,0 +1,18 @@
+# depslib dependency file v1.0
+1512438105 source:d:\anna_2016\progalap\2017_osz\gyakorlatok\gyak12\array\main.cpp
+	<iostream>
+	<time.h>
+	<stdlib.h>
+
+1512438552 source:c:\array\main.cpp
+	<iostream>
+	<time.h>
+	<stdlib.h>
+	<sstream>
+
+1543918976 source:d:\!data\progalap\2019_osz\gyakorlatok\gyak11\keret\array\main.cpp
+	<iostream>
+	<time.h>
+	<stdlib.h>
+	<sstream>
+

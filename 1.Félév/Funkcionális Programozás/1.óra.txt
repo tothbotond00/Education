@@ -1,0 +1,31 @@
+-- Bozó István
+-- bozo_i@inf.elte.hu
+-- D 2.518
+
+{-
+lambda.inf.elte.hu
+bead.inf.elte.hu
+Kezdés: 10:15 - 11:45
+Haskell
+-}
+
+inc x = x + 1
+-- inc 6 ~> 6 + 1 ~> 7
+square x = x * x
+-- square 6 ~> 6 * 6 ~> 36
+squareInc x = square (inc x) -- f (g (x))
+
+{-
+mohó kiértékelés
+squareInc 5 ~> square (inc 5) ~>
+square (5+1) ~> square 6 ~> 6 * 6 ~> 36
+
+lusta kiértékelés
+squareInc 5 ~> square (inc 5) ~>
+(inc 5) * (inc 5) ~> (5+1) * (inc 5) ~>
+6 * (inc 5) ~> ... ~> 6 * 6 ~> 36
+x := x + 1 nincs!!
+-}
+
+
+--mult x y = x * y

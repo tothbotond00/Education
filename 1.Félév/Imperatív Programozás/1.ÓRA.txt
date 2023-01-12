@@ -1,0 +1,209 @@
+Szintaxis (syntax)
+A programozási nyelv helyes nyelvtana. Például: mik a helyes kulcsszavak, hogyan nézhet ki egy változó neve, hova tegyünk pontosvesszőt, stb.
+
+A PL/I programozási nyelv pl. legenerálta a hiányzó end utasításokat. Az Algol68 nyelvben az üres utasítás csak a skip utasítással valósult meg. A Pascal-ban else előtt sohasem szabad ;-nek szerepelnie, a C-ben ez előfordulhat. A Go-ban kötelező kiírni a nyitó-csukó kapcsoszárójeleket a vezérlési szerkezetek esetén, így nem következhet be az ún. goto-fail. A legtöbb programozási nyelvben a whitespace-ek közönbösek, de pl. Python-ban a tabulálás (is) azonosítja a programszerkezetet. Az APL-ben mind a 256 karakter egy-egy érvényes operátor.
+
+Szemantika (semantics)
+A szintaktikailag helyes programok jelentése. Például: milyen típusrendszere van a nyelvnek, milyen konverziók történnek, melyik függvényt hívjuk meg egy híváskor, stb.
+
+A C++-ban az int és bool típusok között automatkus oda-vissza konverzió van. Más nyelvekben szigorúbb a típusosság. Egyes objektum-orientált nyelvekben a meghívott virtuális függvény kiválasztása az objektum dinamikus típusától függ (dynamic dispatch). Nagyon ritkán ez több objektumtól is függhet (multiple dispatch).
+
+A szemantikát különböző nyelvekben eltérően definiálják. Pl. a Haskell szemantikáját matematikai formulákkal (denotational semantics) adják meg. Az Algol68 esetében logikai kifejezéseket használtak (operational semantics), de van példa axiomatikus és szöveges megadásra is.
+
+Egyes esetekben a szemantika negyon bonyolult tud lenni. Mit jelent C++-ban a protected abstract virtual base pure virtual private destructor és mikor volt rá utoljára szükséged? (Tom Cargill, 2009). (Egyébként itt egy példa, hogy mit jelent).
+
+Pragmatika (pragmatics)
+A nyelv konstrukcióinak haszálata. Pl: hogyan használjuk az egyes nyelvi konstrukciókat a céljaink eléréséért, hogyan alakult a története, milyen fejlődési irányok léteznek.
+
+A legtöbb programozási nyelvben ugyanazt a feladatot sokféleképpen is elvégezhetjük, pl. ciklust while, for, range-for vagy do-while segítségével is. Melyik az adott esetben a legjobb konstrukció? Melyik a legolvashatóbb, legkarbantarthatóbb, leghatékonyabb? Melyik a legkönnyebben debuggálhatóbb?
+
+Az informatika fejlődik, folyamatosan újabb és újabb konstrukciók jelennek meg. De ugyanígy fejlődnek az egyes programozási nyelvek is! A C 1971-es, a C++ 1980-tól fejlődik. A C malloc/free hívását C++-ban felváltotta a new/delete, ami szükség esetén már végrehajtotta a konstruktor-t és destruktor-t is. Majd először külső könyvtári alapon, C++11-től a nyelvi szabványban is megjelentek a smart pointer osztályok, akik levették a teher nagy részét a programozóról.
+
+A Python programozási nyelv gyökeres változásokon esett át a 2-es és a 3-as verzió között. Vannak programok, amik hibásak, vagy (még rosszabb) nem hibásak, de másképpen működnek az új verzióban.
+
+Programozási paradigmák
+Ahhoz, hogy bonyolult informatikai feladatokat megoldjuk, azokat kisebb részekre bontjuk, amíg elég kicsik ahhoz, hogy vagy létezik már megoldás rá, vagy hatékonyan megoldjuk magunk. Az, hogy milyen elvek szerint végezzük ezt a felbontást, azt a programozási paradigma határozza meg.
+
+Imperatív programozás
+Akkor beszélünk imperatív programokról, amikor explicit mi vezéreljük, hogy a program hogyan változtatja meg az állapotát.
+
+Procedurális programozás
+A feladatot például felbonthatjuk az elvégzendő feladatok (algoritmusok) szerint. Ezeket alprogramokként (függvények, eljárások) valósítjuk meg, köztük pl. paraméterátadással, függvény visszatérő értékkel kommunikálunk. Ez a procedurális programozás. Ebben az esetben probléma lehet, hogy háttérbe szorulnak az adatszerkezetek. Pl. FORTRAN, Algol60, C, Go nyelvek.
+
+Kezdetben döntően procedurális nyelvek léteztek, hiszen az assembly programok, a FORTRAN, COBOL, Algol60 és társai ilyen elvek mentén épültek fel, bár a Lisp 1957-ben már funkcionális nyelv volt.
+
+Objektumelvű programozás
+Amikor a valós világ objektumait próbáljuk modellezni, akkor összegyűjtjük a
+hasonló tulajdonságúakat, elhanyagoljuk a feladat szempontjából kevéssé fontos különbségeket és absztrakció segítségével egymással egy szűk interfészen kommunikáló osztályokat alkotunk belőlük. Itt az osztályok adatszerkezetén és a rajtuk értelmezett műveleteken van a hangsúly. Ez az objetkumelvű (object-oriented) programozás. Pl. Simula67, Smalltalk, Eiffel, Java, C#.
+
+Deklaratív programozás
+Más esetekben egyzserűen csak deklarálni akarjuk a program elvárt működését, nem akarjuk explicit meghatározni annak mikéntjét. Ez a deklaratív programozás, amit szintén kategorizálhatunk:
+
+Funkcionális programozás
+A kívánt eredmény egymást hívó függvényekként van definiálva. Ezek a függvények mellékhatás-mentesek, nincsen értékadás, minden memóriaterület egyszer kap csak értéket, és később ez az érték nem változik (referencial transparency). Az ilyen programok helyességét könnyebb belátni. Pl. Lisp, ML, Haskell, Clean.
+
+Logikai programozás
+A rendszer tényeit és következtetési szabályait adjuk meg. Pl. Prolog.
+
+Multiparadigma programozás
+Természetesen a fentiek némiképp szubjektív kategóriák, ezért más paradigmákról is szoktak beszélni, pl. matematikai programozás, generikus (generic) programozás, szándékalapú (intentional) programozás, stb.
+
+Másrészről az egyes programozási nyelvek is több paradigmára épülnek. Egy objektumelvű programban is procedurálisan implementáljuk a metódusokat. A C++ programozási nyelvben hozhatunk létre osztályokat, de ez nem kötelező, mint pl. a Java-ban (az utóbbira azt mondjuk: tisztán objektumelvű). Emellett alkalmazhatunk funkcionális elemeket (pl. lambda objektumokat) és speciális template konstrukciókat (generikus programozás). A C++ multiparadigma programozási nyelv.
+
+A C programozási nyelv
+A procedurális programozás alapjait a C nyelv segítségével fogjuk bemutatni. Miért?
+
+A nyelvek népszerűsége a TIOBE index szerint 2018 szeptemberében:
+
+Sep 2018	Sep 2017	Change	Programming Language	Ratings	Change
+1	1	 	Java	17.436%	+4.75%
+2	2	 	C	15.447%	+8.06%
+3	5	^	Python	7.653%	+4.67%
+4	3	v	C++	7.394%	+1.83%
+5	8	^	Visual Basic .NET	5.308%	+3.33%
+6	4	v	C#	3.295%	-1.48%
+7	6	v	PHP	2.775%	+0.57%
+8	7	v	JavaScript	2.131%	+0.11%
+9	-	^	SQL	2.062%	+2.06%
+10	18	^	Objective-C	1.509%	+0.00%
+A C nyelv és története
+A C egy általános célú programozási nyelv, melyet Dennis Ritchie fejlesztett ki Ken Thompson segítségével 1969 és 1973 között a UNIX rendszerekre AT&T Bell Labs-nál. Idővel jóformán minden operációs rendszerre készítettek C fordítóprogramot, és a legnépszerűbb programozási nyelvek egyikévé vált. Rendszerprogramozáshoz és felhasználói programok készítéséhez egyaránt jól használható. Az oktatásban és a számítógép-tudományban is jelentős szerepe van.
+
+A C minden idők legszélesebb körben használt programozási nyelve, és a C fordítók elérhetők a ma elérhető számítógép-architektúrák és operációs rendszerek többségére. (from wikipedia).
+
+A C helye a programozási nyelvek között:
+
+                                      ----> Objective-C
+                                     |
+        Fortran --------------       |            ---> D
+                              |      |           |
+Assembly ----> BCPL ----> B ----> C -----> C++ ----> Java
+                              |      |           |
+       Algol60 ---------------|      |            ---> C#
+                |             |      |
+                 --> Algol68--        -------------------> Go
+Programozási nyelvek hatása
+
+A C idővonal
+1969 Ken Thompson kifejleszti a B nyelvet (egy egyszerűsített BCPL)
+1969- Ken Thompson, Dennis Ritchie és mások elkezdenek dolgozni a UNIX-on
+1972 Dennis Ritchie kifejleszti a C nyelvet
+1972-73 UNIX kernel-t újraírják C-ben
+1977 Johnson Portable C Compiler-e
+1978 Brian Kernighan és Dennis Ritchie: The C Programming Language könyve
+1988 Brian Kernighan és Dennis Ritchie: The C Programming Language 2nd ed, az ANSI C leírása
+1989 ANSI C standard (C90) (32 kulcsszó)
+1999 ANSI C99 standard (+5 kulcsszó)
+2011 ANSI C11 standard (+7 kulcsszó)
+Mi döntően az 1989-es ANSI C-t fogjuk használni.
+
+Fordítás, szerkesztés, végrehajtás
+Fordítás vagy intrepretálás
+A programozási nyelvek egy jó részét a fordítóprogram (több lépésben) ún. tárgykóddá (object code) fordítja. A tárgykód már az adott hardvernek megfelelő gépi kódú utasításokat tartalmazza, optimalizált, de még tartalmaz(hat) fel nem oldott hivatkozásokat, pl. globális változókra vagy meghívott, de máshol implementált függvényekre. A tárgykód már nyelvfüggetlen formátum, akár különböző nyelvekből készült tágykódok (C, Pascal, Fortran) is együttműködhetnek.
+
+A hivatkozásokat a szerkesztő (linker) oldja fel, más tárgykódokból, vagy könyvtárakból. A könyvtár (library) lényegében szerkesztésre optimalizált tárgykódok halmaza (tárgykódból is készítjük el). Ilyen szerkeztéskor alkalmazott könyvtár a nyelv szabványos könyvtára (standard library).
+
+A szerkesztés történhet statikusan, amikor a végrehajtható (executable) állományba belekerül a hivatkozott kód. A másik mód, a dinamikus szerkesztés, ekkor a végrehajtandó állományba csak egy kis kódrészlet kerül be, és a hivatkozott kód a program futási idejében kerül feloldásra.
+
+Unix rendszerekben a tárgykódok konvencionálisan .o kiterjesztésűek (Windows-on .obj), a statikus könyvtárak .a (archive) (Windows-on .LIB), a dinamikus könyvtárak .so (shared object) (Windows-on .DLL) kiterjesztésűek.
+
+  előfordítás      fordítás       szerkesztés    végrehajtás
+(preprocessing)   (compiling)       (linking)    (executing)
+
+header      source      object       library
+
+  a.h
+  b.h   ->    b.c    ->   b.o  ---------|
+                                        ----->    a.out (b.exe)
+  e.h                                   |            |
+  f.h   ->    d.c    ->   d.o  ---------|            |futási idő
+                                        |            |
+  g.h   ->    g.c    ->   g.o           |            |
+  h.h   ->    h.c    ->   h.o    ->   h.a  (h.lib)   |
+                                       archive       |
+  i.h   ->    i.c    ->   i.o                        |
+  j.h   ->    j.c    ->   j.o    ->   j.so (j.dll) --|
+                                      shared object
+Más programozási nyelveket interpreter hajt végre. Az interpreter egy önálló program, ami olvassa a végrehajtandó program forrását és lépésenként végrehajtja. Az ilyen nyelvek sokkal rugalmasabbak (akár önmódosíthatóak) is lehetnek. Gyakran az interpretált nyelvek elő-ellenőrzést vagy előfordítást is alkalmaznak.
+
+A Java nyelv közbülső kódra (Java bytecode) fordít, amit a Java Virtuális Gép (JVM, Java Virtual Machine) lényegében intrepreterként hajt végre. Valójában számos hibrid megoldást alkalmaznak, pl. Just In Time compiler-t (JIT), ami a sűrűn végrehajtott bájtkódot gépi kódra fordítja, így azokat sokkal gyorsabban tudja végrehajtani.
+
+Az első C program: hello world
+$ cat hello.c
+#include <stdio.h>
+int main()
+{
+  printf( "hello world\n" );
+  return 0;   
+}
+# compile + link
+$ gcc  hello.c
+
+# execute
+$ ./a.out
+
+# compile + link + set warnings on
+$ gcc -ansi -pedantic -Wall -W hello.c
+
+# c11 mode
+$ gcc -std=c11 -ansi -pedantic -Wall -W hello.c
+
+# set output name to a.exe
+$ gcc -std=c11 -ansi -pedantic -Wall -W hello.c -o a.exe
+Mindezt külön lépésekben is elvégezhetjük:
+
+# compile only
+$ gcc -c  hello.c
+$ ls
+hello.o
+
+# will call the linker 
+$ gcc hello.o
+
+# calls the compiler for all sources then calls the linker
+$ gcc  a.c  b.c  d.o  e.a  f.so
+Fordítási hibák, figyelmeztetések (warning-ok)
+Ha szinaktikus hibát vétünk, a fordító hibaüzenetet ad, nem készül el a tárgykód, a linkelési lépésre nem kerül sor.
+
+/*
+ *  BAD VERSION !!!
+ *  Missing semicolon
+ */
+#include <stdio.h>
+int main()
+{
+  printf("hello world\n") // missing ;
+  return 0;
+}
+$ gcc -ansi -pedantic -W -Wall m.c 
+m.c: In function ‘main’:
+m.c:6:28: error: expected expression before ‘/’ token
+   printf("hello world\n") // missing ;
+                            ^
+Ha hibát vétünk, de a fordító még képes a forráskódot lefordítani (de elég gyanús az eredmény), a fordító figyelmeztetést (warning-ot) ad:
+
+/*
+ *  BAD VERSION !!!
+ *  Missing header
+ */
+// #include <stdio.h>
+int main()
+{
+  printf("hello world\n");
+  return 0;
+}
+$ gcc -ansi -pedantic -W -Wall -std=c11 hello2.c -c
+hello2.c: In function ‘main’:
+hello2.c:6:3: warning: implicit declaration of function ‘printf’ [-Wimplicit-function-declaration]
+   printf("hello world\n");
+   ^
+hello2.c:6:3: warning: incompatible implicit declaration of built-in function ‘printf’
+A figyelmeztetések komoly dolgok a C-ben, úgy kell kezelnünk őket, mint a fordító által adott szintaktikus hibákat. Csak nagyon kivételes esetekben (és csak amikor teljesen biztosak vagyunk magunkban) szabad őket figyelmen kívül hagyni. A helyes szokás warning-free kódot írni.
+
+Előfordulhat hiba a szerkesztési fázisban is. Ha pl. egy olyan függvényt próbálunk meghívni, amit egyetlen összeszerkesztendő állományban sincsen, vagy éppenséggel egynél többször szerepel azokban, szerkesztési hibát kapunk.
+
+Ajánlott feladatok:
+Hozzon létre egy programot, ami kiírja a nevét. Fordítsa le, szerkessze, futtassa.
+
+Vágja ketté az előző programot két forrásfájlra. Az egyik visszaadja a nevét, a másik kiírja. Tipp: a nevet visszaadó függvény szignatúrája legyen
+char *my_name(void). A printf-ben használja a kiíráshoz a %s formátumot.

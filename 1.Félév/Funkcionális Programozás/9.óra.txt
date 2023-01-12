@@ -1,0 +1,86 @@
+lessT :: Integral a => a -> [a] -> [a]
+lessT e l = filter (<e) l
+
+--lessT3 [212,23,12] -> filter (<3) [212,23,12]
+{-
+lessT3 []     = []
+lessT3 (x:xs)
+  | x < 3     = x : lessT3 xs
+  | otherwise = lessT3 xs
+-}
+
+gt3 :: Integral a => [a] -> [a]
+gt3 []     = []
+gt3 (x:xs)
+  | x > 3     = x : gt3 xs
+  | otherwise = gt3 xs
+
+filter' :: (a -> Bool) -> [a] -> [a]
+filter' p [] = []
+filter' p (x:xs)
+  | p x       = x : filter' p xs
+  | otherwise = filter' p xs
+
+{-
+filter'' :: (a -> Bool) -> [a] -> [a]
+filter'' p l = [ e | e <- l, p e]
+-}
+
+-- lambda kif., névtelen függv.
+-- \ x -> x + 1
+-- \ x -> even x
+-- (+1)    \ x -> x + 1
+-- \ x -> even x && x > 3
+
+--filter (\x -> mod 3 x) [1..10] -- hibás
+
+applyTwice :: a -> (a -> a) -> a
+applyTwice e f = f (f e)
+
+f :: a -> (a -> b) -> b
+f e g = g e
+-- applyTwice 4 (+1) 
+
+-- [1,2,3] -> 1:2:3:[]
+
+map' :: (a -> b) -> [a] -> [b]
+map' f []     = []
+map' f (x:xs) = f x : map' f xs
+
+-- map' f l = [ f e | e <- l]
+
+-- map' (+1) ([3,2,4])
+-- (3+1) : map' (+1) (2:[4])
+--         (2+1) : map' (+1) (4:[])
+--                 (4+1) : map' (+1) []
+--                         []
+
+-- Rossz!!!
+-- fact :: Integer -> Integer
+-- fact 0 = 1
+-- fact n = n * fact n-1
+-- fact 5 -> 5 * fact 5 - 1
+--               5 * fact 5 - 1
+
+sum' :: Num a => [a] -> a
+sum' l = foldR (+) 0 l
+--sum' []     = 0
+--sum' (x:xs) = x + sum' xs
+
+-- sum' [1,2,3]
+-- 1 + sum' [2,3]
+-- 1 + (2 + sum' [3])
+-- 1 + (2 + (3  + sum' []))
+-- 1 + (2 + (3  + 0))
+
+prod :: Num a => [a] -> a
+prod l = foldR (*) 1 l
+--prod []     = 1
+--prod (x:xs) = x * prod xs
+
+foldR :: (a -> b -> b) -> b -> [a] -> b
+foldR f e []     = e
+foldR f e (x:xs) = x `f` foldR f e xs
+
+lengtH :: [a] -> Int
+lengtH l = foldR (\ _ y -> y + 1) 0 l

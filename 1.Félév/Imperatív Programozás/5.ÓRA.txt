@@ -1,0 +1,318 @@
+Memóriakezelés, tömbök, pointerek
+Az imperatív programozási nyelvekben a programok állapotát módosítjuk utasításainkkal. A program állapota a számítógép memóriájában tárolódik.
+
+Memória
+A mai számítógépek memóriája hierarchikus szerkezetű. Az egyes processzorok saját gyorsítótárral (cache) rendelkeznek (több szinten is). A modern architektúrák a memória írásakor/olvasásakor felhasználják a gyorsítótárat.
+
+cpu-memory
+
+A központi memóriába történő írás/olvasás relatív lassú művelet. Ha a processornak mindig be kéne várni az írás/olvasás eredményét, akkor az értékes processoridő nagyrésze várakozással telne el. A gyorsítótár segítségével a gyakran vagy éppen nemrég használt adatok “kéznél vannak”, így azokkal sokkal gyorsabban lehet műveleteket végezni.
+
+Latency Comparison Numbers (~2012)
+----------------------------------
+L1 cache reference                         0.5 ns
+Branch mispredict                            5 ns
+L2 cache reference                           7 ns                      
+Mutex lock/unlock                           25 ns
+Main memory reference                      100 ns                      
+Compress 1K bytes with Zippy             3,000 ns       3 us
+Send 1K bytes over 1 Gbps network       10,000 ns      10 us
+Read 4K randomly from SSD*             150,000 ns     150 us          
+Read 1 MB sequentially from memory     250,000 ns     250 us
+Round trip within same datacenter      500,000 ns     500 us
+Read 1 MB sequentially from SSD*     1,000,000 ns   1,000 us   1 ms  
+Disk seek                           10,000,000 ns  10,000 us  10 ms  
+Read 1 MB sequentially from disk    20,000,000 ns  20,000 us  20 ms  
+Send packet CA->Netherlands->CA    150,000,000 ns 150,000 us 150 ms
+A legtöbb operációs rendszer elfedi előlünk a számítógép belső memóriaszerkezetét és egy egyszerűsített modellt ad a programozó számára. Leggyakrabban a memóriát egy összefüggő bájttömbként képzelhetjük el.
+
+Amikor egy program betöltődik a memóriába (az operációs rendszer elkezdi futtatni), akkor az lefoglal bizonyos területet a memóriából. Ez lesz a program címtere (address space). Az operációs rendszer, ha többfelhasználós, többtaszkos, akkor figyel arra, hogy a program ne érje el más programok címterét. Ha egy program ilyet tenne, akkor az operációs rendszer közbeavatkozik és megszakítja a progam futását.
+
+A program futása során kérhet újabb memóriát az operációs rendszertől vagy vissza is adhat számára területet. A program befejeződésekor az operációs rendszer felszabadítja a teljes program által használt tárterületet.
+
+A C programok címtere általában a következőképpen néz ki:
+
+address space
+
+A kép alján levő részeket a programfájlból hozza létre az operációs rendszer, itt helyezkednek el a globális változók (inicializált vagy inicializálatlan értékekkel). A kép teteján a parancssori argumentumok, a végrehajtási verem (stack) és a szabad memória (heap) helyezkedik el.
+
+Amikor egy változót deklarálunk a programunkban általában úgy tekintünk rá, mint egy adatra, amelynek értéket adhatunk, módosíthatjuk, kiolvashatjuk az értékét. A fordító program a változókat egy kezdő memóriacímként kezeli, és a változó típusából tudja a hosszát ill. hogy milyen műveleteket lehet végezni rajta.
+
+void f()
+{
+  int  i = 1; /* egy int típusú változó, tartalma 1 */
+  int  j;     /* egy int változó, tartalma nem definiált */
+         
+  j = i;  /* sizeof(int) bájt másolása i címéről j címére */
+}
+A változók mérete a típusuktól függ: egy char típikusan 1 bájt, egy short gyakran 2 bájt, egy int mai architektúrákon 4 bájt, de a C nyelvben a méretek nincsen fixen rögzítve, csak a szükséges minimum méretek. Az adott platformon a méreteket a sizeof() operátorral tudjuk lekérdezni.
+
+Pointerek
+A mutató (pointer) egy olyan típus, amelyik egy változó címét (address) tárolja. A pointerek típusosak, azaz amikor létrehozok egy pointer változót, akkor meg kell mondanom, hogy milyen típusú változó címét akarom eltárolni benne, milyen típusra mutat a pointerem.
+
+void f()
+{
+  int    *ip;  /* egy int-re mutató pointer */
+  double *dp;  /* egy double-ra mutató pointer */
+  char   *cp;  /* egy char-ra mutató pointer */
+  void   *vp;  /* egy tetszőleges bájtra mutató pointer */       
+}
+A pointerek egy platformon általában azonos méretűek, pl. 32 bites architektúrákon 4 bájt, 64 biteseken 8 bájt. A pointereket úgy képzelhetjük el, hogy a tartalmuk egy memóriacím, a mutatott változó kezdőcíme. A gyakorlati implementáció ettől eltérhet (pl. intel 286-os sorozat).
+
+A pointerekkel kapcsolatban két alapvető operátort alkalmazhatunk.
+
+A cím (&) operátor. Egy változóra alkalmazva az adott változó tárcímét adja meg, azaz a rá mutató pointer értéket.
+
+Az indirekció (*) operátor. Egy pointerre alkalmazva a pointer által mutatott tárterületet jelenti. A *ptr kifejezéssel minden műveletet elvégezhetünk, amit a pointer által mutatott típussal elvégezhetünk.
+
+void f()
+{
+  int  i = 1; /* egy int típusú változó, tartalma 1 */
+  int  j;     /* egy int változó, tartalma nem definiált */
+         
+  int  *ip;  /* ip egy pointer int-re, inicializálatlan */ 
+  ip = &i; /* ip most az i változóra mutat */
+  j = *ip; /* sizeof(int) bájt másolása i címéről j címére*/
+}
+Egy példa pointereket alkamazó programra:
+
+pointers-gif
+
+NULL pointer
+A pointer értékek között van egy speciális érték, a null pointer, amit a NULL makróval fejezünk ki. A null pointer értéke egyetlen valós változó címének sem felel meg. A null pointer azt jelképezi, hogy a pointerünk most éppen sehova sem mutat.
+
+int t[] = { 1, 3, 5, ..... };
+
+int *find( int w)
+{
+
+  for ( int i = 0; i < sizeof(t)/sizeof(t[0]); ++i)
+  {
+    if ( w == t[i] )
+      return &t[i];
+  }
+  return NULL;
+}
+
+int main()
+{
+  int *ptr = find(11);
+  
+  if ( NULL == ptr )
+  {
+    printf( "not found\n");
+  }
+  else
+  {
+    printf( "found\n");
+    ++ *ptr;
+  }
+}
+Ha a pointer NULL értékű, akkor tilos az indirekciót alkalmazni rá. A fordítóprogram ritkán tud ilyen hibákat fordítási időben felfedezni, viszont futási időben futási hiba fog bekövetkezni, ami gyakran a program elszállását eredményezi.
+
+Műveletek pointerekkel
+Pointer változóknak értékül adhatunk ugyanolyan típusú pointer értékeket. Ez a gyakorlatban azt jelenti, hogy a két pointer most ugyanarra a tárterületre fog mutatni.
+
+Két pointer értéket össze lehet hasonlítani az egyenlőség (==) és a nem egyenlő (!=) operátorral, illetve egy pointer értéket a NULL pointerrel. Két pointer érték pont akkor egyenlő, ha a pointerek ugyanoda mutatnak. A NULL pointer érték csak saját magával lesz egyenlő.
+
+void f()
+{
+  int  i = 1; 
+  int  j = 2; 
+         
+  int  *ip = &i;  /* ip az i változóra mutat */ 
+  int  *jp = &j;  /* jp a  j változóra mutat */ 
+
+  if ( ip == jp )   { ... }  /* hamis */
+  if ( ip == NULL ) { ... }  /* hamis */
+  if ( jp == NULL ) { ... }  /* hamis */
+
+  ip = jp;    /* most ip is j-re mutat */
+  if ( ip == jp )   { ... }  /* igaz */
+}
+Abban, de csak abban az esetben, ha mindkét pointer ugyanannak a tömbnek az elemeire mutat, akkor szabad a kisebb, stb. relációs operátorokat is alkalmazni a pointerekre ( <, <=, >, >= ) és egy pointer akkor nagyobb a másiknál, ha a nagyobb indexű elemre mutat. A kisebb-nagyobb összehasonlítás tehát nem a memóriacímeket hasonlítjuk össze, hanem a tömb indexeket.
+
+Különböző tömbök esetében, vagy különböző típusú pointerek esetében nem használhatjuk a relációs műveleteket.
+
+Pointerre mutató pointerek
+Mivel a pointer típusú változók is valahol elheyezkednek a memóriában, ezeknek a tárterületeknek is van címe, ezért létezhetnek pointerre mutató pointerek is. A pointerre mutató pointerek is típusosak, azaz nem mindegy, hogy egy int-re vagy egy double-ra mutató pointerre mutatunk.
+
+Ezeknek van gyakorlati haszna a C-ben, például ha egy függvény egy paramérerül kapott pointert szeretne módosítani, akkor a pointer címét adjuk át.
+
+Tömbök
+A tömbök szigorúan összefüggő memóriaterületek, ahol ugyanannak a típusnak fix számú elemét foglaljuk le.
+
+int it[10];  /* 10 darab int egymás után */
+
+void f()
+{
+  double dt[5];  /* 5 darab double egymás után */
+
+  int it2[6] = {1,2,3,4,5,6};  /* tömb + inicializálás */
+  int it3[]  = {7,8,9};        /* 3 elemű tömb */
+  
+  char h1[] = { 'H','e','l','l','o','\0' };  /* 6 char */
+  char h2[] = "hello";  /* ugyanaz, mint h1[] esetében */
+
+  assert( sizeof(h1) == 6 );
+  assert( sizeof(h2) == 6 );
+}
+Egy tömböt is inicializálhatunk létrehozásakor. Ilyenkor figyelni kell arra, hogy az inicializációs lista annyi elemű legyen, mint a tömbünk. Ezt egyszerűen elérhetjük, ha az inicializált tömbnek nem adunk méretet: ilyenkor a fordítóprogram megszámolja az elemeket és akkora tömböt foglal le. A tömbökre is működik a sizeof operátor, a legfoglalt össz-bájtmennyiséget adja.
+
+A tömböket 0-tól indexeljük. Egy N elemű T tömb elemei: T[0], T[1], … T[N-1]. Szokásos technika a tömbök méretének kinyeréséhez a sizeof(t) / sizeof(t[0]) alkalmazása, ami típus- és méretfüggetlenül a tömb elemszámát adja meg.
+
+Tömbökkel nem végezhetünk műveleteket, csak tömbelemekkel. Így pl. nem létezik értékadás tömbök között. Ha ilyet szeretnénk csinálni, ciklussal át kell másolni az egyik tömb összes elemét a másikba.
+
+A tömböket az első elemükre mutató pointerként adjuk át függvényhíváskor.
+
+Többdimenziós tömbök
+A többdimenziós tömböket sorfolytonos módon ábrázoljuk:
+
+többdimenziós-tömb
+
+A többdimenziós tömböket úgy is felfoghatjuk, mint egy egydimenziós tömb, aminek minden eleme is egy-egy tömb. A többdiemnzió tömbök elemeinek elérése is ez utóbbi filozófiát követi:
+
+void f()
+{
+  int num[3][4] = {
+    {1, 2,  3,  4},
+    {5, 6,  7,  8},
+    {9, 10, 11, 12}
+  };
+
+  for ( int i = 0; i < 3; ++i )
+  {
+    for ( int j = 0; j < 4; ++j )
+    {
+      printf( "%d ", num[i][j]);
+    }
+    printf("\n");
+  }
+}
+Pointerek és tömbök kapcsolata
+A pointerek és a tömbök között logikai kapcsolat van a C nyelvben. Tekintsünk egy tömböt, aminek az első elemére ráállítunk egy pointert.
+
+void g(double *);
+
+void f()
+{
+  double t[] = { 1.0, 2.0, 3.0, 4.0};
+  double *dp;
+
+  dp = &t[0];  /* dp a t tömb első elemére mutat */
+  dp = t;      /* == dp = &t[0] */
+  g(t);        /*˙== g( &t[0] ) */
+  
+  assert ( *dp == t[0] );  /* dp t[0]-ra mutat */
+}
+Ha egy tömb nevét egy kifejezésben, pl. értékadásban használjuk, akkor a tömb neve automatikusan az első elemre mutató pointer értékké konvertálódik. Ez történik függvényhíváskor is, azaz, egy tömböt mindig az első elemére mutató pointerként adunk át függvényhíváskor!
+
+Pointer aritmetika
+Ha egy pointer egy tömb valamely elemére mutat, akkor szabad hozzáadni, vagy kivonni belőle egy egész számot (ha az így kapott pointer érték még mindig a tömb valamely elemére mutat).
+
+A művelet definíciója: ha a ptr pointer az i indexű kömbelemre mutatott, akkor ptr + k a tömb i + k indexű elemére fog mutatni (feltéve, ha van ilyen indexű elem).
+
+void g(double *);
+
+void f()
+{
+  double t[] = { 1.0, 2.0, 3.0, 4.0};
+  double *dp;
+
+  dp = t;      /* == dp = &t[0] */
+  
+  assert ( dp+1 == &t[1] );  /* dp+1 t[1]-re mutat */
+  assert ( dp+3 == &t[3] );  /* dp+3 t[3]-ra mutat */
+
+  assert (  dp+k  == &t[k] );  /* 0 <= k < 4 */
+  assert (*(dp+k) ==  t[k] );  /* 0 <= k < 4 */
+
+}
+Valójában a C nyelv a tömbök indexelését teljesen visszavezeti a pointer aritmetikára. Mivel a tömb neve maga is mutatóvá konvertálódik, a tömb nevére is alkalmazhatjuk a pointer aritmetikát:
+
+pointer aritmetika
+
+Ennek megfelelően, a pointerekre is alkalmazhatjuk a tömb operátort. Valójában, akár tömb névre, akár pointerre alkalmazzuk az index operátort, ugyanaz történik: pointer aritmetika és utána indirekció.
+
+void g(double *);
+
+void f(int k)
+{
+  double t[] = { 1.0, 2.0, 3.0, 4.0};
+  double *dp;
+
+  dp = t;      /* == dp = &t[0] */
+  
+  assert ( t[k]  == *(t+k)  ); 
+  assert ( dp[k] == *(dp+k) ); 
+}
+Pointerből kivonás értelemszerűen valamely kisebb indexű elemre fog hivatkozni. Végül, lehetséges két azonos típusú, azonos tömb elemeire mutató pointer külömbségét képezni. Ez a pointerek által mutatott tömbindexek (előjeles) különbsége lesz.
+
+void g(double *);
+
+void f()
+{
+  double t[] = { 1.0, 2.0, 3.0, 4.0};
+  double *dp;
+  double *dq;
+
+  dp = t+1;      /* == dp = &t[1] */
+  dq = t+3;      /* == dq = &t[3] */
+
+  assert ( (dp + 2)  ==  dq );
+  assert ( (dp - dq) ==  -2 );  
+}
+Fontos tehát észrevenni, hogy a pointer aritmetika nem bájtokban, hanem a mutatott típus darabszmában számol. A fenti példában dp és dq szinte biztos, hogy nem 2 bájtnyira mutat egymástól, hanem __sizeof(double)*2 __ bájtra.
+
+Ezért is fontos, hogy a pointereinket a megfelelő típusra definiáljuk. A pointer aritmetika esetében a +1 az nem egy bájt, hanem egy egység, amire a pointerünk mutat.
+
+pointer aritmetika
+
+Fontos azt is megjegyezni, hogy a kisebb pointer nem feltétlenül a kisebb memóriacímre mutat, hiszen a tömbök ábrázolása implementációfüggő.
+
+A többdimenziós tömbökre is igaz a pointeraritmetika, de figyeljünk a típusokra: tömbök tömbjéről van szó.
+
+többdmenziós tömb pointer aritmetika
+
+Mint láthatjuk, a C nyelvben a tömbök és a pointerek között van egyfajta logikai kapcsolat:
+
+A tömbök nevei kifejezésekben az első elemre mutató pointerré konvertálódnak
+A tömbre mutató pointerekre akalmazhatunk pointer aritmetikát
+Az index operátort egyaránt alkalmazhatjuk a tömbnevere és pointerekre
+De ettől még a ponterek és a tömbök nem ekvivalensek!. A tömb több, azonos típusú elem számra lefoglalt folytons tárterület. A ponter egyetlen objektum, ami egy másik tárterület hvatkozását (címét) tartalmazza.
+
+Haladó feladat
+Az alábbi két forrásfájlból (a.c és b.c) álló program lefordul, összeszerkesztődik, de futási időben elszáll. Mi lehet a hiba?
+
+/* a.c */
+#include <stdio.h>
+
+int t[] = {1,2,3};
+
+void g( int *par);
+
+void f( int *par)
+{
+  printf("%d\n",par[1]);
+  printf("%d\n",t[1]);
+}
+int main()
+{
+ int *p = t;
+ printf("%d\n",t[1]);
+ printf("%d\n",p[1]);
+ f(t);
+ g(t);
+}
+
+
+/* b.c */
+#include <stdio.h>
+
+extern int *t;
+
+void g( int *par)
+{
+ printf("%d\n",par[1]);
+ printf("%d\n",t[1]); /* itt száll el a program */
+}

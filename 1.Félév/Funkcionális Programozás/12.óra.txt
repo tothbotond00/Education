@@ -1,0 +1,52 @@
+until'' :: (a -> Bool) -> (a -> a) -> (a -> a)
+until'' p f = head . filter p . iterate f
+
+--f e = e : f e
+
+iterate' :: (a -> a) -> a -> [a]
+iterate' f e = e : iterate' f (f e)
+
+--type String = [Char]
+
+type Year = Int
+type Month = Int
+type Day   = Int
+type Date  = (Year, Month, Day)
+
+-- 2020.12.3.
+printDate :: Date -> String
+printDate (y,m,d) = show y ++ "." ++ normalize m ++ "." ++ normalize d ++"." where
+  normalize :: Int -> String
+  normalize i
+    | i < 10    = '0':show i
+    | otherwise = show i
+
+type PredicateOnInt = (Int -> Bool)
+type PredicateOn a = (a -> Bool)
+
+--data Bool = False | True
+
+data Week = Mon | Tue | Wed | Thu | Fri | Sat | Sun
+  deriving (Eq,Ord,Show, Enum)
+
+--data Ordering = LT | EQ | GT
+
+{-
+instance Eq Week where
+  (==) Mon Mon = True
+  (==) Mon Tue = True
+
+instance Show Week where
+  show Mon = "Hetfo"
+  show Tue = "Kedd"
+  show Wed = "Szerda"
+  show Thu = "Csutortok"
+  show Fri = "Pentek"
+  show Sat = "Szombat"
+  show Sun = "Vasarnap"
+-}
+-- isWorkDay :: PredicateOn Week
+isWorkDay :: Week -> Bool
+isWorkDay Sat = False
+isWorkDay Sun = False
+isWorkDay _   = True

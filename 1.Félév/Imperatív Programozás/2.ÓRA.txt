@@ -1,0 +1,189 @@
+Statikus vagy dinamikus típusrendszer
+A programozási nyelvek egy részénél a fordítóprogram már a fordítási időben minden egyes részkifejezésről el tudja dönteni, hogy az milyen típusú. Ezeket a nyelveket statikus típusrendszer-rel rendelkezőnek nevezzük. Ennek vannak előnyei, hiszen a nyelv alaposabb ellenőrzéseket tud végrehajtani és optimálisabb kódot is tud generálni. Ilyen nyelv a Fortran, Algol, C, Pascal, C++, Java, C#, Go.
+
+Más nyelveknél, legtöbbször az interpretált nyelveknél, egy változó idővel más típusú értékekre is hivatkozhat. Ilyenkor a fordító futási időben kezeli a típusinformációkat. Ezt dinamikus típusrendszer-nek nevezzük. Ilyen nyelv pl. a Python.
+
+Mindez nem jelenti, hogy a dinamikus típusrendszer nem ellenőrheti a típusok alkalmazását, sőt helytelen alkalmazás hibát okozhat. Azokat a nyelveket, ahol ilyen hibák előfordulnak erősen típusos-nak nevezzük, szemben a gyengén típusos nyelvekkel.
+
+A C erősen típusos statikus típusrendszerrel rendelkező nyelv, a Python erősen típusos dinamikus típusrendszerű.
+
+A második C program: Fahrenheit - Celsius konverzió
+(avagy A jó, a rossz és a csúf imdb)
+
+A feladat -100 és +400 közötti Fahrenheit értékek Celsius megfelelőinek kiírása 100-as lépésközzel.
+
+/*
+ *  BAD VERSION !!!
+ *  Convert Fahrenheit to Celsius
+ *  between -100F and +400F  by 100F  
+ */
+#include <stdio.h>
+int main()
+{
+  int fahr;
+
+  for ( fahr = -100; fahr <= 400; fahr += 100 )
+  {
+    printf("Fahr = %d,\tCels = %d\n",fahr,5/9*(fahr-32));
+  }
+  return 0;
+}
+$ gcc -ansi -pedantic -W -Wall -std=c11 fahrenheit.c -o fahrenheit
+
+$ ./fahrenheit
+Fahr = -100,	Cels = 0
+Fahr = 0,	Cels = 0
+Fahr = 100,	Cels = 0
+Fahr = 200,	Cels = 0
+Fahr = 300,	Cels = 0
+Fahr = 400,	Cels = 0
+A hiba oka, hogy a statikus típusrendszerben a fordító fordítási időben eldönti, hogy mi az 5/9 részkifejezés típusa. Mivel 5 és 9 típusa is int, ez lesz az eredmény típusa is. A konkrét számértékek közömbösek. Az így kapott egész osztás eredménye pedig 0.
+
+Mi más lehetne két egész szám hányadosa? Bizonyos programozási nyelvek más jelölést használnak az egész és a lebegőpontos osztás jelölésére. A Pascal pl. a div operátort használja egész, és a / operátort lebegőpontos eredmény létrehozásásra. A Python3-ban a / lebegőpontos eredményt ad (a Python2-ben még nem!). Viszont ezek a példák sem kivételek: a Pascal és Python3 / művelete mindig lebegőpontos eredményt ad, akkor is, ha matematikailag a hányados egész lenne, pl. 4/2.
+
+Próbáljuk ki 5/9 helyett az 5./9. kifejezést. (Valójában elég lenne 5./9 is, mert ha az egyik operátor lebegőpontos, akkor a C a másikat is azzá konvertálja).
+
+/*
+ *  BAD VERSION !!!
+ *  Convert Fahrenheit to Celsius
+ *  between -100F and +400F  by 100F  
+ */
+#include <stdio.h>
+int main()
+{
+  int fahr;
+
+  for ( fahr = -100; fahr <= 400; fahr += 100 )
+  {
+    printf("Fahr = %d,\tCels = %d\n",fahr,5./9.*(fahr-32));
+  }
+  return 0;
+}
+$ gcc -ansi -pedantic -W -Wall fahrenheit.c -o fahrenheit
+fahrenheit.c: In function ‘main’:
+fahrenheit.c:17:5: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘double’ [-Wformat=]
+     printf( "Fahr = %d,\tCels = %d\n", fahr, 5./9.*(fahr-32) );
+     ^
+
+$ ./fahrenheit 
+Fahr = -100,	Cels = 913552376
+Fahr = 0,	Cels = -722576928
+Fahr = 100,	Cels = -722576928
+Fahr = 200,	Cels = -722576928
+Fahr = 300,	Cels = -722576928
+Fahr = 400,	Cels = -722576928
+Még mindig hibás a program. Most a Celsius értéket helyesen számoltuk ki, a típusa double, de a kiíráskor egész számként próbáljuk kiírni a %d formátummal. Egy pl. 8 bájtos lebegőpontos számot adunk át paraméterként és az első 4 bájtját próbáljuk egész számkét értelmezni. Ez értelemszerűen hibához vezet.
+
+A C nyelvben paraméterátadáskor csak akkor történik konverzió, ha a hívott függvényt teljes paraméterlistával előzetesen deklaráljuk. A printf esetében a paraméterek feloldása futási időben történik.
+
+/*
+ *  UGLY VERSION
+ *  Convert Fahrenheit to Celsius
+ *  between -100F and +400F  by 100F  
+ */
+#include <stdio.h>
+int main()
+{
+  int fahr;
+
+  for ( fahr = -100; fahr <= 400; fahr += 100 )
+  {
+    printf("Fahr = %d,\tCels = %f\n",fahr,5./9.*(fahr-32));
+  }
+  return 0;
+}
+$ gcc -ansi -pedantic -W -Wall fahrenheit.c -o fahrenheit
+
+$ ./fahrenheit 
+Fahr = -100,	Cels = -73.333333
+Fahr = 0,	Cels = -17.777778
+Fahr = 100,	Cels = 37.777778
+Fahr = 200,	Cels = 93.333333
+Fahr = 300,	Cels = 148.888889
+Fahr = 400,	Cels = 204.444444
+Most már működik, de az input nem szépen formázott. Ráadásul a program közepén van egy bonyolult képlet. Refaktoráljuk ki ezt a képletet egy önálló függvénybe.
+
+Figyeljük meg, hogy a függvény szignatúrája (signature) double fahr2cels(double), ezért az int típusú aktuális paraméter lebegőpontossá konvertálva adódik át. A %7.2f formátum 7 karakter szélességben, 2 tizedesre kerekítve írja ki az eredményt.
+
+/*
+ *  OK
+ *  Convert Fahrenheit to Celsius
+ *  between -100F and +400F  by 100F  
+ */
+#include <stdio.h>
+double fahr2cels( double f)
+{
+  return 5./9. * (f-32);
+}
+int main()
+{
+  int fahr;
+
+  for ( fahr = -100; fahr <= 400; fahr += 100 )
+  {
+    printf("Fahr = %4d,\tCels = %7.2f\n",
+                       fahr, fahr2cels(fahr));
+  }
+  return 0;
+}
+$ gcc -ansi -pedantic -W -Wall fahrenheit.c -o fahrenheit
+
+$ ./fahrenheit 
+Fahr = -100,	Cels =  -73.33
+Fahr =    0,	Cels =  -17.78
+Fahr =  100,	Cels =   37.78
+Fahr =  200,	Cels =   93.33
+Fahr =  300,	Cels =  148.89
+Fahr =  400,	Cels =  204.44
+A programot még tovább javíthatjuk a kódban szereplő mágikus konstansok kiemelésével. Ebben a verzióban előfordító direktívákat (preprocessor directive) alkalmazunk, hogy a program konstansait megadjuk.
+
+/*
+ *  OK, with #define
+ *  Convert Fahrenheit to Celsius
+ *  between -100F and +400F  by 100F  
+ */
+#include <stdio.h>
+#define LOWER -100
+#define UPPER  400
+#define STEP   100
+double fahr2cels( double f)
+{
+  return 5./9. * (f-32);
+}
+int main()
+{
+  int fahr;
+
+  for ( fahr = LOWER; fahr <= UPPER; fahr += STEP )
+  {
+    printf( "Fahr = %4d,\tCels = %7.2f\n", 
+                        fahr, fahr2cels(fahr) );
+  }
+  return 0;
+}
+A következő verzióban névvel ellátott konstansokat alkalmazunk ugyanerre.
+
+/*
+ *  OK, with const
+ *  Convert Fahrenheit to Celsius
+ *  between -100F and +400F  by 100F  
+ */
+#include <stdio.h>
+const int lower = -100;
+const int upper =  400;
+const int step  =  100;
+double fahr2cels( double f)
+{
+  return 5./9. * (f-32);
+}
+int main()
+{
+  int fahr;
+
+  for ( fahr = lower; fahr <= upper; fahr += step )
+  {
+    printf( "Fahr = %4d,\tCels = %7.2f\n", 
+                        fahr, fahr2cels(fahr) );
+  }
+  return 0;
+}

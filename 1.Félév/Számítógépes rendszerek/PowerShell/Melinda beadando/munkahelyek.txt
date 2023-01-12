@@ -1,0 +1,16 @@
+Fuzfa futyulo kft1, 1111 Budapest Okor utca 4, 5, 5
+Alma futyulo kft2, 1111 Budapest Okor utca 5, 0, 4
+Korte futyulo kft3, 1111 Budapest Okor utca 6, 7, 3
+Dio futyulo kft4, 1111 Budapest Okor utca 7, 0, 2
+Gobe futyulo kft5, 1111 Budapest Okor utca 8, 1, 1
+B kft6, 1111 Budapest Okor utca 9, 2, 123
+F kft7, 1111 Budapest Okor utca 1, 3, 123
+Fs kft8, 1111 Budapest Okor utca 2, 4, 123
+rrra kft9, 1111 Budapest Okor utca 3, 1, 12
+RRR kft10, 1111 Budapest Okor utca 4, 2, 31
+SSS kft11, 1111 Budapest Okor utca 5, 1, 51
+DDD kft12, 1111 Budapest Okor utca 6, 2, 14
+TEZ kft13, 1111 Budapest Okor utca 7, 3, 11
+asdasd kft14, 1111 Budapest Okor utca 5, 51, 10
+ASD kft15, 1111 Budapest Okor utca 2, 6, 2
+asASD kft16, 1111 Budapest Okor utca 3, 51, 1

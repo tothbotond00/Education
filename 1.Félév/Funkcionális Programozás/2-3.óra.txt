@@ -1,0 +1,9 @@
+-- isPrime :: Integer -> Bool
+
+divisors :: Integer -> [Integer]
+divisors n = [ m | m <- [1..n], m `divides` n]
+
+--divides :: Integral a => a -> a -> Bool
+divides :: Integer -> Integer -> Bool
+divides n m = m `mod` n == 0
+--infix 7 `divides`

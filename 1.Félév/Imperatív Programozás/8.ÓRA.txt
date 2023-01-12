@@ -1,0 +1,437 @@
+Összetett adatszerkezetek
+A programozási nyelvekben gyakan van szükség összetett adatok kezelésére. Ezek közé tartozik a tömb (tömbök), ami azonos típusú elemek (egy- vagy többdimenziós) véges sorozatából áll, a rekord, ami különböző típusok rendezett N-ese, az únió, ami egy időben véges számú típus közül pontosan egyet tud tárolni. Bár nem aggregáció, de itt tárgyaljuk a felsorolási típust is. Egyes imperatív nyelvekben további összetett típusok is létezhetnek, mint pl. a halmaz (set) típus Pascal-ban, más nyelvekben ez a szabványos könyvtár része (pl. Java, C++).
+
+Az összetett típusok maguk is tartalmazhatnak beépített vagy összetett típusokat, így alkothatunk rekordokból vagy úniókból tömböket, rekordok és úniók tartalmazhatnak tömböket, rekordokat, úniókat, felsorolási értékeket.
+
+Felsorolási típus C-ben
+A C felsorolási típus valójában egy egész jellegű értékekből álló halmaz, aminek értékeit szimbolikus nevekkel jelölhetjük. A felsorolási értékek a mögöttes egész típus értékei, és használhatóak bárhol, ahol egy int típusú érték használható.
+
+A mögöttes egész típus a char, int, unsigned int, long, unsigned long, … valamelyike,ez implementációtól függ. Bármelyik is, egész számkánt viselkedik, pl. eritmetikai műveletek végezhetőek rajta.
+
+enum color { WHITE, BLACK, RED, YELLOW, GREEN };
+
+enum color read_light(void);
+
+void f(void)
+{
+  enum color traffic_light = read_light();
+
+  switch( traffic_light )
+  {
+  case RED:    puts("stop!");        break;
+  case YELLOW: puts("break!");       break; 
+  case GREEN:  puts("go!");          break;
+  default:     puts("look around!"); break;
+  }
+}
+A felsorolási típus értékei a { } közötti felsorolásból kerülnek ki. Az első felsoroló értéke, ha explicit mást nem rendelünk hozzá a nulla lesz. Ha a felsorolóban egy névnél szerepel a = jel, akkor az a felsoroló azt az értéket veszi fel. Ha ilyen nem szerepel, akkor az előző felsorolónál eggyel nagyobb lesz. Az értékeknek nem kell egyedieknek lennie.
+
+include <stdio.h>
+
+enum color { A, B=2, C, D, E=1, F=A+B };
+
+int main()
+{
+  printf("%d\n", A);  /* 0 */
+  printf("%d\n", B);  /* 2 */
+  printf("%d\n", C);  /* 3 */
+  printf("%d\n", D);  /* 4 */
+  printf("%d\n", E);  /* 1 */
+  printf("%d\n", F);  /* 2 */
+
+  return 0;
+}
+$ gcc -ansi -pedantic -Wall enum.c
+$ ./a.out
+0
+2
+3
+4
+1
+2
+A felsolási értékek valamely egész típusra képződnek le, mint a char signed vagy unsigned egész. Ennek megfelelően a felsorolási értékek úgy viselkednek, mint az egészek, részt vesznek konverziókban és alkalmazhatóak rájuk az aritmetikai operátorok is.
+
+A felsorolási típus változói teljes értékű C változók, így el lehet kérni a címüket, pointert lehet rájuk állítani, paraméterként átadhatók függvényeknek, stb.
+
+void next(enum color *cptr)
+{
+  switch( *cptr )
+  {
+  case RED:    *cptr = GREEN;  break;
+  case YELLOW: *cptr = RED;    break; 
+  case GREEN:  *cptr = YELLOW; break;
+  default:     break;
+  }
+}
+void f(void)
+{
+  enum color traffic_light = read_light();
+
+  next( &traffic_light );
+}
+Az enum kulcszó része a típusnévnek. Ha rövidíteni akarjuk a kódunkat, akkor használjuk a typedef kulcsszót.
+
+enum color { WHITE, BLACK, RED, YELLOW, GREEN };
+
+typedef enum color color_t;
+
+color_t traffic_light;
+Vagy egy lépésben is megtehetjük:
+
+typedef 
+  enum color { WHITE, BLACK, RED, YELLOW, GREEN } color_t;
+
+color_t traffic_light;
+Egyes esetekben név nélküli felsorolási típust is létrehozhatunk. Ilyenkor az adott típusból rögtön egy vagy több változót definiálunk:
+
+enum { WHITE, BLACK, RED, YELLOW, GREEN } traffic_light;
+
+traffic_light = RED;
+A C nyelvben változatos módon használjuk fel a felsorolási típust. Van azonban egy hátrányuk, nem lehet forward deklarálni őket, azaz minden esetben amikor használni akarjuk őket, fel kell sorolni az összes felsorolási értéket. Emiatt a felsorolási típusokat leggyakrabban header állományokban definiáljuk és a felsorolási értékek változásakor újra kell fordítani az összes éritett forrásállományt. A C++ az enum class segítségével javított ezen a helyzeten.
+
+Rekord típus
+Programjainkban gyakran kell többféle adatot együtt kezelnünk: pl. egy dolgozó aznosítóját, nevét, beosztását, születési dátumát; egy előadás kódját, oktatóját, a hozzás tartozó gyakorlatok adatait (amik maguk is lehetnek összetett adatok). Ilyenkor kényelmes lenne, ha ezeket az adatokat egyetlen változóban tárolhatnánk, paraméterként átadhatnánk, egyetlen utasítással adhatnánk értéket. Ezt a fajta adatszerkezetet nevezzük rekord-nak, (record) vagy struktúrának (struct). Az R = (R1, R2, …, Rn) rekord a T1, T2, … Tn típusok direkt szorzata R = T1 x T2 x … x Tn.
+
+A rekord típus összetevőit tag-nak (member) vagy mező-nek (field) nevezzük, minden tag egy névvel és típussal rendelkezik, és ez utóbbinak megfelelő műveleteket lehet elvégezni rajta. A rekord típus leggyakoribb implementációja, hogy az egyes tagok egymás után helyezkednek el a memóriában. Minden tag a rekord elejéhez képest saját távolsággal (offset) rendelkezik. Esetenként azonban a tagok között lehetnek “lyukak” (gap) is, itt nem tárolunk információt. Lyukak amiatt lehetnek, mert egyes fordítók bizonyos típusokat csak adott bájtcímekre helyezhetnek el. Ebből következően a rekord mérete nagyobb vagy egyenlő a mezők méreteinek összegével.
+
+A rekord típussal rendszerint csak a legegyszerűbb műveleteket végezhetjük el, pl. értékadás, ide értve az érték szerinti paraméterátadást és függvényvisszatérést is, a rekord címének lekérdezése, és az egyes tagok (mezők) elérése. Miután a rekord egy mezőjét elértük, az adott mező típusának megfelelő műveleteket végezhetünk rajta.
+
+Előfordul, hogy a rekord bizonyos része többféleképpen is lehet definiálva. Az ilyen variadic record-okat lentebb, az úniónál tárgyaljuk.
+
+Az objektum-orientált nyelvekben az osztályt (class) tekinthetjük a rekordtípus olyan általánosításának, ahol az adattagok mellett a rajtuk végzett műveleteket (tagfüggvényeket) is definiálhatjuk, illetve megadhatjuk az egyes tagok hozzáférési jogait (public, private, …).
+
+Struct C-ben
+A C programozási nyelvben a rekord (struktúra) típust a struct konstrukció valósítja meg. A struct kulcsszó része a struktúra típusnevének, azaz a változó deklarációjából nem hagyhatjuk el. A következő példában egy dátum int számhármassal történő lehetséges megvalósítása szerepel:
+
+struct date
+{
+  int year;
+  int month;
+  int day;   
+};
+
+void f(void)
+{
+  struct date exam = { 2018, 12, 17}; /* mezőnkénti inic. */
+  struct date *ep = &exam;         /* ep a vizsgára mutat */ 
+  ++exam.day;                   /* egy nappal elhalasztva */
+  (*ep).day += 2;                /* még két nap halasztás */
+  ep->day += 3;    /* ep->day ugyanaz, mint az (*ep).day  */
+
+  assert(ep == &ep->year);  /* a struct címe azonos 
+                                      az első tag címével */
+
+  struct date y2019 = {2019};  /* csak a year mezőt inic. */
+
+   /* Csak C99 óta: designator használata */
+  struct date xmas = { .month = 12, .day = 24 };   /* C99 */ 
+}
+A tagok elérését a pont (dot, member access) operátor teszi lehetővé. A struktúra típusú változó címét a szokásos címoperátorral (&) kérhetjük le, ennek a C-ben azonosnak kell lennie az első adattag (itt a year) címével. Mivel nagyon gyakori, hogy egy struktúrát a rá mutató pointeren keresztül érünk el, a (*ptr).field kifejezés helyett használhatjuk a rövidebb ptr->field jelölést. A struktúrát a tömböknél megszokott listával { … } inicializálhatjuk, illetve C99-től használhatunk inicializálást csak egyes mezőkre is.
+
+Fontos megérteni, hogy a fenti példában az 1-6 sorok egy struktúra típust definiálnak. Ez nem egy változó, nem konkrét adatterület, nem lehet bele írni. Ez csak a dátum típus leírása, hogyan kell értelmezni a date összetett adatszerkezetet. Értékeket csak változókba írhatunk, azt létre kell hoznunk, pl. a 10. sorban található definicióval.
+
+A következő példában egy alakzat típust definiálunk.
+
+struct square 
+{ 
+  int centerX; 
+  int centerY; 
+  int side; 
+};
+
+struct square move( struct square s, int dX, int dY)
+{
+  s.centerX += dX;
+  s.centerY += dy;
+  return s;
+}
+
+void f(void)
+{
+  struct square mySquare = { 0, 0, 10 }; /* inicializáció */
+
+  mySquare.centerX += 20;      /* mozgassuk el mySquare-t */ 
+  mySquare.centerY += 30;      /* a (+20,+30) vektorral   */ 
+
+  mySquare = move(mySquare, 20, 30);  /* uaz. függvénnyel */
+}
+Egy C struct változóit értékül adhatjuk hasonló típusú változóknak, ilyenkor az összes adattag átmásolódik. Ahogy a fenti példa mutatja, struct-okat átadhatunk paraméterként függvényeknek, és azok vissza is adhatnak struct-okat.Ilyenkor az érték szerinti paraméterátadás szerint a teljes struct másolódik (ellentétben a tömbökkel, ahol az első elemre mutató pointer adódik át). Ha sok adattagból álló nagyméretű struct-ot használunk, néha hatékonysági okokból a címűket adjuk át paraméterként. Struktúrákra a relációs műveletek, mint pl. az == és != nem értelmezett.
+
+struct square 
+{ 
+  int centerX; 
+  int centerY; 
+  int side; 
+};
+
+void move2( struct square *sp, int dX, int dY)
+{
+  sp->centerX += dX;  /* (*sp).centerX += dX */
+  sp->centerY += dY;  /* (*sp).centerY += dY */
+}
+
+void f(void)
+{
+  struct square mySquare = { 0, 0, 10 }; /* inicializáció */
+
+  move2(&mySquare, 20, 30);  /* függvénnyel és pointerrel */
+}
+Struktúrák tartalmazhatnak további struktúrákat. Egy személy például rendelkezik születési dátummal:
+
+struct person
+{
+  char         name[40];
+  struct date  birthday;
+};
+
+int ask(void);
+void f(void)
+{
+  struct person dean;
+  strncpy( dean.name, "Horvath Zoltan", 40);
+  dean.name[39] = '\0';
+  dean.birthday.year = ask();
+}
+Mivel a pont operátor balról asszociatív (operátorok), ezért a dátum adattagjai eléréséhez nem kell zárójelezni.
+
+Előfordul, hogy önhivatkozó adatszerkezeteket szeretnénk létrehozni. Egy személynek pl. lehetnek szülei és gyermekei is, akik szintén emberek. Ilyenkor a személy struktúra fizikailag nem tartalmazhatja önnmagát, de a logikai kapcsolatokat kifejezhetjük pointerekkel.
+
+struct person
+{ 
+  char           name[20]; 
+  struct date    birthday;
+  struct person *father;
+  struct person *mother;
+  struct person *children[10];
+};
+Még az a helyzet is előfordulhat, hogy két struktúra kölcsönösen egymásra hivatkozik. Mivel a C fordító feltételezi, hogy egy típus definíciójában a meghivatkozott nevek már definiáltak, a hivatkozási kört egy előzetes deklarációval (forward declaration) tudjuk feloldani:
+
+struct manager;
+
+struct staffmember
+{
+  struct person   pers;
+  struct manager *boss;
+};
+
+struct manager
+{ 
+  struct person       pers;
+  struct manager     *boss;
+  struct staffmember *staff[10];
+};
+Ha csak forward deklarációnk van, akkor nem tudunk a típusból változókat létrehozni: ehhez kell a struct tényleges teljes deklarációja. A fordítóprogram onnan tudja csak a struct méretét, szerkezetét.
+
+A legmagasabb pozícióban dolgozó főnök boss pointere NULL lesz.
+
+A struct-nál is használhatjuk a typedef kulcsszót a rövidítéshez. Figyeljük meg, hogy a typedef csak a teljes típusdeklaráció után használható, a forward deklaráció után még nem.
+
+typedef struct date date_t;
+
+typedef struct person
+{ 
+  char           name[20]; 
+  struct date    birthday;
+  struct person *father;
+  struct person *mother;
+  struct person *children[10];
+} 
+person_t;
+
+struct manager;
+
+typedef struct staffmember
+{
+  person_t        pers;
+  struct manager *boss;
+} 
+staffmember_t;
+
+typedef struct manager
+{ 
+  person_t        pers;
+  struct manager *boss;
+  staffmember_t  *staff[10];
+} 
+manager_t;
+A struct mérete nagyobb vagy egyenlő a mezők méretével. Az egyes mezők ugyanis nem feltétlenül egymás után következnek, köztük rések (gap) helyezkedhetnek el. Ezért két ugyanahhoz a struct-hoz tartozó változót soha se hasonlítsunk össze bájtonként, erre írjunk egy mezőnkénti összehasonlítást végző függvényt.
+
+másolódik (ellentétben a tömbökkel, ahol az első elemre mutató pointer adódik át). Ha sok adattagból álló nagyméretű struct-ot használunk, néha hatékonysági okokból a címűket adjuk át paraméterként. Struktúrákra a relációs műveletek, mint pl. az == és != nem értelmezett.
+
+typedef struct square 
+{ 
+  int centerX; 
+  int centerY; 
+  int side; 
+}
+square_t;
+
+int is_eq_square(const square_t *sp1, const square_t *sp2)
+{
+  return ( sp1->centerX == sp2->centerX   &&
+           sp1->centerY == sp2->centerY   &&
+           sp1->side    == sp2->side         );
+}
+
+void f( square_t s1, square_t s2)
+{
+  
+  /* Ez rossz gondolat !!! */
+  if ( memcmp( &s1, &s2, sizeof(square_t) ) ) {    }
+
+  /* Igy helyes */
+  if ( is_eq_square( &s1, &s2 ) )  {   }
+}
+Únió típus
+Egy másik összetett adatszerkezet, az únió (union), ami a halmazok úniójához hasonló konstrukció. Az U = (U1, U2, …, Un) únió, a T1, T2, …, Tn típuok úniója U = T1 u T2 u … u Tn. Amíg a rekordban a tagokat egy időben egyszerre, egymás után tároljuk, addig az únióban csak egyetlen típust tárolhatunk egy időben, de később ezt felülírhatjuk egy másik típussal. Ebből következően az únió mérete legalább akkora, mint a legnagyobb komponense (néha technikai okokból annál hosszabb).
+
+Az únió tagjait úgy is tekinthetjük, mint típusbiztos interfészt, amelyen keresztül beírhatunk és kiolvashatunk az únióba. Amennyiben nem a megfelelő tagot használjuk kiolvasáshoz, akkor az eredmény hibás lehet.
+
+Statikus típusrendszer esetén azt, hogy mi volt a legutolsó értékadás típusa, vagy a programozó kell számontartsa, vagy tudhatja maga az únió típusú változó. Ez utóbbi esetben ún. címkézett únió-ról (tagged union) vagy variáns (variant record) típusról beszélünk. Ilyen tagged union létezik számos funkcionális és imperatív nyelvben, pl. a Pascal-ban, Modula-2-ben, az Ada-ban, a Scala-ban, Rust-ban. A C++-ban a C++17-es szabványtól az std::variant típus valósítja meg.
+
+(* Pascal variant record *)
+type shapeKind = (square, rectangle, circle);
+ shape = record
+    centerx : integer;
+    centery : integer;
+    case kind : shapeKind of
+      square : (side : integer);
+      rectangle : (lenA, lenB : integer);
+      circle : (radius : integer)
+end;
+-- Ada variant record (discriminated type) 
+type Shape_Kind is (Square, Rectangle, Circle);
+type Shape (Kind : Shape_Kind) is record
+   Center_X : Integer;
+   Center_Y : Integer;
+   case Kind is
+      when Square =>
+         Side : Integer;
+      when Rectangle =>
+         LenA, LenB : Integer;
+      when Circle =>
+         Radius : Integer;
+   end case;
+end record;
+// C++ variant típus C++17-től, 
+// korábban használható a boost::variant
+class Square { ... };
+class Rectangle { ... };
+class Circle { ... };
+
+use Shape = std::variant<Square, Rectangle, Circle>;
+
+std::vector<Shape> shapes; 
+Az objektum-orientált nyelvekben a tagged union-t gyakran örökléssel valósítjuk meg: az únió egy interfész vagy ha vannak közös adatok, akkor egy bázisosztály és ez egyes “variánsok” pedig a származtatott típusban valósíthatóak meg.
+
+A dinamikus típusrendszerű nyelvekben nincsen szükség variant-ra, hiszen maguk az objektumok “ismerik” saját típusukat. Pythonban például írhatunk ilyet:
+
+def f(x):
+    return 2 if x else "s"
+Ugyanakkor a Python 3.5 által bevezetett type hint-ek segítségével az únió használatot explicitté lehet tenni, ami sokat segíthet külső eszközök, pl. szintaxis ellenőrzők vagy editorok használatakor.
+
+from typing import Union,TypeVar
+
+T = TypeVar('T')
+def f(x: T) -> Union[int, str]:
+    if x:
+        return 2
+    else:
+        return "s"
+Unió C-ben
+A C-ben az únió típust a union kulcsszóval hozzuk létre. Akárcsak a struct-nál, a union kulcsszó is része a típus nevének. A union-t képzelhetjük egy olyan struct-nak, ahol az összes adattag az únió kezdőcímén kezdődik, így a tagok lényegében “átfedik” egymást.
+
+A C nyelv nem rendelkezik tagged union típussal, az úniók tartalmának aktív (éppen aktuális) típusát a programozónak kell számon tartania. Ezt gyakran úgy valósítjuk meg, hogy együttesen használjuk a struct és union konstrukciókat és esetleg a felsorolási típust is:
+
+typedef struct square 
+{ 
+  int centerX; 
+  int centerY; 
+  int side; 
+} 
+square_t;
+
+typedef struct rectangle 
+{ 
+  int centerX; 
+  int centerY; 
+  int lenA; 
+  int lenB; 
+}
+rectangle_t;
+
+typedef struct circle 
+{ 
+  int centerX; 
+  int centerY; 
+  int radius; 
+}
+circle_t;
+
+typedef enum shape_tag
+{ 
+   square_tag, rectangle_tag, circle_tag 
+}
+shape_tag_t;
+
+typedef struct shape
+{
+  shape_tag_t tag;
+  union shapeKind
+  {
+    square_t    s;
+    rectangle_t r;
+    circle_t    c;
+  }   u;
+}
+shape_t;
+
+void print_shape( shape_t s);
+
+void f(void)
+{
+  circle_t cir = { 0, 0, 100 };
+  
+  shape_t  s; 
+  s.tag = circle_tag;
+  s.u.c = cir;
+
+  print_shape( s );
+}
+
+void print_shape(shape_t s)
+{
+  switch( s.tag )
+  {
+  default:         printf( "Unknown shape\n");
+                   break; 
+  case square_tag: printf( "Square: %d %d %d\n", 
+                           s.u.s.centerX, s.u.s.centerY, 
+                           s.u.s.side);
+                   break;
+  case rectangle_tag: printf( "Rectangle: %d %d %d %d\n", 
+                           s.u.r.centerX, s.u.r.centerY, 
+                           s.u.r.lenA, s.u.r.lenB);
+                   break;
+  case circle_tag: printf( "Circle: %d %d %d\n", 
+                           s.u.c.centerX, s.u.c.centerY, 
+                           s.u.c.radius);
+                   break;
+  }
+}
+Látszik, hogy a shapeKind únió nevet sehol sem használjuk a programban. Valójában el is hagyhatjuk, így egy név nélküli (anonym) úniót hozunk létre u tagnévvel. Mivel az s, r és c tagnevek csak az u union tagban fordulnak elő, ezért használatukkor az u el is hagyható:
+
+void f(void)
+{
+  circle_t cir = { 0, 0, 100 };
+  
+  shape_t  s; 
+  s.tag = circle_tag;
+  s.c = cir;
+
+  printf( "%d %d %d\n", 
+           s.c.centerX, s.c.centerY, s.c.radius);
+}
+Ahogy korábban volt róla szó, a tag-ek lényegében “típusbiztos kapuk”, amelyen keresztül elérjük az únióban eltárolt valamely értéket. Ha nem az a tagot használjuk olvasásra, amin keresztül legutóbb írtunk az únió értékét, hibát kaphatunk. Néha mégis szándékosan csinálunk ilyet, pl. ha egy tpus értékét a bitek megváltoztatása nélkül egy másik típusban akarunk tárolni. Ilyen eset lehet, pl. ha egy bináris adatot akarunk hálózaton átküldeni, és az únió egyik tagja egy kellően hosszú karaktertömb, amit a hálózati függvény fog továbbítani.
+
+Vigyázat!, ez nem egy klasszikus értelemben vett típuskonverzió, hiszen a bitek értéke nem változik meg. Ha pl. egy double és int adattagú únióba beírunk egy double számot és egészként olvassuk ki, akkor a lebegőpontos ábrázolás első pár bájtját próbálnánk (valószínűleg értelmetlen) egész számként értelmezni.

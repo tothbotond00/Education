@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1605535226 source:c:\users\lenovo\desktop\tananyag\i programozás\beadandók\4.beadando\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

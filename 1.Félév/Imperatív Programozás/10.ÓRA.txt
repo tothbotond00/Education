@@ -1,0 +1,146 @@
+Imperatív programozás 9.5.
+Dinamikus memóriakezelés és adatszerkezetek gyakorlása
+Készítünk egy programot, amely bináris keresőfa (binary search tree) alkalmazásával rendezi a standard inputról érkező számokat és sorrendben kiírja őket.
+
+A bináris keresőfa egy gyakran használt adatszerkezet, amely rendezve tárolja elemeit. A fa általánsan fennálló invariáns tulajdonsága, hogy minden elem alatti bal rész-fa az elemnél kisebb (vagy kisebb-egyenlő), a jobb rész-fa pedig a nagyobb elemeket tartalmazza.
+
+alt text
+
+A fa felépítését a rekurzív insert() függvény fogja végezni, kiíratását az rekurzív inorder bejárást akalmazó print() függvény, a fa lebontását pedig a rekurzív postorder delete() függvény.
+
+Figyeljük meg, hogy az insert() függvény a gyökérmutató címét kapja meg paraméterül, hiszen amennyiben azok NULL értékűek, akkor azokat módosítania kell.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+struct node   /* one node of the search tree */
+{
+  int          value;   /* payload */
+  struct node *left;    /* pointer to left child  */
+  struct node *right;   /* pointer to right child */
+};
+typedef struct node node_t;
+
+void insert(node_t **pRoot, int i);
+void print(node_t *root);
+void delete(node_t *root);
+
+int main()
+{
+  node_t *head = NULL;	/* pointer to binary search tree */
+  int i;
+  int cnt = 0;
+
+  clock_t start = clock();   /* start the timer */
+  while ( scanf("%d", &i) == 1 )
+  {
+    ++cnt;
+    insert(&head, i);	  /* recursive insert */
+  }  
+  clock_t end = clock();    /* stop the timer */
+  double diff = (end - start); /* elapsed time in 'tick's */
+  diff = diff / CLOCKS_PER_SEC; /* ..converted to seconds */
+
+  print(head);  /* print tree elements: recursive inorder */
+
+  fprintf(stderr,"sorted %d elems in %f sec\n", cnt, diff); 
+
+  delete(head); /* delete the tree: recursive postorder */
+  return 0;
+}
+
+void insert( node_t **pRoot, int i)
+{
+  if ( NULL == *pRoot )  /* need to allocate new element */
+  {
+    *pRoot = (node_t*) malloc(sizeof(node_t));
+    if ( NULL == *pRoot )
+    {
+      fprintf( stderr, "No memory\n");
+      exit(1);      
+    }	    
+    else
+    {
+      node_t *root = *pRoot; /* make more readable */
+      root->value = i;       /* set payload */
+      root->left  = NULL;    /* no children (yet) */
+      root->right = NULL;
+    }
+  }	  
+  else /* not to allocate, just descent left or right */
+  {
+    node_t *root = *pRoot;  /* make more readable */
+    if ( i <= root->value )
+      insert( &root->left, i);  /* descend to left */
+    else
+      insert( &root->right, i);	/* descend to right */
+  }
+}
+void print(node_t *root)
+{
+  if ( root ) 	/* if this is a real node */
+  {	  
+    print(root->left);
+    printf("%d ", root->value);  /* inorder */
+    print(root->right);  
+  }
+}	
+void delete(node_t *root)
+{
+  if ( root ) 	/* if this is a real node */
+  {	  
+    delete(root->left);
+    delete(root->right);  
+    free(root);          /* postorder */
+  }
+}	
+Írunk egy kis segédprogramot, ami véletlenszám-generátorral egész számok sorozatát fogja generálni. A generált számok mennyiségét parancssori argumentumként adjuk meg, a default érték 100.000.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int main(int argc, char **argv)
+{
+  int i;
+  int max = 100000; /* number of elements by default */
+
+  if ( argc > 1 ) /* if command line argument is given */
+  {
+    int imax = atoi(argv[1]);  /* converts to int */
+    if ( imax > 0 )   /* if argv[1] was meaningful */
+      max = imax;
+  }    
+  srand(time(NULL));   /* seeding the random generator */
+  for ( i = 0; i < max; ++i)
+    printf( "%d ", rand() );  /* int between 0..MAXINT */
+
+  return 0;
+}
+Megjegyzés: a random generátor inicializálása (seeding) a time(NULL) hívással általános gyakorlat. Ugyanakkor, ez nem igazán biztonságos: a time(NULL) a kurrens rendszeridővel tér vissza (az ún. UNIX epoch szerint), ami kiszámítható lehet. Biztonság-kritikus programokban ne ezt a módszert használjuk.
+
+Végül, írunk egy kis programot, ami azt ellenőrzi, hogy a programunk tényleg rendezett outputot ír ki.
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+  int prev = -1;  /* ensure that the first number is ok */
+  int curr;
+
+  while ( 1 == scanf("%d", &curr) )
+  {
+    if ( curr < prev )	  /* inversion!!! */
+    {
+      fprintf( stderr, "Inversion: %d %d\n", prev, curr);
+    }
+    printf("%d ", curr); 
+    prev = curr;    
+  }  
+  return 0;	
+}
+A programok használata például az az alábbi lehet:
+
+$ ./gen 5000 | ./binsort | ./check >/dev/null

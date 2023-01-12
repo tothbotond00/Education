@@ -1,0 +1,495 @@
+Imperatív programozás 4.
+Operátorok, kifejezések, utasítások.
+Kifejezések
+A legelső magasszintű programozási nyelvek, mint pl. a Fortran, egyik elsődleges célkitűzése volt, hogy a programokban matematikai kifejezéseket tudjunk használni. A kifejezések - melyek a matematikai egyenletekhez hasonlítottak - változókból (amelyek egy-egy memória-területet azonosítottak) és operátorokból (melyek a matematikai műveleti jeleknek feleltek meg) álltak. Általánosan, a kifejezéseket a programozási nyelvekben operátorok-ból és konstans értékekből vagy változókból képezzük.
+
+Az alábbi kifejezés például számos programozási nyelvben érvényes:
+
+A + B * C
+Hasonlóan a matematikai egyenletekhez, a kifejezésekben is fontos, hogy melyik az “erősebb” művelet, azaz hogyan kell értelmeznünk (zárójeleznünk) egy kifejezést. Ebben az egyes műveleteket leíró operátorok precedenciája (erőssége) az iránymutató. A szorzás például magasabb precedenciájú, mint az összeadás, ezért a fenti kifejezést alábbi módon kell értelmezni:
+
+A + (B * C)
+mivel a szorzás magasabb precedenciájú, mint az összeadás. ha ettől eltérő viselkedést szeretnénk, akkor azt zárójelezéssel jelezhetjük. Ilyen értelemben ez a kifejezés hasonlóan működik, mint a megfelelő matematikai képlet. Azért ez ne tévesszen meg bennünket, nem matematikai képleteket írunk a programozási nyelvekben, hanem kifejezéseket (expression), melyek egyrészt viselkedhetnek másképpen, mint azt a matematikában megszoktuk, másrészt lehet mellékhatásuk (side effect), azaz valami egyéb akciót is végrehajthatnak, miközben kiértékeljük (evaluate) a kifejezéseket.
+
+A funkcionális programozási nyelvekben pont ezek a mellékhatások hiányoznak, ezért az ott leírt függvények sokkal inkább matematikai pure jellegűek.
+
+A FORTRAN77 nyelvi verzióban az azonos precedenciájú műveletek sorrendje nem volt meghatározott. Azaz, ha nem írtunk zárójeleket az alábbi kifejezésbe
+
+A * B / C * D
+akkor az jelenthette az alábbi zárójelezések bármelyikét:
+
+((A * B) / C) * D
+(A * B * D) / C
+(A / C) * B * D
+Könnyen látható, hogy ha pl. A, B, C, D egész számok (Fortran INTEGER típus), akkor az egész értékű osztás miatt az egyes kiértékelési sorrendek eredménye eltérő lehet. A kerekítési hibák miatt még akkor is kaphatnánk eltérő eredményt, ha az értékek lebegőpontos számok lennének (Fortran REAL vagy DOUBLE PRECISION típus).
+
+A modern programozási nyelvekben az egyes kifejezések értelmét az operátor-__precedencia__ (precedence) mellett az ún. asszociativitás (associativity) határozza meg. Az asszociativitás azt definiálja, hogy azonos precedencia szintű operátorok esetében hogyan (balról-jobbra vagy jobbról-balra) kell (gondolatban) zárójelezni a kifejezéseket.
+
+A kifejezéseknek típusa és értéke van. A statikus típusrendszerű programozási nyelvekben (ilyen a C, Java, C#, és sok másik nyelv) a kifejezések típusát a fordítási időben megállapítja a fordítóprogram. A kifejezések értékét legtöbbször csak futási időben lehet megállapítani, de vannak kivételes esetek, amikor ez az érték fordítási időben ismert. Ezeket a kifejezéseket konstans kifejezéseknek (constant expression) nevezzük.
+
+A C nyelv operátorai
+A C programozási nyelvre (és leszármazottjaira) jellemző, hogy sok operátort használhatunk, köztük olyanokat is, melyek más nyelvekben utasítások, függvények, vagy egyáltalán nem is léteznek.
+
+Precedencia	Operátor	Leírás	Assoc
+Posztfix	++	posztfix növelés	L->R
+ 	– –	posztfix csökkentés	 
+ 	()	függvényhívás	 
+ 	[]	tömb index	 
+ 	.	struct/union tag elérés	 
+ 	->	tag elérés mutatóval	 
+ 	(type){list}	összetett literál (C99)	 
+Unáris	++	prefix növelés	R->L
+ 	– –	prefix csökkentés	 
+ 	+	pozitívlőjel	 
+ 	–	negatív előjel	 
+ 	!	logikai negáció	 
+ 	~	bitenkénti negáció	 
+ 	(type)	típus konverzió	 
+ 	*	pointer indiekció	 
+ 	&	címoperátor	 
+ 	sizeof	típus/objektum mérete	 
+ 	_Alignof	igazítási követelmény (C11)	 
+Multiplikatív	* / %	szorzás, osztás, maradék	L->R
+Additív	+ –	összeadás, kivonás	L->R
+Léptetés	« »	bitenkénti bal/jobb léptetés	L->R
+Relációs	< <= > >=	relációs műveletek	L->R
+Egyenlőség	== !=	egyenlő, nem egyenlő	L->R
+Bitenkénti	&	bitenkénti és (AND)	L->R
+ 	^	bitenkénti kizáró vagy (XOR)	L->R
+ 	|	bitenknti vagy (OR)	L->R
+Logikai	&&	logikai és AND	L->R
+ 	||	logikai vagy OR	L->R
+Terciális	? :	feltételes kifejezés	R->L
+Értékadás	=	értékadás	R->L
+ 	+= –=	összetett értékadások	 
+ 	*= /= %=	 	 
+ 	«= »=	 	 
+ 	&= |= ^=	 	 
+Szekvencia	,	vessző (szekvencia) operátor	L->R
+Megjegyzések
+Nem kiértékelt operátorok
+Néhány operátor ún. nem kiértékelt (unevaluated), azaz futási időben ténylegesen nem történik velük semmi, Ezek a műveletek fordítási időben felhasználható információt szolgáltatnak. C-ben ilyen az _Alignof és a sizeof. Ebből leginkább a sizeof-ot használjuk, ami egy típus méretét adja meg bájtokban. Például:
+
+    size_t int_size = sizeof(printf("%d", 42));
+nem ír ki semmit sem az outputra, de int_size értéke 4 lesz (4 bájtos integer méret esetén).
+
+Bináris vagy/és precedenciája
+Figyeljünk arra, hogy pár operátornak nem túl magától értetődő a percedenciája. Például a bitenkénti és vagy műveletek “gyengébbek”, mint a relációs operátorok. Ebből furcsa hibák következhetnek:
+
+    if ( flag & 0xff == 0 )  
+valójában
+
+    if ( flag & (0xff == 0) )
+lesz és mindig hamis. Az ilyen hibák elkerüléséhez mindig írjuk ki a zárójeleket a kifejezéseinkben:
+
+    if ( (flag & 0xff) == 0 )
+Értékadás vs. egyenlőségvizsgálat
+Hasonlóan figyelni kell az értékadás operátor és az egyenlőségvizsgálat különbségére. Az alábbi esetben
+
+    x = 10;
+    /* ... */
+    if ( x = 0 )
+nem egyenlőségvizsgálat, hanem értékadás történik. Miután x felvette a 0 értéket, a kifejezés értéke 0 és hamis lesz. Egy praktikus ötlet: konstanssal való összehasonlításkor írjuk balra a konstanst, így szintaktikus hibát kapnánk, ha elhagyánk egy karaktert:
+
+    if ( 0 = x )
+Ez utóbbi programozási stílust Yoda conditions-nak nevezik.
+
+Az értékadás operátor és a másolás szemantikája
+Az értékadás a programozási nyelvek jó részében utasítás és csak a C nyelv óta használják kifejezésként. Ennek a C-ben csak annyi hatása van, hogy az értékadásnak van eredménye, amit fel lehet használni egy további kifejezésben:
+
+    int a, b;
+    a = 3+(b = 5);  /* a = (3 + (b = 5) )*/
+Itt a értéke 8, b értéke 5 lesz. Persze ilyet ritkán csinálunk. Gyakrabban fordul elő, hogy több változónak adunk értéket, de figyeljünk arra, hogy ez nem párhuzamos értékadás, hanem jobbról balra haladó 3 különálló értékadás.
+
+    double a, c;
+    int    b;
+    a = b = c = 3.14;  /* a = (b = (c = 3.14) ) */
+Ami után c értéke 3.14, b értéke 3 és a értéke 3.0 lesz.
+
+Az értékadás működik néhány összetett típusra is, pl. struct és union, de nem működik tömbökre.
+
+#include <stdio.h>
+
+struct X
+{
+  int    i;
+  double d;
+  int   *ptr;
+};
+void f()
+{
+  int      zz = 1;
+  struct X aa;
+  struct X bb;
+
+  aa.i   = 1;
+  aa.d   = 3.14;
+  aa.ptr = &zz;
+
+  bb = aa;  /* 1==bb.i és 3.14==bb.d és *aa.ptr==*bb.ptr */
+  ++*aa.ptr; /* 2==zz  és 2==*aa.ptr  és  2==*bb.ptr !!! */  
+}
+Ilyenkor tagonkénti értékadás történik (valójában egyszerűen aa teljes területe átmásolódik bb-be). Az ilyen értékadások azonban lehetnek veszélyesek, ha pl. az egyik tag pointer, akkor aa.ptr és bb.ptr ugyanoda mutat, tehát ha az egyik módosítja a mutatott területet, akkor a másik is ezt a módosított értéket fogja látni.
+
+Később, objektum-orientált nyelvekben gyakori lesz, hogy egy osztályt úgy implementálunk, hogy egy objektumból egy pointer mutat valami dinamikusan lefoglalt memóriaterületre. Ilyenkor a pointer által mutatott terület logikailag az objektum sajátja, és ha másoljuk az objektumot, akkor nem a pointert, hanem a mutatott tárterületet kéne másolni.
+
+Azokban a nyelvekben, ahol az operátorokat túlterhelhetjük és az értékadás operátor, írhatunk saját értékadás operátort, ami elvégzi a kívánt tevékenységet. Ilyen a C++ másoló konstruktora (copy constructor) és értékadó operátora (assignment operator). Ahol ez nem lehetséges, vagy megtiltjuk az értékadás használatát (ADA private limited típus) vagy valami “szokásos” függvényt (pl. Java clone metódus) hozunk létre. A Java nyelv Cloneable és a C# ICloneable interfésze ez utóbbi módszert támogatja, de erősen vitatott (Java C#) módon.
+
+Konverziók
+A kifejezések kiértékelésekor egyes esetekben az operandusok egyike, vagy mind konvertálódhat más típussá.
+
+Értékadás, változó inicializálás, paraméterátadás és return utasításkor konverzió történik a cél típusra.
+Aritmetikai konverziók történnek a szélesebb számábrázolású típusok felé:
+
+char –> short –> int –> long –> long long
+
+előjeles egészek –> előjelnélküli egészek
+
+egészek –> float –> double –> long double
+
+tömb –> első elemre mutató pointer
+
+A konverziók bonyolult és széles skálája a szabványban és a C könyvekben részletesen le van írva.
+
+Kifejezések kiértékelése
+Bár a kifejezések értelmezését egyértelműen meghatározza a precedencia és az asszociativitás, a kifejezések kiértékelésének mikéntjét bizonyos keretek között szabadon meghatározhatja a fordítóprogram.
+
+Mit ír ki az alábbi program:
+
+#include <stdio.h>
+int main()
+{
+  int i = 1;
+  printf( "i = %d, ++i = %d\n", i, ++i );
+  return 0;
+}
+$ ./a.out 
+i = 2, ++i = 2   # más platformon i = 1, ++i = 2 is lehet 
+A fenti kifejezés hibás, nemdefiniált viselkedésű (undefined behavior) mert i és ++i ugyanazt a memóriaterületet éri el és egyikük módosítja is azt. Ha két kifejezés kiértékelése ugyanazt a memória-területet éri el és legalább az egyik módosítja is azt, akkor konfliktusban vannak (conflicting). Erősen leegyszerűsítve, ahhoz, hogy a programok helyes viselkedését biztosítsuk, az ilyen konfliktusban levő kifejezéseket el kell választanunk ún. szekvencia pontokkal (sequence point). A szekvencia pont garantálja, hogy az előzőleg elkezdett kiértékelések befejeződjenek a szekvencia pontig és a rákövetkező kifejezések csak a szekvencia pont után kezdődjenek el. Így a kiértékelések nem kerülnek konfliktusba. A precíz leírás a C szabvány 5.1.2.3 pontja alatt olvasható.
+
+Az utasítások eleje és vége szekvencia pont. Ezen kívül van néhány operátor, amelyik maga is szekvencia pontként viselkedik. Ilyenek
+
+a rövidzáras logikai operátorok ( && és || )
+a feltételes operátor feltételének a kiértékelése ( ? : )
+a vessző operátor ( , )
+Hasonlóan, amikor egy függvényt meghívunk, akkor az összes paramétere kiértékelődik, mielőtt a függvény törzsének végrehajtása elkezdődne. Ugyanakkor a paraméterek kiértékelésének egymás közötti sorrendje nem meghatározott.
+
+#include <stdio.h>
+int f()
+{
+  printf("f\n");
+  return 2;
+}
+int g()
+{
+  printf("g\n");
+  return 1;
+}
+int h()
+{
+  printf("h\n");
+  return 0;
+}
+void func()
+{
+  printf("(f() == g() == h()) == %d", f() == g() == h());
+}
+int main()
+{
+  func();
+  return 0;
+}
+$ gcc -ansi -pedantic -Wall f.c
+f.c: In function ‘func’:
+f.c:20:44: warning: suggest parentheses around comparison in operand of ‘==’ [-Wparentheses]
+printf("func: (f() == g() == h()) == %d\n", fpar == gpar == hpar);
+                                               ^
+$ ./a.out 
+f
+g
+h
+func: (f() == g() == h()) == 1
+$
+A fenti példában a kifejezés jelentését egyértelműen meghatározza a precedencia és az asszociativitás szabály. Ugyanakkor az egyes függvények meghívási sorrendjéről a fordító szabadon dönthet. Más fordítóprogramok, vagy akár ugyanaz a fordító más platformokon más sorrendet eredményezhet.
+
+A hiányzó szekvencia pont súlyos hibát okozhat a programunkban. A lenti programban a 11. sorban az i változó két elérése (köztük az i++ módosító) konfliktusos akció, ezért ez a program nemdefiniált viselkedésű (undefined behavior). A nemdefiniált viselkedésű programok hibásak, még akkor is, ha egyes platformokon lefutnak. Könnyen lehet, hogy a hiba csak akkor jön elő, ha egy másik fordítóval fordítjuk a programot.
+
+/*
+ * BAD!
+ */
+#include <stdio.h>
+int main()
+{
+  int t[10];
+  int i = 0;
+  while( i < 10 )
+  {
+    t[i] = i++;
+  }
+  for ( i = 0; i < 10; ++i )
+  {
+    printf("%d ", t[i]);
+  }
+  return 0;
+}
+$ gcc -ansi -pedantic -Wall -W  f.c
+f.c: In function ‘main’:
+f.c:9:13: warning: operation on ‘i’ may be undefined [-Wsequence-point]
+   t[i] = i++;
+           ^
+$ ./a.out 
+613478496 0 1 2 3 4 5 6 7 8 
+$
+A helyes megoldás:
+
+/*
+ * OK
+ */
+#include <stdio.h>
+int main()
+{
+  int t[10];
+  int i = 0;
+  while( i < 10 )
+  {
+    t[i] = i;
+    ++i;
+  }
+  for ( i = 0; i < 10; ++i )
+  {
+    printf("%d ", t[i]);
+  }
+  return 0;
+}
+Utasítások, vezérlési szerkezetek
+Az utasítások és vezérlési szerkezetek az imperatív programozási nyelvek alapvető elemei. Ezek segítségével írjuk le, hogyan szeretnénk a programot végrehajtani.
+
+Kifejezés utasítás
+Egy kifejezés az azt követő pontosvesszővel (;) egy kifejezés utasítást (expression statement) képez. Például a
+
+printf("Hello world\n")
+kifejezés típusa int értéke 12 (ugyanis a printf visszatérő értéke a kiírt karakterek száma). Ha pontosvesszőt teszünk utána, akkor utasítást kapunk:
+
+printf("Hello world\n");
+Üres utasítás
+Az üres utasítás (null statement) hatás nélküli (bár kaphat cimkét).
+
+if ( x < 10 )
+  ;
+else
+  printf("else branch");
+Összetett utasítás
+Az összetett utasítás (compound statement) vagy blokk utasítás arra szolgál, hogy több utasítást összefogjon.
+
+if ( x < 10 )
+{
+  ;
+}
+else
+{
+  printf("compound statement");
+  printf("in the else branch");
+}
+Sok véletlen hibát elkerülhetünk, ha a vezérlési szerkezetekben mindig kirakjuk a { } kapcsos-zárójeleket, akkor is, ha csak egyetlen utasítást szeretnénk végrehajtani.
+
+Elágazás
+Az if elágazásnak két formája van.
+
+if (expression) statement
+if (expression) statement1; else statement2;
+Az if kifejezés feltételét kötelező zárójelbe írni, ahogy azt a switch while és for esetében is. Az utasítások lehetőleg legyenek összetett utasítások. Az if utasítás esetében mindig érdekes kérdés, hogy hova tartoznak a lógó (dangling) else utasítások. A C-ben és sok más nyelvben az else a hozzá szintaktikusan legközelebbi if-hez tartozik.
+
+if ( x < 10 )
+  if ( y > 5 )
+    printf("x < 10 and y > 5");
+else
+  printf("x < 10 and y <= 5");
+ekvivalens az alábbival:
+
+if ( x < 10 )
+{
+  if ( y > 5 )
+    printf("x < 10 and y > 5");
+  else
+    printf("x < 10 and y <= 5");
+}
+és eltér ettől:
+
+if ( x < 10 )
+{
+  if ( y > 5 )
+    printf("x < 10 and y > 5");
+}
+else
+  printf("x >= 10");
+A Pythonban persze a tabulálás jelöli ki a struktúrát. A C-ben nincsen elseif vagy elif, de az else ág egyetlen utasításaként írhatunk egy újabb if utaítást. Ennek hatása hasonló, mintha elseif-ünk lenne, (kivéve persze, ha az egyik feltétel kiértékelésének olyan mellékhatása van, ami befolyásol egy másik feltételt, de az ilyen konstrukciókat inkább kerüljük).
+
+if ( x < 10  &&  y > 5 )
+{
+  printf("x < 10 and y > 5");
+}
+else if ( x < 10  &&  y <= 5 )
+{
+  printf("x < 10 and y <= 5");
+}
+else if ( x >= 10  &&  y > 5 )
+{
+  printf("x >= 10 and y > 5");
+}
+else if ( x >= 10  &&  y <= 5 )
+{
+  printf("x >= 10 and y <= 5");
+}
+else
+{
+  printf("impossible");
+}
+Szelekciós utasítás
+A switch utasítás egy alternatív elágazái forma, ahol az elágazást egy kifejezés különböző értékei alapján hajtjuk végre. A switch formája:
+
+switch (expression) statement
+Az utasítás szinte mindig egy blokk, melyben case címkével ellátott utasítások szerepelnek. A címkék értékének fordítási időben megadottnak és egyedinek kell lennie, és azt a fordító ellenőrzi is.
+
+int day_of_week;
+//...
+switch ( day_of_week )
+{
+  default: printf("Undefined"); break;
+  case  2: printf("Monday");    break;
+  case  3: printf("Tuesday");   break;
+  case  4: printf("Wednesday"); break;
+  case  5: printf("Thursday");  break;
+  case  6: printf("Friday");    break;
+  case  1: /* fallthrough */
+  case  7: printf("Week-end");  break;
+}
+A cimkéket úgy tekinthetjük, mint célpontokat, ahová odaugrik a vezérlés, ha értékük megegyezik a feltételben megadott értékkel. Onnan a vezérlés a megadott utasításoknak megfelelően, szekvenciálisan folytatódik, amíg el nem érünk egy break utasításhoz. Onnan a vezérlés a switch-et követő utasítással folytatódik.
+
+Ha nincsen break utasítás, akkor a vezérlés rácsorog a következő cimkét tartalmazó utasításra. Ez általában nem jó programozási stratégia, de esetenként ezt használjuk a cimkék csoportosítására. Ilyenkor ajánlott ezt a szándékunkat pl. kommentben jelezni.
+
+Ha egyetlen címke sem egyezik meg a feltételben megadott értékkel, és van default címke, akkor a vezérlés oda adódik át. Ettől eltekintve a default címke viselkedése megegyezik a többi címkéjével. Ha nincsen default címke sem, akkor a vezérlés a switch utáni utasítással folytatódik. Ha egyetlen címkén sem csorgunk túl, akkor az egyes címkék és a default címke sorrendje közömbös.
+
+While ciklus
+A C nyelvben többféle módon szervezhetünk ciklust. Az egyik legalapvetőbb konstrukció a while ciklus.
+
+while ( expression ) statement
+A while ciklus először ellenőrzi a ciklusfeltétel kifejezést, és addig hajtja végre a ciklusmagot, ameddig a feltétel igaz. A while ciklusban nekünk kell gondoskodni arról, hogy a feltétel előbb vagy utóbb hamissá váljon.
+
+struct list_type
+{
+  int       value;
+  list_type *next;
+};
+// ...pt-expr
+list_type *ptr = first;
+while ( NULL != ptr  )
+{
+  printf( "%d ", ptr->value);
+  ptr = ptr->next;
+}
+Do-while ciklus
+A do-while ciklus ún. hátul-tesztelő ciklus. Ez azt jelenti, hogy a ciklusmagot egyszer mindenképpen végrehajtjuk, és csak utána ellenőrizzük a feltételt.
+
+do statement while ( expression ) ;
+Figyeljük meg a feltétel-kifejezés zárójelét lezáró pontosvesszőt. A do-while utasítás ekvivalens a következő konstrukcióval:
+
+statement
+while ( expression )
+  statement
+A do-while konstrukciót néha alkalmazzák, amikor az első ciklusvégrehajtás előtti ellenőrzést ki akarják spórolni pl. hatékonysági okokból.
+For ciklus
+A for ciklus az egyik leggyakrabban előforduló ciklusfajta. Kétféle formája van:
+
+for ( opt-expr-1 ; opt-expr-2 ; opt-expr-3 ) statement 
+for ( declaration; opt-expr-2 ; opt-expr-3 ) statement  (C99 óta)
+ahol
+
+opt-expr-1 egy opcionális (elhagyható) kifejezés, ami a ciklusváltozó kezdeti értékbeállítására szolgál és a legelső ciklusvégrehajtás előtt hajtódik végre. A C99 verzió óta ezt a kifejezést helyettesíthetjük egy deklarációval. Az itt deklarált ciklusváltozó láthatósága nem terjed túl a cikluson.
+
+opt-expr-2 egy opcionális feltétel, ami minden ciklusmag végrehajtása előtt kiértékelődik, és a ciklusmag csak akkor hajtódik végre, ha ennek a kifejezésnek értéke igaz. Ha ezt a kifejezést elhagyjuk, akkor értékét mindig igaznak tekintjük.
+
+opt-expr-3 egy opcionális kifejezés, ami mindig kiértékelődik a ciklusmag után. Ez a kifejezés gyakran arra szolgál, hogy a ciklusváltozót módosítsa.
+
+Az alábbi for ciklus
+
+  
+for ( e1 ; e2 ; e3 ) s;
+nagyjából (de nem teljesen) azonos a következő while ciklussal:
+
+  
+{
+  e1;
+  while ( e2 )
+  {
+    s;
+    e3;
+  }
+}
+A három opcionális kifejezés bármelyikét elhagyhatjuk. A középső elmaradása olyan, mintha állandóan igaz kifejezést írnánk. A (látszólag) végtelen ciklus egy alakja:
+
+for( ; ; ) statement
+Ezt a ciklust még mindig elhagyhatjuk a return vagy a break utasítással.
+
+A C99 óta lehetséges az inicializáló kifejezést helyettesíteni egy ciklusváltozó létrehozásával és inicializálásával.
+
+for ( int i = 0; i < 10; ++i )
+{
+  printf( "%d ");
+}
+// i is not visible here.
+A break és a continue utasítások
+A break utasítást nemcsak a switch-ben, hanem bármely cikluson belül is alkalmazhatjuk. Hatására a ciklusból azonnal kilépünk, és a következő utasítással folytatjuk a programot.
+
+int t[10];
+// ...
+for ( int i = 0; i < 10; ++i )
+{
+  if ( t[i] < 0 )
+  {
+    printf( "negative found");
+    break;
+  }
+  printf("do something with non-negatives");
+}
+// break jumps to here
+A continue utasítás átugorja a ciklusmag hátralévő részét és a vezérlés a ciklusmag végére ugrik. Ezután a while és do-while ciklusban a feltétel ellenőrzése, a for ciklusban az opt-expr-3 majd a feltétel kiértékelése következik.
+
+int t[10];
+// ...
+for ( int i = 0; i < 10; ++i )
+{
+  if ( t[i] < 0 )
+  {
+    printf( "negative found");
+    continue;
+  }
+  printf("do something with non-negatives");
+  // ...
+  // continue jumps to here
+}
+Return utasítás
+A return visszatér a kurrens függvény végrehajtásából a hívó függvénybe. A main függvény esetében a return hatására a program végrehajtása befejeződik.
+
+return;
+return expr;
+Egy függvényben több return utasítás is szerepelhet. Ha a függvény visszatérő típusa nem void akkor a return argumentuma a függvény visszatérő típusára konvertálódik.
+
+int find_first_negative( int t[], int length)
+{
+  for ( int i = 0; i < length; ++i )
+  {
+    if ( t[i] < 0 )
+    {
+      printf( "negative found");
+      return t[i];
+    }
+  }
+  return 0;
+}
+Goto utasítás
+Feltétel nélküli ugró utasítás. Csak az adott függvényen belülre ugorhatunk.
+
+goto label;
+/* ... */
+label: statement
+ahol label egy azonosító. Ne használjunk goto utasítást.

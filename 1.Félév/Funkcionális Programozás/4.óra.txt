@@ -1,0 +1,27 @@
+isPrime :: Integer -> Bool
+isPrime 0 = False
+isPrime 1 = False
+isPrime 2 = True
+isPrime 3 = True
+isPrime n = null (divisors n)
+
+divisors :: Integer -> [Integer]
+divisors n = [ m | m <- [2.. round (sqrt (fromIntegral n))], m `divides` n]
+--divisors n = [ m | m <- [1.. n], m `divides` n]
+
+--divides :: Integral a => a -> a -> Bool
+divides :: Integer -> Integer -> Bool
+divides n m = m `mod` n == 0
+--infix 7 `divides`
+
+primes :: [Integer]
+primes = 2:[ i | i <- [3,5..], isPrime i]
+
+firstNPrime :: Int -> [Integer]
+firstNPrime n = take n primes
+
+fst4 :: (a,b,c,d) -> a
+fst4 (x,y,z,w) = x
+
+fst :: (a,b) -> a
+fst (x,_) = x

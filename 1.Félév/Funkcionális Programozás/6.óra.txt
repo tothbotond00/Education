@@ -1,0 +1,69 @@
+hasLength :: Int -> [a] -> Bool
+hasLength n l = hL n l where
+  hL 0 []     = True
+  hL 0 (x:xs) = False
+  hL m []     = False
+  hL m (x:xs) = hL (m-1) xs
+  
+hasLength' :: Int -> [a] -> Bool
+hasLength' n l = hL l 0 where
+  hL :: [a] -> Int -> Bool
+  hL []     i = n == i
+  hL (x:xs) i
+    | i <= n    = hL xs (i+1)
+    | otherwise = False
+{-    | i > n     = False
+      | otherwise = hL xs (i+1)
+-}
+
+{-
+hL 8 (1:[2,3,4]) 0 ->
+hL 8 (2:[3,4])   1 ->
+hL 8 (3:[4])     2 ->
+hL 8 (4:[])      3 ->
+hL 8 []          4 ->
+8 == 4 -> False
+-}
+
+length' :: [a] -> Int
+length' []     = 0
+length' (x:xs) = 1 + length' xs
+
+{-
+length' [1,2,3] ->
+   1 + length' [2,3]
+       1 + length' [3]
+           1 + length' []
+               0
+           1
+       2
+   3
+-}
+
+length'' :: [a] -> Int
+length'' l = lH l 0 where
+  lH []     i = i
+  lH (x:xs) i = lH xs (i+1)
+--  lH (x:xs) i = lH xs $! (i+1) -- mohón értékeli ki a második argumentumot
+
+{-
+length'' [1,2,3] ->
+  lH (1:[2,3]) 0 ->
+  lH (2:[3])   1 ->
+  lH (3:[])    2 ->
+  lH []        3 ->
+  3
+-}
+
+
+-- [8]
+-- [[1], [2], ... [8]]
+
+{-
+queens :: Int -> [[Int]]
+queens 0 = [[]]
+queens n = [ i:t | t <- queens (n-1), i <- [1..8], safe t i]
+
+safe :: [Int] -> Int -> Bool
+safe
+-}
