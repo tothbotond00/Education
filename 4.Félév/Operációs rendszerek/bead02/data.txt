@@ -1,0 +1,17 @@
+Boti,Szula,2
+Melinda,Malom telek,3
+Ákos,Kígyós-patak,4
+Brot,Szula,4
+Bobi,Káposztás kert,7
+Gábor,Lovas,3
+Gáborka,Lovas,4
+Gáborkácska,Lovas,5
+Komo,Páskom,3
+Tapsi Hapsi,Barátfa,10
+Káp,Káposztás kert,11
+Robi,Malom telek,2
+Peti,Káposztás kert,4
+Lőrinc,Szula,2
+Barna,Kígyós-patak,6
+Bodolai,Lovas,2
+Haribó,Barátfa,100

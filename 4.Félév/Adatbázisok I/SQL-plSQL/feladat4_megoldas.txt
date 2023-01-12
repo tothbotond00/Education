@@ -1,0 +1,145 @@
+A korábbi táblák:
+-------------------------------------
+NIKOVITS.DOLGOZO       (dkod, dnev, foglalkozas, fonoke, belepes, fizetes, jutalek, oazon)
+NIKOVITS.OSZTALY       (oazon, onev, telephely)
+NIKOVITS.Fiz_kategoria (kategoria, also, felso)
+-------------------------------------
+Lekérdezések  (Kiterjesztett relációs alg. + SQL)
+------------
+
+1.
+Mekkora a maximális fizetés a dolgozók között?
+SELECT max(fizetes) FROM dolgozo;
+
+2.
+Mennyi a dolgozók összfizetése?
+SELECT sum(fizetes) AS sf FROM Dolgozo;
+
+3.
+Mennyi a 20-as osztályon az összfizetes és az átlagfizetés? (Atlag, Össz)
+SELECT sum(fizetes) AS sf, avg(fizetes) as af FROM Dolgozo WHERE oazon=20;
+
+4.
+Adjuk meg, hogy hány különbözõ foglalkozás fordul elõ a dolgozók között. 
+SELECT count(DISTINCT foglalkozas) AS cf FROM Dolgozo;                          -- Oracle 
+SELECT count(foglalkozas) AS cf FROM (SELECT foglalkozas FROM Dolgozo) AS Tmp;  -- RelaX
+
+5.
+Hány olyan dolgozó van, akinek a fizetése > 2000? 
+SELECT count(*) AS cnt FROM Dolgozo WHERE fizetes > 2000;
+
+6.
+Adjuk meg osztályonként az átlagfizetést (oazon, atl_fiz).
+SELECT oazon, avg(fizetes) AS af FROM Dolgozo GROUP BY oazon;
+
+7.
+Adjuk meg osztályonként a telephelyet és az átlagfizetést (oazon, telephely, atl_fiz).
+SELECT o.oazon, telephely, avg(fizetes) AS af 
+FROM Dolgozo AS d, Osztaly AS o                  -- Oracle esetén el kell hagyni az 'AS' kulcsszót
+WHERE d.oazon=o.oazon 
+GROUP BY o.oazon, telephely;
+-- más szintaxissal:
+SELECT oazon, telephely, avg(fizetes) AS af
+FROM Dolgozo AS d NATURAL JOIN Osztaly AS o      -- Oracle esetén el kell hagyni az 'AS' kulcsszót
+GROUP BY oazon, telephely;
+
+8.
+Adjuk meg, hogy az egyes osztályokon hány ember dolgozik. (oazon, mennyi)
+SELECT oazon, count(dkod) AS cnt FROM Dolgozo GROUP BY oazon;
+
+9.
+Adjuk meg azokra az osztályokra az átlagfizetést, ahol ez nagyobb mint 2000. (oazon, atlag)
+SELECT oazon, avg(fizetes) AS af FROM Dolgozo GROUP BY oazon HAVING avg(fizetes) > 2000;   -- Oracle
+SELECT oazon, avg(fizetes) AS af FROM Dolgozo GROUP BY oazon HAVING af > 2000;             -- RelaX
+
+10.
+Adjuk meg az átlagfizetést azokon az osztályokon, ahol legalább 4-en dolgoznak (oazon, avg_fiz)
+-- Oracle
+SELECT oazon, avg(fizetes) FROM dolgozo GROUP BY oazon HAVING count(dkod) >= 4;  
+-- RelaX
+SELECT oazon, af FROM
+(SELECT oazon, avg(fizetes) AS af, count(dkod) AS cnt FROM Dolgozo GROUP BY oazon HAVING cnt >= 4) AS Tmp;
+
+11.
+Adjuk meg az átlagfizetést és telephelyet azokon az osztályokon, ahol legalább 4-en dolgoznak. (oazon, telephely, atlag)
+-- Oracle
+SELECT oazon, telephely, avg(fizetes) AS af 
+FROM Dolgozo d NATURAL JOIN Osztaly o
+GROUP BY oazon, telephely HAVING count(dkod) >= 4;
+-- RelaX
+SELECT oazon, telephely, af FROM
+(SELECT oazon, telephely, avg(fizetes) AS af, count(dkod) AS cnt 
+ FROM Dolgozo AS d NATURAL JOIN Osztaly AS o GROUP BY oazon, telephely HAVING cnt >= 4) AS Tmp
+
+12.
+Adjuk meg azon osztályok nevét és telephelyét, ahol az átlagfizetés nagyobb mint 2000. (onev, telephely)
+-- Oracle
+SELECT onev, telephely FROM dolgozo d, osztaly o
+WHERE d.oazon=o.oazon 
+GROUP BY onev, telephely HAVING avg(fizetes) >= 2000;
+-- RelaX
+SELECT onev, telephely, avg(fizetes) AS af FROM Dolgozo AS d, Osztaly AS o
+WHERE d.oazon=o.oazon 
+GROUP BY onev, telephely HAVING af >= 2000;
+
+13.
+Adjuk meg azokat a fizetési kategóriákat, amelybe pontosan 3 dolgozó fizetése esik. (kategoria)
+-- Oracle
+SELECT kategoria FROM dolgozo, fiz_kategoria
+WHERE fizetes BETWEEN also AND felso
+GROUP BY kategoria HAVING count(*) = 3;
+-- RelaX
+SELECT kategoria, count(*) AS cnt FROM Dolgozo, Fiz_kategoria
+WHERE fizetes >= also AND fizetes <= felso
+GROUP BY kategoria HAVING cnt = 3;
+
+-- más szintaxissal Oracle
+SELECT kategoria FROM dolgozo JOIN fiz_kategoria ON (fizetes BETWEEN also AND felso)
+GROUP BY kategoria HAVING count(*) = 3;
+-- más szintaxissal RelaX
+SELECT kategoria, count(*) AS cnt 
+FROM Dolgozo JOIN Fiz_kategoria ON (fizetes >= also AND fizetes <= felso)
+GROUP BY kategoria HAVING cnt = 3;
+
+14.
+Adjuk meg azokat a fizetési kategóriákat, amelyekbe esõ dolgozók mindannyian ugyanazon 
+az osztályon dolgoznak. (kategoria)
+-- Oracle
+SELECT kategoria FROM Dolgozo, Fiz_kategoria
+WHERE fizetes >= also AND fizetes<= felso
+GROUP BY kategoria HAVING count(distinct oazon) = 1;
+-- RelaX
+WITH Tmp AS 
+(SELECT kategoria, oazon FROM Dolgozo, Fiz_kategoria
+ WHERE fizetes >= also AND fizetes<= felso)
+SELECT kategoria, count(oazon) AS cnt FROM Tmp GROUP BY kategoria  HAVING cnt = 1;
+
+15.
+Adjuk meg azon osztályok nevét és telephelyét, amelyeknek van 1-es fizetési kategóriájú dolgozója. (onev, telephely)
+-- Oracle
+SELECT DISTINCT onev, telephely FROM Dolgozo d, Osztaly o, Fiz_kategoria f
+WHERE o.oazon=d.oazon AND fizetes >= also AND fizetes<= felso AND kategoria = 1;
+-- RelaX
+SELECT onev, telephely FROM Dolgozo AS d, Osztaly AS o, Fiz_kategoria AS f
+WHERE o.oazon=d.oazon AND fizetes >= also AND fizetes<= felso AND kategoria = 1;
+
+16.
+Adjuk meg azon osztályok nevét és telephelyét, amelyeknek legalább 2 fõ 1-es fizetési 
+kategóriájú dolgozója van. (onev, telephely)
+SELECT DISTINCT onev, telephely FROM dolgozo d, osztaly o, fiz_kategoria f
+WHERE o.oazon=d.oazon AND fizetes BETWEEN also AND felso AND kategoria = 1
+GROUP BY onev, telephely HAVING count(distinct dkod) > 1;
+
+17.
+Készítsünk listát a páros és páratlan azonosítójú (dkod) dolgozók számáról. (paritas, szam)
+SELECT decode(mod(dkod, 2), 0, 'páros', 1, 'páratlan') paritas, count(dkod) szam 
+FROM Dolgozo GROUP BY mod(dkod, 2);
+
+18.
+Listázzuk ki foglalkozásonként a dolgozók számát, átlagfizetését (kerekítve) numerikusan és grafikusan is.
+200-anként jelenítsünk meg egy '#'-ot. (foglalkozás, szám, átlag, grafika)
+SELECT foglalkozas, count(dkod), round(avg(fizetes)),
+      rpad('#', round(avg(fizetes)/200), '#') 
+FROM Dolgozo GROUP BY foglalkozas;
+
+

@@ -1,0 +1,142 @@
+Feladatok módosításra, törlésre, beszúrásra.
+--------------------------------------------
+
+/* A módosítást egy másodpéldányon végezzük, hogy a tábla eredeti tartalma megmaradjon
+
+CREATE TABLE dolg2 AS SELECT * FROM nikovits.dolgozo;
+CREATE TABLE oszt2 AS SELECT * FROM nikovits.osztaly;
+UPDATE dolg2 ...
+Ellenõrzés: SELECT ... FROM dolg2 ...         
+DROP TABLE dolg2;
+
+*/
+
+DELETE
+------
+1.
+Töröljük azokat a dolgozókat, akiknek jutaléka NULL.
+DELETE FROM dolgozo WHERE jutalek IS NULL;
+
+2.
+Töröljük azokat a dolgozókat, akiknek a belépési dátuma 1982 elõtti.
+DELETE FROM dolgozo WHERE belepes < TO_DATE('1982.01.01', 'yyyy.mm.dd');
+
+3.
+Töröljük azokat a dolgozókat, akik osztályának telephelye DALLAS.
+DELETE FROM dolgozo WHERE oazon IN 
+   (SELECT oazon FROM osztaly WHERE telephely = 'DALLAS');
+
+4.
+Töröljük azokat a dolgozókat, akiknek a fizetése kisebb, mint az átlagfizetés.
+DELETE FROM dolgozo WHERE fizetes < (SELECT AVG(fizetes) FROM dolgozo);
+
+5.
+Töröljük a jelenleg legjobban keresõ dolgozót.
+DELETE FROM dolgozo WHERE fizetes = (SELECT MAX(fizetes) FROM dolgozo);
+
+6.
+Töröljük ki azokat az osztályokat, akiknek van olyan dolgozója, aki a 2-es fizetési 
+kategóriába esik (lásd még Fiz_Kategoria táblát)
+(Adjuk meg azon osztályok nevét, amelyeknek van olyan dolgozója, aki a 2-es fizetési kategóriába esik)
+
+delete from osztaly where exists
+  (select * from dolgozo, fiz_kategoria 
+   where fizetes between also and felso and kategoria=2
+   and osztaly.oazon=dolgozo.oazon);
+
+select * from osztaly where exists
+  (select * from dolgozo, fiz_kategoria 
+   where fizetes between also and felso and kategoria=2
+   and osztaly.oazon=dolgozo.oazon);
+
+7.
+Töröljük ki azon osztályokat, amelyeknek 2 olyan dolgozója van, aki a 2-es fizetési kategóriába esik
+delete from osztaly where oazon in 
+  (select oazon from  dolgozo d, fiz_kategoria 
+   where fizetes between also and felso and kategoria=2
+   group by oazon
+   having count(distinct dkod) = 2);
+
+select * from osztaly where oazon in 
+  (select oazon from  dolgozo d, fiz_kategoria 
+   where fizetes between also and felso and kategoria=2
+   group by oazon
+   having count(distinct dkod) = 2);
+
+INSERT
+------
+8.
+Vigyünk fel egy 'Kovacs' nevû új dolgozót a 10-es osztályra a következõ 
+értékekkel: dkod=1, dnev='Kovacs', oazon=10, belépés=aktuális dátum,
+fizetés=a 10-es osztály átlagfizetése. A többi oszop legyen NULL.
+a)
+INSERT INTO dolgozo(dkod, dnev, belepes, fizetes, oazon) 
+VALUES(1,'KOVACS', SYSDATE, (SELECT AVG(fizetes) FROM dolgozo WHERE oazon=10),10);
+b)
+INSERT INTO dolgozo(dkod, dnev, belepes, fizetes, oazon) 
+SELECT 1,'KOVACS', SYSDATE, AVG(fizetes), 10 FROM dolgozo WHERE oazon=10;
+
+UPDATE
+------
+9.
+Növeljük meg a 20-as osztályon a dolgozók fizetését 20%-kal.
+UPDATE dolgozo SET fizetes = fizetes*1.2 WHERE oazon=20;
+
+10.
+Növeljük meg azok fizetését 500-zal, akik jutaléka NULL vagy a fizetésük kisebb az átlagnál.
+UPDATE dolgozo SET fizetes = fizetes + 500 
+WHERE jutalek IS NULL OR fizetes < ( SELECT AVG(fizetes) FROM dolgozo);
+
+11.
+Növeljük meg mindenkinek a jutalékát a jelenlegi maximális jutalékkal.
+UPDATE dolgozo SET jutalek = 
+ (SELECT MAX(dolg1.jutalek) + NVL(dolgozo.jutalek,0) from dolgozo dolg1);
+
+12.
+Módosítsuk 'Loser'-re a legrosszabbul keresõ dolgozó nevét.
+UPDATE dolgozo SET dnev = 'Loser' 
+WHERE fizetes = ( SELECT MIN(fizetes) FROM dolgozo);
+
+13.
+Növeljük meg azoknak a dolgozóknak a jutalékát 3000-rel, akiknek legalább 2 közvetlen beosztottjuk van. 
+Az ismeretlen (NULL) jutalékot vegyük úgy, mintha 0 lenne. 
+UPDATE dolgozo SET jutalek=coalesce(jutalek,0)+3000 WHERE dkod IN
+  (SELECT fonoke FROM dolgozo GROUP BY fonoke HAVING count(*)=2);
+
+14.
+Növeljük meg azoknak a dolgozóknak a fizetését, akiknek van beosztottja, a minimális fizetéssel.
+UPDATE dolgozo SET fizetes = fizetes + (SELECT min(fizetes) FROM dolgozo) 
+WHERE dkod IN (SELECT fonoke FROM dolgozo);
+
+15.
+Növeljük meg a nem fõnökök fizetését a saját osztályuk átlagfizetésével.
+UPDATE dolgozo d1 SET fizetes = fizetes + (SELECT avg(fizetes) FROM dolgozo d2 WHERE d2.oazon = d1.oazon)
+WHERE dkod NOT IN (SELECT coalesce(fonoke,0) FROM dolgozo);
+
+16.
+Összetett, több lépéses feladat a feladatgyûjteménybõl: (ott 5.5 feladat/c)
+
+Bõvítsük a dolgozó táblát egy lakhely oszloppal, majd töltsük fel a következõképpen:
+A BOSTON-ban dolgozók CHICAGO-ban, a CHICAGO-ban dolgozók pedig BOSTON-ban laknak, 
+kivéve azokat a CHICAGO-i dolgozókat, akiknek BLAKE a fõnöke, mert õk INDIANAPOLIS-ban
+laknak, feltéve, hogy nem CLERK foglalkozásúak, mert akkor sehol sem laknak.
+
+ALTER TABLE dolgozo ADD lakhely VARCHAR2(30);
+
+-- A BOSTON-ban dolgozók CHICAGO-ban laknak						
+UPDATE dolgozo  SET lakhely = 'CHICAGO'
+WHERE oazon = (SELECT oazon FROM osztaly WHERE telephely = 'BOSTON');
+
+-- A CHICAGO-ban dolgozók, ha nem BLAKE a fõnökük -> BOSTON
+UPDATE dolgozo SET lakhely = 'BOSTON'
+WHERE dkod IN (SELECT d.dkod FROM dolgozo d, osztaly o, dolgozo f
+               WHERE d.oazon = o.oazon  AND d.fonoke = f.dkod  
+			   AND telephely = 'CHICAGO' AND  f.dnev <> 'BLAKE');
+
+-- A CHICAGO-ban dolgozók, ha BLAKE a fõnökük és nem CLERK a foglalkozásuk -> INDIANA
+UPDATE dolgozo SET lakhely = 'INDIANA'
+WHERE dkod IN (SELECT d.dkod FROM dolgozo d, osztaly o, dolgozo f
+               WHERE d.oazon = o.oazon  AND d.fonoke = f.dkod  AND telephely = 'CHICAGO' 
+               AND  f.dnev = 'BLAKE' AND d.foglalkozas<>'CLERK');
+
+ALTER TABLE dolgozo DROP COLUMN lakhely;

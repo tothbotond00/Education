@@ -1,0 +1,702 @@
+Szeret (nev, gyumolcs)
+----------------------
+CREATE TABLE Szeret(nev VARCHAR(15), gyumolcs VARCHAR(15));
+
+NEV         GYUMOLCS
+--------------------
+Malacka     alma
+Micimackó   alma
+Malacka     körte
+Kanga       alma
+Tigris      alma
+Malacka     dinnye
+Micimackó   körte
+Tigris      körte
+
+Adjuk meg az alábbi lekérdezéseket relációs algebrában és SQL-ben:
+
+1.  Melyek azok a gyümölcsök, amelyeket Micimackó szeret?
+SELECT gyumolcs FROM Szeret WHERE nev = 'Micimackó';
+
+2.  Melyek azok a gyümölcsök, amelyeket Micimackó nem szeret? (de valaki más igen)
+SELECT gyumolcs FROM Szeret
+ MINUS
+SELECT gyumolcs FROM Szeret WHERE nev = 'Micimackó';
+
+3.  Kik szeretik az almát?
+SELECT nev FROM Szeret WHERE gyumolcs = 'alma';
+
+4.  Kik nem szeretik a körtét? (de valami mást igen)
+SELECT nev FROM Szeret
+ MINUS
+SELECT nev FROM Szeret WHERE gyumolcs = 'körte';
+
+5.  Kik szeretik vagy a dinnyét vagy a körtét?
+SELECT nev FROM Szeret WHERE gyumolcs = 'dinnye'
+ UNION
+SELECT nev FROM Szeret WHERE gyumolcs = 'körte';
+
+6.  Kik szeretik az almát is és a körtét is?
+SELECT nev FROM Szeret WHERE gyumolcs = 'alma'
+ INTERSECT
+SELECT nev FROM Szeret WHERE gyumolcs = 'körte';
+
+7.  Kik azok, akik szeretik az almát, de nem szeretik a körtét?
+SELECT nev FROM Szeret WHERE gyumolcs = 'alma'
+ MINUS
+SELECT nev FROM Szeret WHERE gyumolcs = 'körte';
+
+
+Dolgozo tábla
+-------------------------
+Dolgozo (dkod, dnev, foglalkozas, fonoke, belepes, fizetes, jutalek, oazon)	   
+
+Lekérdezések  (rel. alg + SQL)
+------------
+1.  Kik azok a dolgozók, akiknek a fizetése nagyobb, mint 2800?
+2.  Kik azok a dolgozók, akik a 10-es vagy a 20-as osztályon dolgoznak?
+3.  Kik azok, akiknek a jutaléka nagyobb, mint 600?
+4.  Kik azok, akiknek a jutaléka nem nagyobb, mint 600?
+5.  Kik azok a dolgozók, akiknek a jutaléka ismeretlen (nincs kitöltve, vagyis NULL)?
+SELECT dnev, jutalek FROM Dolgozo WHERE jutalek IS NULL;
+
+6.  Adjuk meg a dolgozók között előforduló foglalkozások neveit.
+SELECT DISTINCT foglalkozas FROM Dolgozo;
+
+7.  Adjuk meg azoknak a nevét és kétszeres fizetését, akik a 10-es osztályon dolgoznak.
+SELECT dnev, fizetes*2 FROM Dolgozo Where oazon=10;
+
+8.  Kik azok a dolgozók, akik 1982.01.01 után léptek be a céghez?
+SELECT dnev FROM Dolgozo where belepes > to_date('1982.01.01', 'yyyy.mm.dd');
+
+9.  Kik azok, akiknek nincs főnöke?
+SELECT dnev FROM Dolgozo WHERE fonoke IS NULL;
+
+10. Kik azok a dolgozók, akiknek a nevében van 'A' betű?
+SELECT dnev FROM Dolgozo WHERE dnev LIKE '%A%';
+
+11. Kik azok a dolgozók, akiknek a nevében van két 'L' betű?
+SELECT dnev FROM Dolgozo WHERE dnev LIKE '%L%L%';
+
+12. Kik azok a dolgozók, akiknek a fizetése 2000 és 3000 között van?
+SELECT dnev, fizetes FROM Dolgozo WHERE fizetes BETWEEN 2000 AND 3000;
+
+13. Adjuk meg a dolgozók adatait fizetés szerint növekvő sorrendben.
+14. Adjuk meg a dolgozók adatait fizetés szerint csökkenő, azon belül név szerinti sorrendben.
+SELECT dnev, fizetes FROM Dolgozo ORDER BY fizetes DESC, dnev;
+
+15. Kik azok a dolgozók, akiknek a főnöke KING? (egyelőre leolvasva a képernyőről KING dkod-ját) 
+SELECT dnev FROM dolgozo WHERE fonoke=7839;
+
+Szeret (nev, gyumolcs)
+----------------------
+CREATE TABLE Szeret(nev VARCHAR(15), gyumolcs VARCHAR(15));
+
+NEV         GYUMOLCS
+--------------------
+Malacka     alma
+Micimackó   alma
+Malacka     körte
+Kanga       alma
+Tigris      alma
+Malacka     dinnye
+Micimackó   körte
+Tigris      körte
+
+Adjuk meg az alábbi lekérdezéseket relációs algebrában és SQL-ben:
+
+1.  Melyek azok a gyümölcsök, amelyeket Micimackó szeret?
+SELECT gyumolcs FROM Szeret WHERE nev = 'Micimackó';
+
+2.  Melyek azok a gyümölcsök, amelyeket Micimackó nem szeret? (de valaki más igen)
+SELECT gyumolcs FROM Szeret
+ MINUS
+SELECT gyumolcs FROM Szeret WHERE nev = 'Micimackó';
+
+3.  Kik szeretik az almát?
+SELECT nev FROM Szeret WHERE gyumolcs = 'alma';
+
+4.  Kik nem szeretik a körtét? (de valami mást igen)
+SELECT nev FROM Szeret
+ MINUS
+SELECT nev FROM Szeret WHERE gyumolcs = 'körte';
+
+5.  Kik szeretik vagy a dinnyét vagy a körtét?
+SELECT nev FROM Szeret WHERE gyumolcs = 'dinnye'
+ UNION
+SELECT nev FROM Szeret WHERE gyumolcs = 'körte';
+
+6.  Kik szeretik az almát is és a körtét is?
+SELECT nev FROM Szeret WHERE gyumolcs = 'alma'
+ INTERSECT
+SELECT nev FROM Szeret WHERE gyumolcs = 'körte';
+
+7.  Kik azok, akik szeretik az almát, de nem szeretik a körtét?
+SELECT nev FROM Szeret WHERE gyumolcs = 'alma'
+ MINUS
+SELECT nev FROM Szeret WHERE gyumolcs = 'körte';
+
+----------- eddig volt korábban, lásd feladat1.txt
+8.  Kik szeretnek legalább kétféle gyümölcsöt?
+-- direkt szorzat
+SELECT DISTINCT sz1.nev FROM Szeret sz1, Szeret sz2 
+WHERE sz1.nev=sz2.nev AND sz1.gyumolcs <> sz2.gyumolcs;
+
+9.  Kik szeretnek legalább háromféle gyümölcsöt?
+-- még egy direkt szorzat
+SELECT DISTINCT sz1.nev FROM Szeret sz1, Szeret sz2, Szeret sz3 
+WHERE sz1.nev=sz2.nev AND sz2.nev=sz3.nev AND sz1.gyumolcs <> sz2.gyumolcs
+AND sz2.gyumolcs <> sz3.gyumolcs AND sz1.gyumolcs <> sz3.gyumolcs;
+
+10. Kik szeretnek legfeljebb kétféle gyümölcsöt?
+-- az összes névből kivonjuk azokat, akik legalább 3-at szeretnek
+SELECT nev FROM Szeret
+ MINUS
+SELECT DISTINCT sz1.nev FROM Szeret sz1, Szeret sz2, Szeret sz3 
+WHERE sz1.nev=sz2.nev AND sz2.nev=sz3.nev AND sz1.gyumolcs <> sz2.gyumolcs
+AND sz2.gyumolcs <> sz3.gyumolcs AND sz1.gyumolcs <> sz3.gyumolcs;
+
+11. Kik szeretnek pontosan kétféle gyümölcsöt?
+-- Legalább kettőt szeretőkből kivonjuk a legalább hármat szeretőket.
+SELECT DISTINCT sz1.nev FROM Szeret sz1, Szeret sz2 
+WHERE sz1.nev=sz2.nev AND sz1.gyumolcs <> sz2.gyumolcs
+ MINUS
+SELECT DISTINCT sz1.nev FROM Szeret sz1, Szeret sz2, Szeret sz3 
+WHERE sz1.nev=sz2.nev AND sz2.nev=sz3.nev AND sz1.gyumolcs <> sz2.gyumolcs
+AND sz2.gyumolcs <> sz3.gyumolcs AND sz1.gyumolcs <> sz3.gyumolcs;
+
+
+Dolgozo és Osztaly táblák
+-------------------------
+Dolgozo (dkod, dnev, foglalkozas, fonoke, belepes, fizetes, jutalek, oazon)	   
+Osztaly (oazon, onev, telephely)
+--------------------------------
+10  ACCOUNTING  NEW YORK
+20  RESEARCH    DALLAS
+30  SALES       CHICAGO
+40  OPERATIONS  BOSTON
+
+CREATE TABLE Osztaly(
+ oazon      NUMERIC(2),
+ onev       VARCHAR(14),
+ telephely  VARCHAR(13)
+);
+
+
+Lekérdezések  (rel. alg + SQL)
+------------
+1.  Kik azok a dolgozók, akiknek a fizetése nagyobb, mint 2800?
+2.  Kik azok a dolgozók, akik a 10-es vagy a 20-as osztályon dolgoznak?
+3.  Kik azok, akiknek a jutaléka nagyobb, mint 600?
+4.  Kik azok, akiknek a jutaléka nem nagyobb, mint 600?
+5.  Kik azok a dolgozók, akiknek a jutaléka ismeretlen (nincs kitöltve, vagyis NULL)?
+SELECT dnev, jutalek FROM Dolgozo WHERE jutalek IS NULL;
+
+6.  Adjuk meg a dolgozók között előforduló foglalkozások neveit.
+SELECT DISTINCT foglalkozas FROM Dolgozo;
+
+7.  Adjuk meg azoknak a nevét és kétszeres fizetését, akik a 10-es osztályon dolgoznak.
+SELECT dnev, fizetes*2 FROM Dolgozo Where oazon=10;
+
+8.  Kik azok a dolgozók, akik 1982.01.01 után léptek be a céghez?
+SELECT dnev FROM Dolgozo where belepes > to_date('1982.01.01', 'yyyy.mm.dd');
+
+9.  Kik azok, akiknek nincs főnöke?
+SELECT dnev FROM Dolgozo WHERE fonoke IS NULL;
+
+10. Kik azok a dolgozók, akiknek a nevében van 'A' betű?
+SELECT dnev FROM Dolgozo WHERE dnev LIKE '%A%';
+
+11. Kik azok a dolgozók, akiknek a nevében van két 'L' betű?
+SELECT dnev FROM Dolgozo WHERE dnev LIKE '%L%L%';
+
+12. Kik azok a dolgozók, akiknek a fizetése 2000 és 3000 között van?
+SELECT dnev, fizetes FROM Dolgozo WHERE fizetes BETWEEN 2000 AND 3000;
+
+13. Adjuk meg a dolgozók adatait fizetés szerint növekvő sorrendben.
+14. Adjuk meg a dolgozók adatait fizetés szerint csökkenő, azon belül név szerinti sorrendben.
+SELECT dnev, fizetes FROM Dolgozo ORDER BY fizetes DESC, dnev;
+
+15. Kik azok a dolgozók, akiknek a főnöke KING? (egyelőre leolvasva a képernyőről KING dkod-ját) 
+----------- eddig volt korábban, lásd feladat1.txt
+16. Kik azok a dolgozók, akiknek a főnöke KING? (nem leolvasva)
+SELECT beo.dnev FROM Dolgozo beo, Dolgozo fon 
+WHERE fon.dkod=beo.fonoke AND fon.dnev='KING';
+
+17. Adjuk meg azoknak a főnököknek a nevét, akiknek a foglalkozása nem 'MANAGER'. (dnev)
+SELECT fon.dnev, fon.foglalkozas FROM Dolgozo beo, Dolgozo fon 
+WHERE fon.dkod=beo.fonoke AND fon.foglalkozas <> 'MANAGER';
+
+18. Adjuk meg azokat a dolgozókat, akik többet keresnek a főnöküknél.
+SELECT beo.dnev, beo.fizetes, fon.fizetes FROM Dolgozo beo, Dolgozo fon 
+WHERE fon.dkod=beo.fonoke AND fon.fizetes < beo.fizetes;
+
+19. Kik azok a dolgozók, akik főnökének a főnöke KING?
+SELECT beo.dnev FROM Dolgozo beo, Dolgozo fon, Dolgozo king 
+WHERE beo.fonoke=fon.dkod AND fon.fonoke=king.dkod AND king.dnev='KING';
+
+20. Kik azok a dolgozók, akik osztályának telephelye DALLAS vagy CHICAGO?
+21. Kik azok a dolgozók, akik osztályának telephelye nem DALLAS és nem CHICAGO?
+SELECT dnev, telephely FROM Dolgozo d, Osztaly o 
+WHERE d.oazon=o.oazon AND telephely NOT IN ('DALLAS', 'CHICAGO');
+
+22. Adjuk meg azoknak a nevét, akiknek a fizetése > 2000 vagy a CHICAGO-i osztályon dolgoznak.
+23. Melyik osztálynak nincs dolgozója?
+SELECT oazon FROM Osztaly
+ MINUS
+SELECT oazon FROM Dolgozo;
+
+24. Adjuk meg azokat a dolgozókat, akiknek van 2000-nél nagyobb fizetésű beosztottja.
+SELECT fon.dnev, beo.dnev, beo.fizetes 
+FROM Dolgozo beo, Dolgozo fon WHERE beo.fonoke=fon.dkod AND beo.fizetes > 2000;
+
+25. Adjuk meg azokat a dolgozókat, akiknek nincs 2000-nél nagyobb fizetésű beosztottja.
+SELECT dnev FROM Dolgozo
+ MINUS
+SELECT fon.dnev FROM Dolgozo beo, Dolgozo fon WHERE beo.fonoke=fon.dkod AND beo.fizetes > 2000;
+
+26. Adjuk meg azokat a telephelyeket, ahol van elemző (ANALYST) foglalkozású dolgozó.
+SELECT telephely FROM Dolgozo d, Osztaly o WHERE d.oazon=o.oazon AND foglalkozas = 'ANALYST';
+ vagy ezzel ekvivalens megoldás
+SELECT telephely FROM Dolgozo d JOIN Osztaly o ON d.oazon=o.oazon WHERE foglalkozas = 'ANALYST';
+ vagy egy harmadik ekvivalens megoldás
+SELECT telephely FROM Dolgozo NATURAL JOIN Osztaly WHERE foglalkozas = 'ANALYST';
+
+27. Adjuk meg azokat a telephelyeket, ahol nincs elemző (ANALYST) foglalkozású dolgozó.
+28. Adjuk meg azoknak a dolgozóknak a nevét, akiknek a legnagyobb a fizetésük.
+-- Az összes névből levonjuk azokat, akiknél van nagyobb fizetésű
+SELECT dnev FROM Dolgozo
+ MINUS
+SELECT d1.dnev FROM Dolgozo d1, Dolgozo d2 WHERE d1.fizetes < d2.fizetes;
+
+További feladatok gyakorlásra a tankönyvből
+-------------------------------------------
+HajoOsztalyok(Osztaly, tipus, orszag, agyukSzama, kaliber, vizkiszoritas)
+Hajok(nev, Osztaly, felavatva)
+Csatak(nev, datum)
+Kimenetelek(hajo, csata, eredmeny)
+
+Lekérdezések
+------------
+
+a) Adjuk meg azokat a hajóosztályokat a gyártó országok nevével együtt, amelyeknek az ágyúi
+   legalább 16-os kaliberűek.
+b) Melyek azok a hajók, amelyeket 1921 előtt avattak fel?
+c) Adjuk meg a Denmark Strait-csatában elsüllyedt hajók nevét.
+d) Az 1921-es washingtoni egyezmény betiltotta a 35000 tonnánál súlyosabb hajókat. 
+   Adjuk meg azokat a hajókat, amelyek megszegték az egyezményt. (1921 után avatták fel őket)
+e) Adjuk meg a Guadalcanal csatában részt vett hajók nevét, vízkiszorítását és ágyúi­nak a számát.
+f) Adjuk meg az adatbázisban szereplő összes hadihajó nevét. (Ne feledjük, hogy a Hajók relációban 
+   nem feltétlenül szerepel az összes hajó!)
+!g) Adjuk meg azokat az osztályokat, amelyekbe csak egyetlenegy hajó tartozik.
+!h) Melyek azok az országok, amelyeknek csatahajóik is és cirkálóhajóik is voltak?
+!i) Adjuk meg azokat a hajókat, amelyek "újjáéledtek", azaz egyszer már megsérültek egy csatában, 
+    de egy későbbi csatában újra harcoltak.
+Lekérdezések további táblákra
+-----------------------------
+NIKOVITS.DOLGOZO       (dkod, dnev, foglalkozas, fonoke, belepes, fizetes, jutalek, oazon)
+NIKOVITS.OSZTALY       (oazon, onev, telephely)
+NIKOVITS.Fiz_kategoria (kategoria, also, felso)
+-----------------------------------------------
+1   700  1200
+2  1201  1400
+3  1401  2000
+4  2001  3000
+5  3001  9999
+
+CREATE TABLE Fiz_kategoria
+ (kategoria NUMERIC, 
+  also NUMERIC, 
+  felso NUMERIC
+);
+
+További feladatokra lásd még:
+Kende Mária-Nagy István: Oracle példatár - SQL, PL/SQL. Panem kiadó.
+
+
+Beépített függvények
+--------------------
+1.  Adjuk meg azon dolgozókat, akik fizetése osztható 15-tel.
+SELECT dnev FROM dolgozo WHERE mod(fizetes, 15) = 0;
+
+2.  Kik azok a dolgozók, akik 1982.01.01 után léptek be a céghez?
+   (Aktuális dátumformátumot lásd -> SYSDATE fv.)
+SELECT dnev, belepes FROM dolgozo WHERE belepes > to_date('1982.01.01', 'yyyy.mm.dd');
+
+3.  Adjuk meg azon dolgozókat, akik nevének második betűje 'A'. (substr függvény használatával)
+    lásd substr() paraméterei
+SELECT dnev FROM dolgozo WHERE substr(dnev,2,1) = 'A';
+
+4.  Adjuk meg azon dolgozókat, akik nevében van legalább két 'L' betű. (instr függvény használatával)
+    lásd instr() paraméterei
+SELECT dnev FROM dolgozo WHERE instr(dnev,'L', 1, 2) > 0;
+
+5.  Adjuk meg a dolgozók nevének utolsó három betűjét.
+   lásd substr() negatív paraméterrel
+SELECT dnev, substr(dnev,-3) FROM dolgozo;
+
+6.  Adjuk meg azon dolgozókat, akik nevének utolsó előtti betűje 'T'.
+SELECT dnev FROM dolgozo WHERE substr(dnev, -2, 1)= 'T';
+
+7.  Adjuk meg a dolgozók fizetéseinek négyzetgyökét két tizedesre, és ennek egészrészét. 
+   lásd függvények egymásba ágyazása
+SELECT round(sqrt(fizetes), 2), trunc(round(sqrt(fizetes), 2), 0)  FROM dolgozo;
+
+8.  Adjuk meg, hogy hány napja dolgozik a cégnél ADAMS és milyen hónapban lépett be.
+    lásd dátum aritmetika
+SELECT belepes, trunc(sysdate - belepes), to_char(belepes, 'Month')  
+FROM dolgozo WHERE dnev = 'ADAMS';
+
+9.  Adjuk meg azokat a dolgozókat, akik keddi napon léptek be. (Vigyázzunk a visszaadott értékkel!)
+SELECT dnev, belepes FROM dolgozo WHERE to_char(belepes, 'day') LIKE 'kedd%';
+
+10. Adjuk meg azokat a (név, főnök) párokat, ahol a két ember neve ugyanannyi betűből áll. 
+SELECT beo.dnev beosztott, fonok.dnev  fonok
+FROM dolgozo beo, dolgozo fonok 
+WHERE beo.fonoke=fonok.dkod and length(beo.dnev) = length(fonok.dnev);
+
+11. Adjuk meg azon dolgozókat, akik az 1-es fizetési kategóriába tartoznak.
+SELECT dnev, kategoria FROM dolgozo, fiz_kategoria
+WHERE fizetes BETWEEN also AND felso AND kategoria=1;
+
+12. Adjuk meg azon dolgozókat, akiknek a fizetési kategóriája páros szám.
+SELECT dnev, kategoria FROM dolgozo, fiz_kategoria
+WHERE fizetes BETWEEN also AND felso AND mod(kategoria,2)=0;
+
+13. Adjuk meg, hogy hány nap volt KING és JONES belépési dátuma között?
+SELECT d1.belepes - d2.belepes FROM dolgozo d1, dolgozo d2 
+WHERE d1.dnev='KING' AND d2.dnev='JONES';
+
+14. Adjuk meg, hogy milyen napra esett KING belépési dátuma hónapjának utolsó napja. (last_day() függvény)
+SELECT to_char(last_day(belepes), 'day') FROM dolgozo WHERE dnev='KING';
+
+15. Adjuk meg, hogy milyen napra esett KING belépési dátuma hónapjának első napja.
+SELECT to_char(trunc(belepes, 'month'), 'day') FROM dolgozo WHERE dnev='KING';
+
+16. Adjuk meg azon dolgozók nevét, akik osztályának nevében van 'C' betű és fizetési kategóriájuk >=4.
+SELECT dnev, onev, kategoria FROM dolgozo d, osztaly o, fiz_kategoria
+WHERE fizetes BETWEEN also AND felso AND o.oazon=d.oazon
+AND onev LIKE '%C%' AND kategoria > 3;
+
+1.6 példa (Kende-Nagy) 
+-- Listázzuk ki a dolgozók nevét és fizetését, valamint jelenítsük meg a fizetést grafikusan
+   úgy, hogy a fizetést 1000 Ft-ra kerekítve, minden 1000 Ft-ot egy '#' jel jelöl.
+   (például 5000 -> #####, 800 -> #)
+-- lásd lpad, rpad. Vigyázat: rpad('', 3, 'x') = rpad(null, 3, 'x')
+SELECT dnev, fizetes, rpad('#', round(fizetes, -3)/1000, '#') FROM dolgozo;
+
+
+1.8 példa
+-- Listázzuk ki azoknak a dolgozóknak a nevét, fizetését, jutalékát, és a jutalék/fizetés
+   arányát, akiknek a foglalkozása eladó (SALESMAN). Az arányt két tizedesen jelenítsük meg.
+SELECT dnev, fizetes, jutalek, to_char(round(jutalek/fizetes, 2), '0.99') 
+FROM dolgozo WHERE foglalkozas = 'SALESMAN';
+
+
+Az alábbi lekérdezések megoldását adjuk meg relációs algebrában és SQL-ben.
+---------------------------------------------------------------------------
+-- Adjuk meg azon osztályok nevét és telephelyét, amelyeknek van 1-es fizetési kategóriájú dolgozója.
+SELECT onev, telephely from osztaly WHERE oazon IN
+  (SELECT oazon FROM dolgozo, fiz_kategoria 
+   WHERE kategoria=1 AND fizetes BETWEEN also AND felso);
+vagy másképp:
+SELECT onev, telephely from osztaly WHERE oazon =
+  ANY (SELECT oazon FROM dolgozo, fiz_kategoria 
+       WHERE kategoria=1 AND fizetes BETWEEN also AND felso);   
+
+-- Adjuk meg azon osztályok nevét és telephelyét, amelyeknek nincs 1-es fizetési kategóriájú dolgozója.
+SELECT onev, telephely from osztaly WHERE oazon NOT IN
+  (SELECT oazon FROM dolgozo, fiz_kategoria 
+   WHERE kategoria=1 AND fizetes BETWEEN also AND felso);
+vagy másképp:
+SELECT onev, telephely from osztaly WHERE oazon <>
+  ALL (SELECT oazon FROM dolgozo, fiz_kategoria 
+       WHERE kategoria=1 AND fizetes BETWEEN also AND felso);   
+
+A korábbi táblák:
+-------------------------------------
+NIKOVITS.DOLGOZO       (dkod, dnev, foglalkozas, fonoke, belepes, fizetes, jutalek, oazon)
+NIKOVITS.OSZTALY       (oazon, onev, telephely)
+NIKOVITS.Fiz_kategoria (kategoria, also, felso)
+-------------------------------------
+Lekérdezések  (Kiterjesztett relációs alg. + SQL)
+------------
+
+1.
+Mekkora a maximális fizetés a dolgozók között?
+SELECT max(fizetes) FROM dolgozo;
+
+2.
+Mennyi a dolgozók összfizetése?
+SELECT sum(fizetes) AS sf FROM Dolgozo;
+
+3.
+Mennyi a 20-as osztályon az összfizetes és az átlagfizetés? (Atlag, Össz)
+SELECT sum(fizetes) AS sf, avg(fizetes) as af FROM Dolgozo WHERE oazon=20;
+
+4.
+Adjuk meg, hogy hány különböző foglalkozás fordul elő a dolgozók között. 
+SELECT count(DISTINCT foglalkozas) AS cf FROM Dolgozo;                          -- Oracle 
+SELECT count(foglalkozas) AS cf FROM (SELECT foglalkozas FROM Dolgozo) AS Tmp;  -- RelaX
+
+5.
+Hány olyan dolgozó van, akinek a fizetése > 2000? 
+SELECT count(*) AS cnt FROM Dolgozo WHERE fizetes > 2000;
+
+6.
+Adjuk meg osztályonként az átlagfizetést (oazon, atl_fiz).
+SELECT oazon, avg(fizetes) AS af FROM Dolgozo GROUP BY oazon;
+
+7.
+Adjuk meg osztályonként a telephelyet és az átlagfizetést (oazon, telephely, atl_fiz).
+SELECT o.oazon, telephely, avg(fizetes) AS af 
+FROM Dolgozo AS d, Osztaly AS o                  -- Oracle esetén el kell hagyni az 'AS' kulcsszót
+WHERE d.oazon=o.oazon 
+GROUP BY o.oazon, telephely;
+-- más szintaxissal:
+SELECT oazon, telephely, avg(fizetes) AS af
+FROM Dolgozo AS d NATURAL JOIN Osztaly AS o      -- Oracle esetén el kell hagyni az 'AS' kulcsszót
+GROUP BY oazon, telephely;
+
+8.
+Adjuk meg, hogy az egyes osztályokon hány ember dolgozik. (oazon, mennyi)
+SELECT oazon, count(dkod) AS cnt FROM Dolgozo GROUP BY oazon;
+
+9.
+Adjuk meg azokra az osztályokra az átlagfizetést, ahol ez nagyobb mint 2000. (oazon, atlag)
+SELECT oazon, avg(fizetes) AS af FROM Dolgozo GROUP BY oazon HAVING avg(fizetes) > 2000;   -- Oracle
+SELECT oazon, avg(fizetes) AS af FROM Dolgozo GROUP BY oazon HAVING af > 2000;             -- RelaX
+
+10.
+Adjuk meg az átlagfizetést azokon az osztályokon, ahol legalább 4-en dolgoznak (oazon, avg_fiz)
+-- Oracle
+SELECT oazon, avg(fizetes) FROM dolgozo GROUP BY oazon HAVING count(dkod) >= 4;  
+-- RelaX
+SELECT oazon, af FROM
+(SELECT oazon, avg(fizetes) AS af, count(dkod) AS cnt FROM Dolgozo GROUP BY oazon HAVING cnt >= 4) AS Tmp;
+
+11.
+Adjuk meg az átlagfizetést és telephelyet azokon az osztályokon, ahol legalább 4-en dolgoznak. (oazon, telephely, atlag)
+-- Oracle
+SELECT oazon, telephely, avg(fizetes) AS af 
+FROM Dolgozo d NATURAL JOIN Osztaly o
+GROUP BY oazon, telephely HAVING count(dkod) >= 4;
+-- RelaX
+SELECT oazon, telephely, af FROM
+(SELECT oazon, telephely, avg(fizetes) AS af, count(dkod) AS cnt 
+ FROM Dolgozo AS d NATURAL JOIN Osztaly AS o GROUP BY oazon, telephely HAVING cnt >= 4) AS Tmp
+
+12.
+Adjuk meg azon osztályok nevét és telephelyét, ahol az átlagfizetés nagyobb mint 2000. (onev, telephely)
+-- Oracle
+SELECT onev, telephely FROM dolgozo d, osztaly o
+WHERE d.oazon=o.oazon 
+GROUP BY onev, telephely HAVING avg(fizetes) >= 2000;
+-- RelaX
+SELECT onev, telephely, avg(fizetes) AS af FROM Dolgozo AS d, Osztaly AS o
+WHERE d.oazon=o.oazon 
+GROUP BY onev, telephely HAVING af >= 2000;
+
+13.
+Adjuk meg azokat a fizetési kategóriákat, amelybe pontosan 3 dolgozó fizetése esik. (kategoria)
+-- Oracle
+SELECT kategoria FROM dolgozo, fiz_kategoria
+WHERE fizetes BETWEEN also AND felso
+GROUP BY kategoria HAVING count(*) = 3;
+-- RelaX
+SELECT kategoria, count(*) AS cnt FROM Dolgozo, Fiz_kategoria
+WHERE fizetes >= also AND fizetes <= felso
+GROUP BY kategoria HAVING cnt = 3;
+
+-- más szintaxissal Oracle
+SELECT kategoria FROM dolgozo JOIN fiz_kategoria ON (fizetes BETWEEN also AND felso)
+GROUP BY kategoria HAVING count(*) = 3;
+-- más szintaxissal RelaX
+SELECT kategoria, count(*) AS cnt 
+FROM Dolgozo JOIN Fiz_kategoria ON (fizetes >= also AND fizetes <= felso)
+GROUP BY kategoria HAVING cnt = 3;
+
+14.
+Adjuk meg azokat a fizetési kategóriákat, amelyekbe eső dolgozók mindannyian ugyanazon 
+az osztályon dolgoznak. (kategoria)
+-- Oracle
+SELECT kategoria FROM Dolgozo, Fiz_kategoria
+WHERE fizetes >= also AND fizetes<= felso
+GROUP BY kategoria HAVING count(distinct oazon) = 1;
+-- RelaX
+WITH Tmp AS 
+(SELECT kategoria, oazon FROM Dolgozo, Fiz_kategoria
+ WHERE fizetes >= also AND fizetes<= felso)
+SELECT kategoria, count(oazon) AS cnt FROM Tmp GROUP BY kategoria  HAVING cnt = 1;
+
+15.
+Adjuk meg azon osztályok nevét és telephelyét, amelyeknek van 1-es fizetési kategóriájú dolgozója. (onev, telephely)
+-- Oracle
+SELECT DISTINCT onev, telephely FROM Dolgozo d, Osztaly o, Fiz_kategoria f
+WHERE o.oazon=d.oazon AND fizetes >= also AND fizetes<= felso AND kategoria = 1;
+-- RelaX
+SELECT onev, telephely FROM Dolgozo AS d, Osztaly AS o, Fiz_kategoria AS f
+WHERE o.oazon=d.oazon AND fizetes >= also AND fizetes<= felso AND kategoria = 1;
+
+16.
+Adjuk meg azon osztályok nevét és telephelyét, amelyeknek legalább 2 fő 1-es fizetési 
+kategóriájú dolgozója van. (onev, telephely)
+SELECT DISTINCT onev, telephely FROM dolgozo d, osztaly o, fiz_kategoria f
+WHERE o.oazon=d.oazon AND fizetes BETWEEN also AND felso AND kategoria = 1
+GROUP BY onev, telephely HAVING count(distinct dkod) > 1;
+
+17.
+Készítsünk listát a páros és páratlan azonosítójú (dkod) dolgozók számáról. (paritas, szam)
+SELECT decode(mod(dkod, 2), 0, 'páros', 1, 'páratlan') paritas, count(dkod) szam 
+FROM Dolgozo GROUP BY mod(dkod, 2);
+
+18.
+Listázzuk ki foglalkozásonként a dolgozók számát, átlagfizetését (kerekítve) numerikusan és grafikusan is.
+200-anként jelenítsünk meg egy '#'-ot. (foglalkozás, szám, átlag, grafika)
+SELECT foglalkozas, count(dkod), round(avg(fizetes)),
+      rpad('#', round(avg(fizetes)/200), '#') 
+FROM Dolgozo GROUP BY foglalkozas;
+
+
+Feladatok módosításra, törlésre, beszúrásra.
+--------------------------------------------
+
+/* A módosítást egy másodpéldányon végezzük, hogy a tábla eredeti tartalma megmaradjon
+
+CREATE TABLE dolg2 AS SELECT * FROM nikovits.dolgozo;
+CREATE TABLE oszt2 AS SELECT * FROM nikovits.osztaly;
+UPDATE dolg2 ...
+Ellenõrzés: SELECT ... FROM dolg2 ...         
+DROP TABLE dolg2;
+
+*/
+
+DELETE
+------
+1.
+Töröljük azokat a dolgozókat, akiknek jutaléka NULL.
+DELETE FROM dolgozo WHERE jutalek IS NULL;
+
+2.
+Töröljük azokat a dolgozókat, akiknek a belépési dátuma 1982 elõtti.
+DELETE FROM dolgozo WHERE belepes < TO_DATE('1982.01.01', 'yyyy.mm.dd');
+
+3.
+Töröljük azokat a dolgozókat, akik osztályának telephelye DALLAS.
+DELETE FROM dolgozo WHERE oazon IN 
+   (SELECT oazon FROM osztaly WHERE telephely = 'DALLAS');
+
+4.
+Töröljük azokat a dolgozókat, akiknek a fizetése kisebb, mint az átlagfizetés.
+DELETE FROM dolgozo WHERE fizetes < (SELECT AVG(fizetes) FROM dolgozo);
+
+5.
+Töröljük a jelenleg legjobban keresõ dolgozót.
+DELETE FROM dolgozo WHERE fizetes = (SELECT MAX(fizetes) FROM dolgozo);
+
+6.
+Töröljük ki azokat az osztályokat, akiknek van olyan dolgozója, aki a 2-es fizetési 
+kategóriába esik (lásd még Fiz_Kategoria táblát)
+(Adjuk meg azon osztályok nevét, amelyeknek van olyan dolgozója, aki a 2-es fizetési kategóriába esik)
+
+delete from osztaly where exists
+  (select * from dolgozo, fiz_kategoria 
+   where fizetes between also and felso and kategoria=2
+   and osztaly.oazon=dolgozo.oazon);
+
+select * from osztaly where exists
+  (select * from dolgozo, fiz_kategoria 
+   where fizetes between also and felso and kategoria=2
+   and osztaly.oazon=dolgozo.oazon);
+
+7.
+Töröljük ki azon osztályokat, amelyeknek 2 olyan dolgozója van, aki a 2-es fizetési kategóriába esik
+delete from osztaly where oazon in 
+  (select oazon from  dolgozo d, fiz_kategoria 
+   where fizetes between also and felso and kategoria=2
+   group by oazon
+   having count(distinct dkod) = 2);
+
+select * from osztaly where oazon in 
+  (select oazon from  dolgozo d, fiz_kategoria 
+   where fizetes between also and felso and kategoria=2
+   group by oazon
+   having count(distinct dkod) = 2);
+
+INSERT
+------
+8.
+Vigyünk fel egy 'Kovacs' nevû új dolgozót a 10-es osztályra a következõ 
+értékekkel: dkod=1, dnev='Kovacs', oazon=10, belépés=aktuális dátum,
+fizetés=a 10-es osztály átlagfizetése. A többi oszop legyen NULL.
+a)
+INSERT INTO dolgozo(dkod, dnev, belepes, fizetes, oazon) 
+VALUES(1,'KOVACS', SYSDATE, (SELECT AVG(fizetes) FROM dolgozo WHERE oazon=10),10);
+b)
+INSERT INTO dolgozo(dkod, dnev, belepes, fizetes, oazon) 
+SELECT 1,'KOVACS', SYSDATE, AVG(fizetes), 10 FROM dolgozo WHERE oazon=10;
+
+UPDATE
+------
+9.
+Növeljük meg a 20-as osztályon a dolgozók fizetését 20%-kal.
+UPDATE dolgozo SET fizetes = fizetes*1.2 WHERE oazon=20;
+
+10.
+Növeljük meg azok fizetését 500-zal, akik jutaléka NULL vagy a fizetésük kisebb az átlagnál.
+UPDATE dolgozo SET fizetes = fizetes + 500 
+WHERE jutalek IS NULL OR fizetes < ( SELECT AVG(fizetes) FROM dolgozo);
+
+11.
+Növeljük meg mindenkinek a jutalékát a jelenlegi maximális jutalékkal.
+UPDATE dolgozo SET jutalek = 
+ (SELECT MAX(dolg1.jutalek) + NVL(dolgozo.jutalek,0) from dolgozo dolg1);
+
+12.
+Módosítsuk 'Loser'-re a legrosszabbul keresõ dolgozó nevét.
+UPDATE dolgozo SET dnev = 'Loser' 
+WHERE fizetes = ( SELECT MIN(fizetes) FROM dolgozo);
+
+13.
+Növeljük meg azoknak a dolgozóknak a jutalékát 3000-rel, akiknek legalább 2 közvetlen beosztottjuk van. 
+Az ismeretlen (NULL) jutalékot vegyük úgy, mintha 0 lenne. 
+UPDATE dolgozo SET jutalek=coalesce(jutalek,0)+3000 WHERE dkod IN
+  (SELECT fonoke FROM dolgozo GROUP BY fonoke HAVING count(*)=2);
+
+14.
+Növeljük meg azoknak a dolgozóknak a fizetését, akiknek van beosztottja, a minimális fizetéssel.
+UPDATE dolgozo SET fizetes = fizetes + (SELECT min(fizetes) FROM dolgozo) 
+WHERE dkod IN (SELECT fonoke FROM dolgozo);
+
+15.
+Növeljük meg a nem fõnökök fizetését a saját osztályuk átlagfizetésével.
+UPDATE dolgozo d1 SET fizetes = fizetes + (SELECT avg(fizetes) FROM dolgozo d2 WHERE d2.oazon = d1.oazon)
+WHERE dkod NOT IN (SELECT coalesce(fonoke,0) FROM dolgozo);
+
+16.
+Összetett, több lépéses feladat a feladatgyûjteménybõl: (ott 5.5 feladat/c)
+
+Bõvítsük a dolgozó táblát egy lakhely oszloppal, majd töltsük fel a következõképpen:
+A BOSTON-ban dolgozók CHICAGO-ban, a CHICAGO-ban dolgozók pedig BOSTON-ban laknak, 
+kivéve azokat a CHICAGO-i dolgozókat, akiknek BLAKE a fõnöke, mert õk INDIANAPOLIS-ban
+laknak, feltéve, hogy nem CLERK foglalkozásúak, mert akkor sehol sem laknak.
+
+ALTER TABLE dolgozo ADD lakhely VARCHAR2(30);
+
+-- A BOSTON-ban dolgozók CHICAGO-ban laknak						
+UPDATE dolgozo  SET lakhely = 'CHICAGO'
+WHERE oazon = (SELECT oazon FROM osztaly WHERE telephely = 'BOSTON');
+
+-- A CHICAGO-ban dolgozók, ha nem BLAKE a fõnökük -> BOSTON
+UPDATE dolgozo SET lakhely = 'BOSTON'
+WHERE dkod IN (SELECT d.dkod FROM dolgozo d, osztaly o, dolgozo f
+               WHERE d.oazon = o.oazon  AND d.fonoke = f.dkod  
+			   AND telephely = 'CHICAGO' AND  f.dnev <> 'BLAKE');
+
+-- A CHICAGO-ban dolgozók, ha BLAKE a fõnökük és nem CLERK a foglalkozásuk -> INDIANA
+UPDATE dolgozo SET lakhely = 'INDIANA'
+WHERE dkod IN (SELECT d.dkod FROM dolgozo d, osztaly o, dolgozo f
+               WHERE d.oazon = o.oazon  AND d.fonoke = f.dkod  AND telephely = 'CHICAGO' 
+               AND  f.dnev = 'BLAKE' AND d.foglalkozas<>'CLERK');
+
+ALTER TABLE dolgozo DROP COLUMN lakhely;

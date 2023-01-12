@@ -1,0 +1,137 @@
+select * from nikovits.cikk;
+select * from nikovits.projekt;
+select * from nikovits.szallito;
+select * from nikovits.szallit;
+
+-- Adjuk meg azon cikkek kódját és nevét, amelyeket valamelyik pécsi ('Pecs') szállító szállít. [ckod, cnev]
+
+select distinct a.ckod, c.cnev from nikovits.szallit a, nikovits.szallito b, nikovits.cikk c
+where a.szkod = b.szkod and c.ckod = a.ckod and  b.telephely = 'Pecs';
+
+-- Adjuk meg, hogy hány ilyen cikk van. [darab]
+
+select COUNT(distinct a.ckod) as darab from nikovits.szallit a, nikovits.szallito b
+where a.szkod = b.szkod and  b.telephely = 'Pecs';
+
+-- Adjuk meg azon cikkek kódját és nevét, amelyeket egyik pécsi szállító sem szállít. [ckod, cnev]
+
+select ckod from nikovits.cikk
+MINUS
+select a.ckod from nikovits.szallit a, nikovits.szallito b, nikovits.cikk c
+where a.szkod = b.szkod and c.ckod = a.ckod and  b.telephely = 'Pecs';
+
+-- Adjuk meg, hogy hány ilyen cikk van. [darab]
+
+with 
+tmp1 as (select COUNT(distinct a.ckod) as darab from nikovits.szallit a, nikovits.szallito b
+where a.szkod = b.szkod and  b.telephely = 'Pecs'),
+tmp2 as (select COUNT(ckod) as darab from nikovits.cikk)
+select t2.darab - t1.darab as darab from tmp1 t1, tmp2 t2;
+
+-- Adjuk meg azon szállítók nevét, akiknek a státusza 10-nél nagyobb és 
+-- budapesti projektbe szállítanak szék nevű cikket. ('Budapest', 'szek')  [sznev]
+   
+select distinct b.sznev from nikovits.szallit a, nikovits.szallito b, nikovits.cikk c, nikovits.projekt d
+where a.szkod = b.szkod and c.ckod = a.ckod and d.pkod = a.pkod
+and b.statusz >= 10 and c.cnev = 'szek' and  d.helyszin = 'Budapest';
+
+-- Adjuk meg azon projektek kódját, amelyekhez szállítanak kék cikket. ('kek')  [pkod]
+
+select distinct d.pkod from nikovits.szallit a ,nikovits.cikk c, nikovits.projekt d
+where c.ckod = a.ckod and d.pkod = a.pkod and
+c.szin = 'kek';
+
+-- Adjuk meg azon projektek kódját és nevét, amelyekhez szállítanak kék cikket. [pkod, pnev]
+
+select distinct d.pkod, d.pnev from nikovits.szallit a ,nikovits.cikk c, nikovits.projekt d
+where c.ckod = a.ckod and d.pkod = a.pkod and
+c.szin = 'kek';
+
+-- Adjuk meg azon projektek kódját és nevét, amelyekhez nem szállítanak kék cikket. [pkod, pnev]
+
+select distinct pkod, pnev from nikovits.projekt
+MINUS
+select distinct d.pkod, d.pnev from nikovits.szallit a ,nikovits.cikk c, nikovits.projekt d
+where c.ckod = a.ckod and d.pkod = a.pkod and
+c.szin = 'kek';
+
+-- Adjuk meg azon cikkek kódját, amelyeket szállítanak valahova. [ckod]
+
+select distinct ckod from nikovits.szallit;
+
+-- Adjuk meg, hogy hány ilyen cikk van. [darab]
+
+select COUNT(distinct ckod) as darab from nikovits.szallit;
+
+-- Adjuk meg azon cikkek kódját, amelyeket nem szállítanak sehova. [ckod]
+
+select ckod from nikovits.cikk
+MINUS
+select distinct ckod from nikovits.szallit;
+
+-- Adjuk meg azon cikkek kódját és nevét, amelyeket sehova nem szállítanak.  [ckod, cnev]
+
+select ckod, cnev from nikovits.cikk
+where ckod in (select ckod from nikovits.cikk
+               MINUS
+               select distinct ckod from nikovits.szallit);
+
+-- Adjuk meg azon kék ('kek') cikkek kódját, amelyeket szállítanak valahova. [ckod] 
+
+select ckod from nikovits.cikk
+where szin = 'kek'  and ckod in (select distinct ckod from nikovits.szallit);
+
+-- Adjuk meg azon piros színű cikkek kódját, amelyeket sehova nem szállítanak. [ckod]
+
+select ckod from nikovits.cikk
+where szin = 'piros'  and ckod in (select ckod from nikovits.cikk
+                                   MINUS
+                                   select distinct ckod from nikovits.szallit);
+
+-- Adjuk meg azon cikkek nevét, amelyeket minden projekthez szállítanak.  [cnev]
+
+select distinct c.cnev from nikovits.szallit a ,nikovits.cikk c
+where c.ckod = a.ckod 
+GROUP BY c.cnev
+HAVING COUNT(a.pkod) = (Select COUNT(pkod) as darab from nikovits.projekt);
+
+-- Melyik cikket hány különböző projekthez szállítják? [ckod, cnev, darab]
+
+select distinct c.ckod, c.cnev, COUNT(a.pkod) as darab from nikovits.szallit a ,nikovits.cikk c
+where c.ckod = a.ckod
+GROUP BY c.ckod,c.cnev;
+
+-- Melyik cikket szállítják a legtöbb projekthez? (Leolvassuk a rendezett listából) [ckod, cnev]
+-- Majd adjuk meg leolvasás nélkül felső-N elemzés segítségével. [ckod, cnev]
+
+select distinct c.ckod, c.cnev, COUNT(a.pkod) as darab from nikovits.szallit a ,nikovits.cikk c
+where c.ckod = a.ckod
+GROUP BY c.ckod,c.cnev
+HAVING COUNT(a.pkod) = (with
+                        tmp1 as (select distinct c.ckod, c.cnev, COUNT(a.pkod) as darab from nikovits.szallit a ,nikovits.cikk c
+                        where c.ckod = a.ckod
+                        GROUP BY c.ckod,c.cnev)
+                        select MAX(darab) from tmp1);
+
+-- Adjuk meg azon cikkek nevét, amelyeket valamelyik projekthez nem szállítanak. [cnev]
+
+select cnev from nikovits.cikk
+where ckod in (select ckod from nikovits.cikk
+               MINUS
+               select distinct ckod from nikovits.szallit);
+
+-- Adjuk meg azon cikkek kódját és nevét, amelyeket kevesebb mint 6 projekthez szállítanak. [ckod, cnev]
+
+select distinct c.ckod, c.cnev from nikovits.szallit a ,nikovits.cikk c
+where c.ckod = a.ckod
+GROUP BY c.ckod,c.cnev
+HAVING COUNT(a.pkod) < 6;
+
+-- Adjuk meg azon zöld ('zold') színű cikkek nevét, amelyeket minden projekthez szállítanak. [cnev]
+
+select cnev from nikovits.szallit a ,nikovits.cikk c
+where c.ckod = a.ckod and c.szin = 'zold'
+GROUP BY c.ckod,c.cnev
+HAVING COUNT(a.pkod) = (Select COUNT(pkod) as darab from nikovits.projekt);
+
+

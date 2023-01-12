@@ -1,0 +1,90 @@
+Szeret (nev, gyumolcs)
+----------------------
+CREATE TABLE Szeret(nev VARCHAR(15), gyumolcs VARCHAR(15));
+
+NEV         GYUMOLCS
+--------------------
+Malacka     alma
+Micimackó   alma
+Malacka     körte
+Kanga       alma
+Tigris      alma
+Malacka     dinnye
+Micimackó   körte
+Tigris      körte
+
+Adjuk meg az alábbi lekérdezéseket relációs algebrában és SQL-ben:
+
+1.  Melyek azok a gyümölcsök, amelyeket Micimackó szeret?
+SELECT gyumolcs FROM Szeret WHERE nev = 'Micimackó';
+
+2.  Melyek azok a gyümölcsök, amelyeket Micimackó nem szeret? (de valaki más igen)
+SELECT gyumolcs FROM Szeret
+ MINUS
+SELECT gyumolcs FROM Szeret WHERE nev = 'Micimackó';
+
+3.  Kik szeretik az almát?
+SELECT nev FROM Szeret WHERE gyumolcs = 'alma';
+
+4.  Kik nem szeretik a körtét? (de valami mást igen)
+SELECT nev FROM Szeret
+ MINUS
+SELECT nev FROM Szeret WHERE gyumolcs = 'körte';
+
+5.  Kik szeretik vagy a dinnyét vagy a körtét?
+SELECT nev FROM Szeret WHERE gyumolcs = 'dinnye'
+ UNION
+SELECT nev FROM Szeret WHERE gyumolcs = 'körte';
+
+6.  Kik szeretik az almát is és a körtét is?
+SELECT nev FROM Szeret WHERE gyumolcs = 'alma'
+ INTERSECT
+SELECT nev FROM Szeret WHERE gyumolcs = 'körte';
+
+7.  Kik azok, akik szeretik az almát, de nem szeretik a körtét?
+SELECT nev FROM Szeret WHERE gyumolcs = 'alma'
+ MINUS
+SELECT nev FROM Szeret WHERE gyumolcs = 'körte';
+
+
+Dolgozo tábla
+-------------------------
+Dolgozo (dkod, dnev, foglalkozas, fonoke, belepes, fizetes, jutalek, oazon)	   
+
+Lekérdezések  (rel. alg + SQL)
+------------
+1.  Kik azok a dolgozók, akiknek a fizetése nagyobb, mint 2800?
+2.  Kik azok a dolgozók, akik a 10-es vagy a 20-as osztályon dolgoznak?
+3.  Kik azok, akiknek a jutaléka nagyobb, mint 600?
+4.  Kik azok, akiknek a jutaléka nem nagyobb, mint 600?
+5.  Kik azok a dolgozók, akiknek a jutaléka ismeretlen (nincs kitöltve, vagyis NULL)?
+SELECT dnev, jutalek FROM Dolgozo WHERE jutalek IS NULL;
+
+6.  Adjuk meg a dolgozók között elõforduló foglalkozások neveit.
+SELECT DISTINCT foglalkozas FROM Dolgozo;
+
+7.  Adjuk meg azoknak a nevét és kétszeres fizetését, akik a 10-es osztályon dolgoznak.
+SELECT dnev, fizetes*2 FROM Dolgozo Where oazon=10;
+
+8.  Kik azok a dolgozók, akik 1982.01.01 után léptek be a céghez?
+SELECT dnev FROM Dolgozo where belepes > to_date('1982.01.01', 'yyyy.mm.dd');
+
+9.  Kik azok, akiknek nincs fõnöke?
+SELECT dnev FROM Dolgozo WHERE fonoke IS NULL;
+
+10. Kik azok a dolgozók, akiknek a nevében van 'A' betû?
+SELECT dnev FROM Dolgozo WHERE dnev LIKE '%A%';
+
+11. Kik azok a dolgozók, akiknek a nevében van két 'L' betû?
+SELECT dnev FROM Dolgozo WHERE dnev LIKE '%L%L%';
+
+12. Kik azok a dolgozók, akiknek a fizetése 2000 és 3000 között van?
+SELECT dnev, fizetes FROM Dolgozo WHERE fizetes BETWEEN 2000 AND 3000;
+
+13. Adjuk meg a dolgozók adatait fizetés szerint növekvõ sorrendben.
+14. Adjuk meg a dolgozók adatait fizetés szerint csökkenõ, azon belül név szerinti sorrendben.
+SELECT dnev, fizetes FROM Dolgozo ORDER BY fizetes DESC, dnev;
+
+15. Kik azok a dolgozók, akiknek a fõnöke KING? (egyelõre leolvasva a képernyõrõl KING dkod-ját) 
+SELECT dnev FROM dolgozo WHERE fonoke=7839;
+
